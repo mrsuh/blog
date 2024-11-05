@@ -86,7 +86,7 @@ foreach ($articles as $year => $list) {
     /** @var Article $article */
     foreach ($list as $index => $article) {
         $content .= sprintf('<div class="col-10"><a href="%s" target="_blank">%s</a></div>', $article->url, $article->name);
-        $content .= sprintf('<div class="col-2">%s</div>', $article->date);
+        $content .= sprintf('<div class="col-2 text-end list-date">%s</div>', $article->date);
         if($index < count($list) - 1) {
             $content .= '<hr class="list"/>' . PHP_EOL;
         }
