@@ -5,9 +5,9 @@ Passionate about sharing knowledge through blog posts and technical talks.
 Experienced in leading backend development projects, with a focus on optimizing processes and tools.
 
 Contacts:
-* [github](https://github.com/mrsuh)
-* [linkedin](https://www.linkedin.com/in/anton-sukhachev)
-* [youtube](https://www.youtube.com/@mrsuh)
-* [thingiverse](https://www.thingiverse.com/antonsukhachev)
-* [stackoverflow](https://stackoverflow.com/users/7109443/anton-sukhachev)
+* [github.com](https://github.com/mrsuh)
+* [linkedin.com](https://www.linkedin.com/in/anton-sukhachev)
+* [youtube.com](https://www.youtube.com/@mrsuh)
+* [thingiverse.com](https://www.thingiverse.com/antonsukhachev)
+* [stackoverflow.com](https://stackoverflow.com/users/7109443/anton-sukhachev)
 * mrsuh6@gmail.com

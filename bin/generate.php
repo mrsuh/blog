@@ -8,11 +8,11 @@ $parser->setBreaksEnabled(true);
 $template = file_get_contents(__DIR__ . '/../src/template.html');
 
 file_put_contents(
-    __DIR__ . '/../public/index.html',
+    __DIR__ . '/../docs/index.html',
     str_replace('{{ content }}', $parser->text(file_get_contents(__DIR__ . '/../src/index.md')), $template)
 );
 
 file_put_contents(
-    __DIR__ . '/../public/articles.html',
+    __DIR__ . '/../docs/articles.html',
     str_replace('{{ content }}', $parser->text(file_get_contents(__DIR__ . '/../src/articles.md')), $template)
 );
