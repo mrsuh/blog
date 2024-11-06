@@ -4,7 +4,6 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 class MyParserdown extends \Parsedown
 {
-
     protected function inlineImage($Excerpt)
     {
         $data = parent::inlineImage($Excerpt);
@@ -42,6 +41,20 @@ class MyParserdown extends \Parsedown
         }
 
         $element['attributes']['class'] .= ' rounded';
+
+        return $data;
+    }
+    
+    protected function blockTable($Line, array $Block = null)
+    {
+        $data = parent::blockTable($Line, $Block);
+        if (!is_array($data)) {
+            return;
+        }
+
+        $data['element']['attributes'] = [
+            'class' => 'table table-bordered'
+        ];
 
         return $data;
     }
@@ -140,7 +153,7 @@ $articles = [
         Article::create("Parsing with PHP, Bison and re2c", "https://dev.to/mrsuh/parse-files-with-php-bison-and-re2c-1i6p", "Aug 26"),
         Article::create("Telegram bot that monitors currency availability in Tinkoff ATMs", "https://vc.ru/u/585016-anton-suhachev/393167-telegram-bot-kotoryi-sledit-za-valyutoi-v-bankomatah-tinkoff", "Apr 02"),
         Article::create("Comparing PHP Collections", "https://dev.to/mrsuh/comparing-php-collections-5cca", "Mar 22"),
-        Article::create("Generics implementation approaches", "https://dev.to/mrsuh/generics-implementation-approaches-3bf0", "Feb 8"),
+        Article::create("Generics implementation approaches", "/articles/2022/generics-implementation-approaches", "Feb 8"),
     ],
     2021 => [
         Article::create("PHP Generics . Right here . Right now", "https://habr.com/ru/articles/577750", "Sep 14"),
@@ -214,7 +227,7 @@ foreach (scandir($directory) as $yearDirectory) {
         continue;
     }
 
-    if ($yearDirectory !== '2024') {
+    if (!in_array($yearDirectory, ['2024', '2022'])) {
         continue;
     }
 

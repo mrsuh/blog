@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="author" content="Anton Sukhachev">
+    <title>Generics implementation approaches</title>
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+
+    <meta name="description" content="I want to introduce you to generics implementation approaches with some simple examples everyone can..."/>
+    <meta name="keywords" content="anton sukhachev, mrsuh"/>
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="mrsuh.com">
+    <meta property="og:url" content="https://mrsuh.com2022/generics-implementation-approaches">
+    <meta property="og:title" content="Generics implementation approaches">
+    <meta property="og:description" content="I want to introduce you to generics implementation approaches with some simple examples everyone can...">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:alt" content="Anton Sukhachev">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="mrsuh.com">
+    <meta name="twitter:url" content="https://mrsuh.com2022/generics-implementation-approaches">
+    <meta name="twitter:title" content="Generics implementation approaches">
+    <meta name="twitter:creator" content="@mrsuh6">
+    <meta name="twitter:description" content="I want to introduce you to generics implementation approaches with some simple examples everyone can...">
+    <meta name="twitter:image:alt" content="Anton Sukhachev">
+    
+    <link href="/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            color: #343a40;
+        }
+
+        hr.list {
+            margin: 0
+        }
+        
+        h1 {
+            margin-bottom: 30px;
+        }
+
+        @media screen and (max-width: 600px) {
+            .list-date {
+                display: none;
+            }
+        }
+
+    </style>
+</head>
+<body class="container fs-5" style="max-width: 1000px">
+
+<div class="header" style="padding-top: 20px; padding-bottom: 10px">
+    <div class="row">
+        <div class="col">
+            <a href="/">Anton Sukhachev</a>
+        </div>
+        <div class="col text-end">
+            <a href="/articles/">Articles</a>
+        </div>
+    </div>
+    <hr/>
+</div>
+
+<div class="content">
+    <h1>Generics implementation approaches</h1>
+<p>I want to introduce you to generics implementation approaches with some simple examples everyone can understand.<br />
+The description of each approach includes key features without details.<br />
+Basic examples are written in PHP because I'm a PHP developer, but there are also Hack/Java/C++ examples.</p>
+<a href="#h2-type-erasure" id="h2-type-erasure" class="text-decoration-none text-reset"><h2>Type erasure</h2></a>
+<p>This approach means generics arguments are dropped after compilation.</p>
+<p>Before <code>type erasure</code>:</p>
+<pre><code class="language-php rounded">&lt;?php
+
+class Container&lt;T&gt; {
+
+    private T $data; 
+
+    public function __construct(T $data) {
+        $this-&gt;data = $data;
+    }  
+}
+
+$intContainer = new Container&lt;int&gt;(1);</code></pre>
+<p>After <code>type erasure</code>:</p>
+<pre><code class="language-php rounded">&lt;?php
+
+class Container {
+
+    private $data; 
+
+    public function __construct($data) {
+        $this-&gt;data = $data;
+    }  
+}
+
+$intContainer = new Container(1);</code></pre>
+<p>You can't do that because it doesn't make sense after <code>type erasure</code>:</p>
+<pre><code class="language-php rounded">&lt;?php
+
+class Container&lt;T&gt; {       
+
+    public function foo($data) {
+        $className = T::class;
+
+        T::staticFunction();
+
+        $newObject = new T();
+
+        if($data instanceof T) {
+
+        }
+    }  
+}</code></pre>
+<p>During <code>static analysis</code> and <code>compile time</code> generics types can be reflected and checked, but after <code>type erasure</code> at <code>run time</code>, this is not possible.<br />
+This approach has a small performance/memory effect and some generics types restrictions (see example above).</p>
+<p>Type erasure generics visibility table for better understanding:</p>
+<table class="table table-bordered">
+<thead>
+<tr>
+<th></th>
+<th>static analysis time</th>
+<th>compile time</th>
+<th>runtime</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type reflection</td>
+<td>yes</td>
+<td>yes</td>
+<td>no*</td>
+</tr>
+<tr>
+<td>type checking</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+</tbody>
+</table>
+<p>no* - generics types of some languages like <code>Java</code>/<code>Hack</code> may be reflected and not used by VM at <code>runtime</code>.</p>
+<p>I can assume the PHP <a href="https://psalm.dev/docs/annotating_code/templated_annotations">Psalm annotations</a> are a kind of <code>type erasure generics</code>, but there is no such thing in PHP as generic types at <code>compile/run time</code>.<br />
+PHP Psalm annotations visibility table:</p>
+<table class="table table-bordered">
+<thead>
+<tr>
+<th></th>
+<th>static analysis time</th>
+<th>compile time</th>
+<th>runtime</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type reflection</td>
+<td>yes</td>
+<td>no</td>
+<td>no</td>
+</tr>
+<tr>
+<td>type checking</td>
+<td>yes</td>
+<td>no</td>
+<td>no</td>
+</tr>
+</tbody>
+</table>
+<p>Let's look at a real example of type erasure generics in <code>Java</code>:</p>
+<p>test.java</p>
+<pre><code class="language-java rounded">class Container&lt;T&gt; {
+
+  private T data;
+
+  public void set(T data) {
+      this.data = data;
+  }
+}
+
+class Programm {
+    public static void main(String[] args) {
+        Container&lt;Integer&gt; intContainer = new Container&lt;Integer&gt;();
+        intContainer.set(1);
+
+        Container&lt;String&gt; stringContainer = new Container&lt;String&gt;();
+        stringContainer.set("hello");
+    }
+}</code></pre>
+<p>Use these commands to compile and run the script above:</p>
+<pre><code class="language-bash rounded">docker run -it --rm -v $PWD:/app -w /app openjdk:latest javac test.java
+docker run -it --rm -v $PWD:/app -w /app openjdk:latest java Programm</code></pre>
+<p>If you try to pass <code>string "hello"</code> to <code>intContainer.set()</code> you will get a <code>compile time</code> error:</p>
+<pre><code class="language-bash rounded">test.java:13: error: incompatible types: String cannot be converted to Integer
+        intContainer.set("hello");
+                         ^</code></pre>
+<a href="#h2-reification" id="h2-reification" class="text-decoration-none text-reset"><h2>Reification</h2></a>
+<p>Generic arguments are retained at <code>compile/run time</code> and can be reflected.</p>
+<p>There is a real example of <code>reified</code> generics in <code>Hack</code>.<br />
+The keyword <code>reify</code> is very important to mark a generics as <code>reified</code>.</p>
+<p>test.hack</p>
+<pre><code class="language-php rounded">class MyContainer&lt;reify T&gt; {
+    private T $var;
+
+    public function set(T $var): void {
+        $this-&gt;var = $var;
+    }
+}
+
+&lt;&lt;__EntryPoint&gt;&gt;
+function main(): void {
+  $intContainer = new MyContainer&lt;int&gt;();
+  $intContainer-&gt;set(1);
+
+  $stringContainer = new MyContainer&lt;string&gt;();
+  $stringContainer-&gt;set("hello");
+}</code></pre>
+<p>You can run the script above with command:</p>
+<pre><code class="language-bash rounded">docker run -it --rm -v $PWD:/app -w /app hhvm/hhvm:latest hhvm test.hack</code></pre>
+<p>If you try to pass <code>string "hello"</code> to <code>$intContainer-&gt;set()</code> you will get a <code>compile time</code> error:</p>
+<pre><code class="language-bash rounded">Fatal error: Uncaught TypeError: Argument 1 passed to MyContainer::set() must be an instance of int, string given in /app/test.hack:6</code></pre>
+<p>At <code>runtime</code>, there is only one class <code>MyContainer</code> with many generic types.<br />
+Let's look inside the <code>$stringContainer</code> variable by <code>var_dump()</code>:</p>
+<pre><code class="language-bash rounded">object(MyContainer) (2) {
+  ["86reified_prop"]=&gt;
+  vec(1) {
+    dict(1) {
+      ["kind"]=&gt;
+      int(4)
+    }
+  }
+  ["var":"MyContainer":private]=&gt;
+  string(5) "hello"
+}</code></pre>
+<p>The example above describes the <code>MyContainer</code> class and the <code>kind</code> property.<br />
+I think <code>kind =&gt; 4</code> is a constant for type <code>string</code>.<br />
+It means you can get the generics type at <code>runtime</code>.</p>
+<p>This approach has a small performance/memory effect.<br />
+Nikita Popov already had an <a href="https://github.com/PHPGenerics/php-generics-rfc/issues/45">attempt</a> to implement this type of generics in <code>PHP</code>.</p>
+<p><code>Reified</code> generics visibility table:</p>
+<table class="table table-bordered">
+<thead>
+<tr>
+<th></th>
+<th>static analysis time</th>
+<th>compile time</th>
+<th>runtime</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type reflection</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>type checking</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+</tbody>
+</table>
+<a href="#h2-monomorphization" id="h2-monomorphization" class="text-decoration-none text-reset"><h2>Monomorphization</h2></a>
+<p>A new class is generated for each generic argument combination.</p>
+<p>Before <code>monomorphization</code>:</p>
+<pre><code class="language-php rounded">&lt;?php
+
+class Container&lt;T&gt; {
+
+    private T $data; 
+
+    public function __construct(T $data) {
+        $this-&gt;data = $data;
+    }  
+}
+
+$intContainer = new Container&lt;int&gt;(1);</code></pre>
+<p>After <code>monomorphization</code>:</p>
+<pre><code class="language-php rounded">&lt;?php
+
+class ContainerForInt {
+
+    private int $data; 
+
+    public function __construct(int $data) {
+        $this-&gt;data = $data;
+    }  
+}
+
+$intContainer = new ContainerForInt(1);</code></pre>
+<p>This approach has a big memory effect.<br />
+PHP doesn't support native generics, but you can test <code>monomorphic</code> generics with my <a href="https://github.com/mrsuh/php-generics">library</a>.</p>
+<p><code>Monomorphic</code> generics visibility table:</p>
+<table class="table table-bordered">
+<thead>
+<tr>
+<th></th>
+<th>static analysis time</th>
+<th>compilation time</th>
+<th>run time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type reflection</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr>
+<td>type checking</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+</tbody>
+</table>
+<p><code>C++</code> templates are a real example of <code>monomorphization</code>:</p>
+<p>test.cpp</p>
+<pre><code class="language-cpp rounded">template &lt;class T&gt; class MyContainer
+{
+    private:
+     T data;
+
+    public:
+     void set(T _data)  {
+        data = _data;
+     }
+};
+
+int main () {
+  MyContainer&lt;int&gt; intContainer;
+  intContainer.set(1);
+
+  MyContainer&lt;const char*&gt; stringContainer;
+  stringContainer.set("hello");
+
+  return 0;
+}</code></pre>
+<p>You can compile and run the script above with commands:</p>
+<pre><code class="language-bash rounded">docker run -it --rm -v $PWD:/app -w /app gcc:latest g++ test.cpp -o test
+docker run -it --rm -v $PWD:/app -w /app gcc:latest ./test</code></pre>
+<p>If you try to pass <code>string "hello"</code> to <code>intContainer.set()</code> you will get a <code>compile time</code> error:</p>
+<pre><code class="language-bash rounded">test.cpp: In function 'int main()':
+test.cpp:15:20: error: invalid conversion from 'const char*' to 'int' [-fpermissive]
+   15 |   intContainer.set("hello");
+      |                    ^~~~~~~
+      |                    |
+      |                    const char*
+test.cpp:8:17: note:   initializing argument 1 of 'void MyContainer&lt;T&gt;::set(T) [with T = int]'
+    8 |      void set(T _data) {
+      |               ~~^~~~~</code></pre>
+<p>This approach increases <code>compile time</code>, but improves performance <code>runtime</code>.</p>
+<p>I hope it was helpful to you.<br />
+Play around with the examples above - it's a really interesting process!<br />
+If you want to go further, read this great <a href="https://thume.ca/2019/07/14/a-tour-of-metaprogramming-models-for-generics/">article</a> about generics.</p>
+<p>Have a nice day!</p>
+</div>
+
+<div class="footer" style="height: 40px"></div>
+</body>
+
+<link rel="stylesheet" href="/highlight.github-dark-dimmed.min.css">
+<script src="/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+</html>
