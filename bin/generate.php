@@ -2,7 +2,85 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$parser = new Parsedown();
+class MyParserdown extends \Parsedown
+{
+
+    protected function inlineImage($Excerpt)
+    {
+        $data = parent::inlineImage($Excerpt);
+        if (!is_array($data)) {
+            return;
+        }
+
+        $data['element']['attributes']['class'] = 'img-fluid mx-auto d-block';
+
+        $Inline = array(
+            'extent' => $data['extent'],
+            'element' => array(
+                'name' => 'a',
+                'handler' => 'element',
+                'attributes' => array(
+                    'href' => $data['element']['attributes']['src'],
+                ),
+                'text' => $data['element']
+            ),
+        );
+
+        return $Inline;
+    }
+
+    protected function blockFencedCode($Line)
+    {
+        $data = parent::blockFencedCode($Line);
+        if (!is_array($data)) {
+            return;
+        }
+
+        $element = &$data['element']['text'];
+        if (!isset($element['attributes'])) {
+            $element['attributes'] = ['class' => ''];
+        }
+
+        $element['attributes']['class'] .= ' rounded';
+
+        return $data;
+    }
+
+    protected function blockHeader($Line)
+    {
+        $data = parent::blockHeader($Line);
+        if (!is_array($data)) {
+            return;
+        }
+
+        $name = $data['element']['name'];
+        if (!in_array($name, ['h2', 'h3'])) {
+            return $data;
+        }
+
+        $text = $data['element']['text'];
+
+        $id = $name . '-' . str_replace(' ', '-', strtolower($text));
+
+        $Inline = [
+            'element' => [
+                'name' => 'a',
+                'handler' => 'element',
+                'attributes' => [
+                    'href' => '#' . $id,
+                    'id' => $id,
+                    'class' => 'text-decoration-none text-reset',
+                ],
+                'text' => $data['element']
+            ],
+        ];
+
+        return $Inline;
+    }
+}
+
+$parser = new MyParserdown();
+
 $parser->setBreaksEnabled(true);
 
 $template = file_get_contents(__DIR__ . '/../src/template.html');
@@ -87,7 +165,7 @@ foreach ($articles as $year => $list) {
     foreach ($list as $index => $article) {
         $content .= sprintf('<div class="col-10"><a href="%s" target="_blank">%s</a></div>', $article->url, $article->name);
         $content .= sprintf('<div class="col-2 text-end list-date">%s</div>', $article->date);
-        if($index < count($list) - 1) {
+        if ($index < count($list) - 1) {
             $content .= '<hr class="list"/>' . PHP_EOL;
         }
     }
@@ -97,6 +175,32 @@ foreach ($articles as $year => $list) {
 }
 
 file_put_contents(
-    __DIR__ . '/../docs/articles.html',
+    __DIR__ . '/../docs/articles/index.html',
     str_replace('{{ content }}', $content, $template)
 );
+
+$directory = __DIR__ . '/../docs/articles';
+foreach (scandir($directory) as $yearDirectory) {
+    $yearDirectoryPath = $directory . '/' . $yearDirectory;
+    if (!is_dir($yearDirectoryPath)) {
+        continue;
+    }
+
+    if ($yearDirectory !== '2024') {
+        continue;
+    }
+
+    foreach (scandir($yearDirectoryPath) as $articleDirectory) {
+        $articleDirectoryPath = $yearDirectoryPath . '/' . $articleDirectory;
+
+        $articleFilePath = $articleDirectoryPath . '/index.md';
+        if (!is_file($articleFilePath)) {
+            continue;
+        }
+
+        file_put_contents(
+            $articleDirectoryPath . '/index.html',
+            str_replace('{{ content }}', $parser->text(file_get_contents($articleFilePath)), $template)
+        );
+    }
+}
