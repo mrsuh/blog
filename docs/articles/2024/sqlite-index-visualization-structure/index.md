@@ -179,7 +179,7 @@ Example:
 
 Not bad, but I could go further. PHP has an extension for drawing images, [imagemagick](https://www.php.net/manual/en/intro.imagick.php), allowing even more customization than the text-based version. 
 After a dozen iterations, here’s the final result:
-![](./images/test-tree-php.svg)
+![](./images/test-tree-php.webp)
 
 The image now contains all the necessary data and can be clearly viewed.
 In the top-left corner, there's general information about the index:
