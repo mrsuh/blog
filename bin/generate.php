@@ -90,12 +90,14 @@ file_put_contents(
     str_replace(
         [
             '{{ content }}',
+            '{{ title }}',
             '{{ description }}',
             '{{ path }}',
         ],
         [
             $parser->text(file_get_contents(__DIR__ . '/../src/index.md')),
-            'Anton Sukhachev\'s personal page',
+            'Anton Sukhachev',
+            'Personal page',
             ''
         ],
         $template
@@ -191,12 +193,14 @@ file_put_contents(
     str_replace(
         [
             '{{ content }}',
+            '{{ title }}',
             '{{ description }}',
             '{{ path }}',
         ],
         [
             $content,
             'Articles',
+            '',
             '/articles'
         ],
         $template
@@ -226,6 +230,11 @@ foreach (scandir($directory) as $yearDirectory) {
 
         $file = fopen($articleFilePath, 'r');
         $name = trim(str_replace('#', '', fgets($file)));
+        $description = '';
+        while(strlen($description) < 100) {
+            $description .= htmlspecialchars(trim(fgets($file)));
+        }
+        $description = substr($description, 0, 100) . '...';
         fclose($file);
 
         file_put_contents(
@@ -233,12 +242,14 @@ foreach (scandir($directory) as $yearDirectory) {
             str_replace(
                 [
                     '{{ content }}',
+                    '{{ title }}',
                     '{{ description }}',
                     '{{ path }}',
                 ], 
                 [
                     $parser->text(file_get_contents($articleFilePath)),
                     $name,
+                    $description,
                     $urlPath
                 ], 
                 $template
