@@ -3,41 +3,48 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <meta name="author" content="Anton Sukhachev">
-    <title>Anton Sukhachev</title>
+    <title>{{ description }}</title>
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <meta name="description" content="{{ description }}"/>
+    <meta name="keywords" content="anton sukhachev mrsuh"/>
+
+    <meta property="og:site_name" content="mrsuh.com">
+    <meta property="og:image" content="https://mrsuh.com/logo.png">
+    <meta property="og:url" content="https://mrsuh.com{{ path }}">
+    <meta property="og:title" content="Anton Sukhachev">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:alt" content="Anton Sukhachev">
+    <meta property="og:description" content="{{ description }}">
     
-    <meta name="description" content="Anton Sukhachev"/>
-    <meta name="keywords" content="anton sukhachev mrsuh" />
-    <meta name="mrc__share_title" content="Anton Sukhachev"/>
-    <meta name="mrc__share_description" content="Anton Sukhachev"/>
-
-    <meta property="og:title" content="Anton Sukhachev"/>
-    <meta property="og:type" content="website"/>
-    <meta property="og:url" content="https://mrsuh.com"/>
-    <meta property="og:site_name" content="Anton Sukhachev"/>
-    <meta property="og:description" content="Anton Sukhachev"/>
-
-    <meta property="og:image" content="https://mrsuh.com/logo.png"/>
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="mrsuh.com">
+    <meta name="twitter:url" content="https://mrsuh.com{{ path }}">
+    <meta name="twitter:title" content="Anton Sukhachev">
+    <meta name="twitter:image" content="https://mrsuh.com/logo.png">
+    <meta name="twitter:image:alt" content="Anton Sukhachev">
+    <meta name="twitter:creator" content="@mrsuh6">
+    <meta name="twitter:description" content="{{ description }}">
 
     <link href="/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             color: #343a40;
         }
-        
+
         hr.list {
             margin: 0
         }
-        
+
         @media screen and (max-width: 600px) {
             .list-date {
                 display: none;
             }
         }
-        
+
     </style>
 </head>
 <body class="container fs-5" style="max-width: 1000px">

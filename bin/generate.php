@@ -87,7 +87,19 @@ $template = file_get_contents(__DIR__ . '/../src/template.html');
 
 file_put_contents(
     __DIR__ . '/../docs/index.html',
-    str_replace('{{ content }}', $parser->text(file_get_contents(__DIR__ . '/../src/index.md')), $template)
+    str_replace(
+        [
+            '{{ content }}',
+            '{{ description }}',
+            '{{ path }}',
+        ],
+        [
+            $parser->text(file_get_contents(__DIR__ . '/../src/index.md')),
+            'Anton Sukhachev\'s personal page',
+            ''
+        ],
+        $template
+    )
 );
 
 class Article
@@ -176,7 +188,19 @@ foreach ($articles as $year => $list) {
 
 file_put_contents(
     __DIR__ . '/../docs/articles/index.html',
-    str_replace('{{ content }}', $content, $template)
+    str_replace(
+        [
+            '{{ content }}',
+            '{{ description }}',
+            '{{ path }}',
+        ],
+        [
+            $content,
+            'Articles',
+            '/articles'
+        ],
+        $template
+    )
 );
 
 $directory = __DIR__ . '/../docs/articles';
@@ -192,15 +216,33 @@ foreach (scandir($directory) as $yearDirectory) {
 
     foreach (scandir($yearDirectoryPath) as $articleDirectory) {
         $articleDirectoryPath = $yearDirectoryPath . '/' . $articleDirectory;
+        
+        $urlPath = $yearDirectory . '/' . $articleDirectory;
 
         $articleFilePath = $articleDirectoryPath . '/index.md';
         if (!is_file($articleFilePath)) {
             continue;
         }
 
+        $file = fopen($articleFilePath, 'r');
+        $name = trim(str_replace('#', '', fgets($file)));
+        fclose($file);
+
         file_put_contents(
             $articleDirectoryPath . '/index.html',
-            str_replace('{{ content }}', $parser->text(file_get_contents($articleFilePath)), $template)
+            str_replace(
+                [
+                    '{{ content }}',
+                    '{{ description }}',
+                    '{{ path }}',
+                ], 
+                [
+                    $parser->text(file_get_contents($articleFilePath)),
+                    $name,
+                    $urlPath
+                ], 
+                $template
+            )
         );
     }
 }
