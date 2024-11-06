@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="author" content="Anton Sukhachev">
+    <title>Comparing PHP Collections</title>
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+
+    <meta name="description" content="Let&#039;s imagine that we want to store a `collection` of `Item` objects:```php&lt;?phpnamespace Ap..."/>
+    <meta name="keywords" content="anton sukhachev, mrsuh"/>
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="mrsuh.com">
+    <meta property="og:url" content="https://mrsuh.com2022/comparing-php-collections">
+    <meta property="og:title" content="Comparing PHP Collections">
+    <meta property="og:description" content="Let&#039;s imagine that we want to store a `collection` of `Item` objects:```php&lt;?phpnamespace Ap...">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:alt" content="Anton Sukhachev">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="mrsuh.com">
+    <meta name="twitter:url" content="https://mrsuh.com2022/comparing-php-collections">
+    <meta name="twitter:title" content="Comparing PHP Collections">
+    <meta name="twitter:creator" content="@mrsuh6">
+    <meta name="twitter:description" content="Let&#039;s imagine that we want to store a `collection` of `Item` objects:```php&lt;?phpnamespace Ap...">
+    <meta name="twitter:image:alt" content="Anton Sukhachev">
+    
+    <link href="/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            color: #343a40;
+        }
+
+        hr.list {
+            margin: 0
+        }
+        
+        h1 {
+            margin-bottom: 30px;
+        }
+
+        @media screen and (max-width: 600px) {
+            .list-date {
+                display: none;
+            }
+        }
+
+    </style>
+</head>
+<body class="container fs-5" style="max-width: 1000px">
+
+<div class="header" style="padding-top: 20px; padding-bottom: 10px">
+    <div class="row">
+        <div class="col">
+            <a href="/">Anton Sukhachev</a>
+        </div>
+        <div class="col text-end">
+            <a href="/articles/">Articles</a>
+        </div>
+    </div>
+    <hr/>
+</div>
+
+<div class="content">
+    <h1>Comparing PHP Collections</h1>
+<p>Let's imagine that we want to store a <code>collection</code> of <code>Item</code> objects:</p>
+<pre><code class="language-php rounded">&lt;?php
+
+namespace App\Entity;
+
+class Item {
+    public string $name = '';
+    public int $value = 0;
+}</code></pre>
+<p>Working with this collection we want to:</p>
+<ul>
+<li>PHP does a type checks to make sure collection only stores <code>Item</code> objects</li>
+<li>IDE makes hints about the type of <code>Item</code> objects in a collection</li>
+<li>static analyses tool can find type errors</li>
+</ul>
+<p>I want to compare:</p>
+<ul>
+<li><a href="https://www.php.net/manual/en/language.types.array.php">array</a></li>
+<li><a href="https://psalm.dev/docs/annotating_code/templated_annotations">Psalm annotation templates</a></li>
+<li><a href="https://github.com/mrsuh/php-generics#monomorphization">Monomorphic generics</a></li>
+<li><a href="https://github.com/mrsuh/php-generics#type-erasure">Type-erased generics</a></li>
+</ul>
+<a href="#h2-usage" id="h2-usage" class="text-decoration-none text-reset"><h2>Usage</h2></a>
+<p>Let's first compare usage.</p>
+<a href="#h3-array" id="h3-array" class="text-decoration-none text-reset"><h3>Array</h3></a>
+<pre><code class="language-php rounded">&lt;?php
+
+/** @var Item[] $collection */
+$collection = [];
+$collection[] = new Item();
+
+/**
+ * @param Item[] $collection
+ */
+function test(array $collection): array {}</code></pre>
+<p><strong>pros</strong></p>
+<ul>
+<li>easy to implement</li>
+<li>IDE makes hints about the type of <code>Item</code> objects in collection</li>
+<li>static analyses tool can find type errors</li>
+</ul>
+<p><strong>cons</strong></p>
+<ul>
+<li>PHP doesn't check types</li>
+</ul>
+<a href="#h3-psalm-annotations" id="h3-psalm-annotations" class="text-decoration-none text-reset"><h3>Psalm annotations</h3></a>
+<pre><code class="language-php rounded">&lt;?php
+
+/**
+ * @template T
+ */
+class Collection implements \Iterator
+{
+    protected \ArrayIterator $iterator;
+
+    public function __construct()
+    {
+        $this-&gt;iterator = new \ArrayIterator();
+    }
+
+    /** @param T $item */
+    public function append($item): void
+    {
+        $this-&gt;iterator-&gt;append($item);
+    }
+
+    /** @return T|null */
+    public function current(): mixed
+    {
+        return $this-&gt;iterator-&gt;current();
+    }
+...
+}</code></pre>
+<pre><code class="language-php rounded">&lt;?php
+/** @var Collection&lt;Item&gt; $collection */
+$collection = new Collection();
+$collection-&gt;append(new Item());
+
+/**
+ * @param Collection&lt;Item&gt; $data
+ * @return Collection&lt;Item&gt;
+ */
+function test(Collection $data): Collection {}</code></pre>
+<p><strong>pros</strong></p>
+<ul>
+<li>IDE makes hints about the type of <code>Item</code> objects in collection</li>
+<li>static analyses tool can find type errors</li>
+</ul>
+<p><strong>cons</strong></p>
+<ul>
+<li>PHP doesn't check types</li>
+</ul>
+<a href="#h3-monomorphic-generics" id="h3-monomorphic-generics" class="text-decoration-none text-reset"><h3>Monomorphic generics</h3></a>
+<pre><code class="language-php rounded">&lt;?php
+
+class Collection&lt;T&gt; implements \Iterator
+{
+    protected \ArrayIterator $iterator;
+
+    public function __construct()
+    {
+        $this-&gt;iterator = new \ArrayIterator();
+    }
+
+    public function append(T $item): void
+    {
+        $this-&gt;iterator-&gt;append($item);
+    }
+
+    public function current(): ?T
+    {
+        return $this-&gt;iterator-&gt;current();
+    }
+..
+}</code></pre>
+<pre><code class="language-php rounded">&lt;?php
+
+$collection = new Collection&lt;Item&gt;;
+$collection-&gt;append(new Item());
+
+function test(Collection&lt;Item&gt; $data): Collection&lt;Item&gt; {}</code></pre>
+<p><strong>pros</strong></p>
+<ul>
+<li>PHP does a type checks to make sure collection only stores <code>Item</code> objects</li>
+</ul>
+<p><strong>cons</strong></p>
+<ul>
+<li>static analyses tool can't find type errors</li>
+<li>IDE doesn't make hints about the type of <code>Item</code> objects in a collection</li>
+</ul>
+<a href="#h3-type-erased-generics" id="h3-type-erased-generics" class="text-decoration-none text-reset"><h3>Type erased generics</h3></a>
+<pre><code class="language-php rounded">&lt;?php
+
+class Collection&lt;T&gt; implements \Iterator
+{
+    protected \ArrayIterator $iterator;
+
+    public function __construct()
+    {
+        $this-&gt;iterator = new \ArrayIterator();
+    }
+
+    public function append(T $item): void
+    {
+        $this-&gt;iterator-&gt;append($item);
+    }
+
+    public function current(): ?T
+    {
+        return $this-&gt;iterator-&gt;current();
+    }
+...
+}</code></pre>
+<pre><code class="language-php rounded">&lt;?php
+
+$collection = new Collection&lt;Item&gt;;
+$collection-&gt;append(new Item());
+
+function test(Collection&lt;Item&gt; $data): Collection&lt;Item&gt; {}</code></pre>
+<p><strong>cons</strong></p>
+<ul>
+<li>PHP doesn't check types</li>
+<li>static analyses tool can't find type errors</li>
+<li>IDE doesn't make hints about the type of <code>Item</code> objects in a collection</li>
+</ul>
+<a href="#h2-memory" id="h2-memory" class="text-decoration-none text-reset"><h2>Memory</h2></a>
+<p>Memory test is very simple.<br />
+It creates <code>$collection</code> and puts <code>Item</code> objects into it <code>count</code> times.<br />
+For measurement I use <a href="https://github.com/mrsuh/php-var-sizeof">var_sizeof()</a> and <code>memory_get_usage()</code>.</p>
+<p><em>Items in collection: 0</em></p>
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>type</th>
+<th>var_class_sizeof(bytes)</th>
+<th>var_sizeof(bytes)</th>
+<th>memory_get_usage(bytes)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>array(count: 0)</td>
+<td>0</td>
+<td>336</td>
+<td>0</td>
+</tr>
+<tr>
+<td>psalm(count: 0)</td>
+<td>1,510</td>
+<td>544</td>
+<td>240</td>
+</tr>
+<tr>
+<td>monomorphic(count: 0)</td>
+<td>1,528</td>
+<td>544</td>
+<td>240</td>
+</tr>
+<tr>
+<td>type-erased(count: 0)</td>
+<td>1,512</td>
+<td>544</td>
+<td>240</td>
+</tr>
+</tbody>
+</table>
+<p><em>Items in collection: 100</em></p>
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>type</th>
+<th>var_class_sizeof(bytes)</th>
+<th>var_sizeof(bytes)</th>
+<th>memory_get_usage(bytes)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>array(count: 100)</td>
+<td>0</td>
+<td>7,728</td>
+<td>12,248</td>
+</tr>
+<tr>
+<td>psalm(count: 100)</td>
+<td>1,510</td>
+<td>7,936</td>
+<td>12,432</td>
+</tr>
+<tr>
+<td>monomorphic(count: 100)</td>
+<td>1,528</td>
+<td>7,936</td>
+<td>12,432</td>
+</tr>
+<tr>
+<td>type-erased(count: 100)</td>
+<td>1,512</td>
+<td>7,936</td>
+<td>12,432</td>
+</tr>
+</tbody>
+</table>
+<p><em>Items in collection: 1000</em></p>
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>type</th>
+<th>var_class_sizeof(bytes)</th>
+<th>var_sizeof(bytes)</th>
+<th>memory_get_usage(bytes)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>array(count: 1000)</td>
+<td>0</td>
+<td>72,464</td>
+<td>76,920</td>
+</tr>
+<tr>
+<td>psalm(count: 1000)</td>
+<td>1,510</td>
+<td>72,672</td>
+<td>77,104</td>
+</tr>
+<tr>
+<td>monomorphic(count: 1000)</td>
+<td>1,528</td>
+<td>72,672</td>
+<td>77,104</td>
+</tr>
+<tr>
+<td>type-erased(count: 1000)</td>
+<td>1,512</td>
+<td>72,672</td>
+<td>77,104</td>
+</tr>
+</tbody>
+</table>
+<p><em>Items in collection: 10000</em></p>
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>type</th>
+<th>var_class_sizeof(bytes)</th>
+<th>var_sizeof(bytes)</th>
+<th>memory_get_usage(bytes)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>array(count: 10000)</td>
+<td>0</td>
+<td>822,224</td>
+<td>1,051,320</td>
+</tr>
+<tr>
+<td>psalm(count: 10000)</td>
+<td>1,510</td>
+<td>822,432</td>
+<td>1,051,560</td>
+</tr>
+<tr>
+<td>monomorphic(count: 10000)</td>
+<td>1,528</td>
+<td>822,432</td>
+<td>1,051,560</td>
+</tr>
+<tr>
+<td>type-erased(count: 10000)</td>
+<td>1,512</td>
+<td>822,432</td>
+<td>1,051,560</td>
+</tr>
+</tbody>
+</table>
+<p>It's not surprising an <code>array</code> requires the least amount of memory.<br />
+Other approaches have roughly the same internal structure and require the same amount of memory.</p>
+<a href="#h2-performance" id="h2-performance" class="text-decoration-none text-reset"><h2>Performance</h2></a>
+<p>I used <a href="https://github.com/phpbench/phpbench">phpbench</a> to measure performance.<br />
+I think one of the big differences between all the solutions is the type checking. So I decided to try measure it.<br />
+How much faster will code with/without type checking?</p>
+<pre><code class="language-bash rounded">PHPBench (1.2.3) running benchmarks...
+with configuration file: /app/phpbench.json
+with PHP version 8.1.3, xdebug ❌, opcache ❌
+
+\App\Tests\TypHintBench
+
+    benchWithoutType........................R1 I6 - Mo240.713μs (±0.47%)
+    benchWithArrayType......................R1 I70 - Mo247.663μs (±0.45%)
+    benchWithMixedType......................R2 I59 - Mo249.293μs (±0.54%)
+    benchWithClassType......................R1 I26 - Mo306.533μs (±0.48%)
+
+Subjects: 4, Assertions: 0, Failures: 0, Errors: 0
++--------------+--------------------+-----+------+-----+-----------+-----------+--------+
+| benchmark    | subject            | set | revs | its | mem_peak  | mode      | rstdev |
++--------------+--------------------+-----+------+-----+-----------+-----------+--------+
+| TypHintBench | benchWithoutType   |     | 1000 | 100 | 674.272kb | 240.713μs | ±0.47% |
+| TypHintBench | benchWithArrayType |     | 1000 | 100 | 674.272kb | 247.663μs | ±0.45% |
+| TypHintBench | benchWithMixedType |     | 1000 | 100 | 674.272kb | 249.293μs | ±0.54% |
+| TypHintBench | benchWithClassType |     | 1000 | 100 | 674.272kb | 306.533μs | ±0.48% |
++--------------+--------------------+-----+------+-----+-----------+-----------+--------+</code></pre>
+<p>If the tests are correct, the difference between a function argument with <code>class</code> type and a function argument without a type is ~20%.</p>
+<a href="#h2-conclusions" id="h2-conclusions" class="text-decoration-none text-reset"><h2>Conclusions</h2></a>
+<p>I have drawn some charts so you can compare all measurements in percentage. The results may vary slightly on different machines, but the percentage result should be the same</p>
+<p><a href="./images/time.png"><img src="./images/time.png" alt="PHP type checking time" class="img-fluid mx-auto d-block rounded" /></a></p>
+<p><a href="./images/memory.png"><img src="./images/memory.png" alt="PHP memory usage" class="img-fluid mx-auto d-block rounded" /></a></p>
+<p>If you are only using simple collections you can use <code>array</code> - it is very fast and requires little memory.<br />
+PHP doesn't support generic syntax and IDE can't make hints about the type of objects in a collection (yet),<br />
+but if you want PHP to do type checks at runtime you can test the <a href="https://github.com/mrsuh/php-generics">php-generics</a> library.</p>
+<p>I think for now the best solution is a combination of <code>array</code> with annotations for simple collections and <a href="https://psalm.dev/docs/annotating_code/templated_annotations">Psalm annotation templates</a> for complex objects.</p>
+<p>If you want to reproduce the tests result you can find the source code and instructions <a href="https://github.com/mrsuh/php-collections-comparison">here</a>.</p>
+</div>
+
+<div class="footer" style="height: 40px"></div>
+</body>
+
+<link rel="stylesheet" href="/highlight.github-dark-dimmed.min.css">
+<script src="/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+</html>

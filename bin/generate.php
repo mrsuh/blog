@@ -11,7 +11,7 @@ class MyParserdown extends \Parsedown
             return;
         }
 
-        $data['element']['attributes']['class'] = 'img-fluid mx-auto d-block';
+        $data['element']['attributes']['class'] = 'img-fluid mx-auto d-block rounded';
 
         $Inline = array(
             'extent' => $data['extent'],
@@ -152,7 +152,7 @@ $articles = [
         Article::create("How PHP engine builds AST", "https://dev.to/mrsuh/how-php-engine-builds-ast-1nc4", "Sep 5"),
         Article::create("Parsing with PHP, Bison and re2c", "https://dev.to/mrsuh/parse-files-with-php-bison-and-re2c-1i6p", "Aug 26"),
         Article::create("Telegram bot that monitors currency availability in Tinkoff ATMs", "https://vc.ru/u/585016-anton-suhachev/393167-telegram-bot-kotoryi-sledit-za-valyutoi-v-bankomatah-tinkoff", "Apr 02"),
-        Article::create("Comparing PHP Collections", "https://dev.to/mrsuh/comparing-php-collections-5cca", "Mar 22"),
+        Article::create("Comparing PHP Collections", "/articles/2022/comparing-php-collections/", "Mar 22"),
         Article::create("Generics implementation approaches", "/articles/2022/generics-implementation-approaches/", "Feb 8"),
     ],
     2021 => [
