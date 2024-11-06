@@ -153,7 +153,7 @@ $articles = [
         Article::create("Parsing with PHP, Bison and re2c", "https://dev.to/mrsuh/parse-files-with-php-bison-and-re2c-1i6p", "Aug 26"),
         Article::create("Telegram bot that monitors currency availability in Tinkoff ATMs", "https://vc.ru/u/585016-anton-suhachev/393167-telegram-bot-kotoryi-sledit-za-valyutoi-v-bankomatah-tinkoff", "Apr 02"),
         Article::create("Comparing PHP Collections", "https://dev.to/mrsuh/comparing-php-collections-5cca", "Mar 22"),
-        Article::create("Generics implementation approaches", "/articles/2022/generics-implementation-approaches", "Feb 8"),
+        Article::create("Generics implementation approaches", "/articles/2022/generics-implementation-approaches/", "Feb 8"),
     ],
     2021 => [
         Article::create("PHP Generics . Right here . Right now", "https://habr.com/ru/articles/577750", "Sep 14"),
@@ -190,7 +190,13 @@ foreach ($articles as $year => $list) {
     $content .= '<div class="row">' . PHP_EOL;
     /** @var Article $article */
     foreach ($list as $index => $article) {
-        $content .= sprintf('<div class="col-10"><a href="%s" target="_blank">%s</a></div>', $article->url, $article->name);
+        $isSamePage = strpos($article->url, 'http') === false;
+        $content .= sprintf(
+            '<div class="col-10"><a href="%s" %s>%s</a></div>', 
+            $article->url,
+            $isSamePage ? '' : 'target="_blank"',
+            $article->name
+        );
         $content .= sprintf('<div class="col-2 text-end list-date">%s</div>', $article->date);
         if ($index < count($list) - 1) {
             $content .= '<hr class="list"/>' . PHP_EOL;
