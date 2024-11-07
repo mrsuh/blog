@@ -107,7 +107,7 @@ After the `lexer` we have tokens, but we need a `parser` to build `AST`.
 It can generate a parser from [BNF](https://en.wikipedia.org/wiki/Backus–Naur_form).
 
 Example of `Bison BNF`:
-```bnf
+```php
 line:
   %empty
 |  expr { printf("%d", $1); }
@@ -124,7 +124,7 @@ The parser code is in [zend_language_parser.y](https://github.com/php/php-src/bl
 
 For example, this part parses PHP attributes (`#[Attribute]`)
 [zend_language_parser.y](https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y)
-```y
+```php
 attribute_decl:
 		class_name
 			{ $$ = zend_ast_create(ZEND_AST_ATTRIBUTE, $1, NULL); }
@@ -161,7 +161,7 @@ How do parser and lexer work together?
 `Bison` has parameter `api.prefix`:
 
 [zend_language_parser.y](https://github.com/php/php-src/blob/bc4c012611b6580b0717a6366357bd1699efb2bd/Zend/zend_language_parser.y#L45)
-```
+```php
 %define api.prefix {zend}
 ```
 

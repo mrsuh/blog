@@ -162,7 +162,7 @@ ONUM    "0o"[0-7]+(_[0-7]+)*
 <a href="https://www.gnu.org/software/bison">Bison</a> is an open-source context-free parser generator.
 It can generate a parser from <a href="https://en.wikipedia.org/wiki/Backus–Naur_form">BNF</a>.</p>
 <p>Example of <code>Bison BNF</code>:</p>
-<pre><code class="language-bnf rounded">line:
+<pre><code class="language-php rounded">line:
   %empty
 |  expr { printf("%d", $1); }
 ;
@@ -175,7 +175,7 @@ expr:
 <p>The parser code is in <a href="https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y">zend_language_parser.y</a></p>
 <p>For example, this part parses PHP attributes (<code>#[Attribute]</code>)
 <a href="https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y">zend_language_parser.y</a></p>
-<pre><code class="language-y rounded">attribute_decl:
+<pre><code class="language-php rounded">attribute_decl:
         class_name
             { $$ = zend_ast_create(ZEND_AST_ATTRIBUTE, $1, NULL); }
     |   class_name argument_list
@@ -199,7 +199,7 @@ We already have the lexer function <code>lex_scan</code>.</p>
 <p>How do parser and lexer work together?</p>
 <p><code>Bison</code> has parameter <code>api.prefix</code>:</p>
 <p><a href="https://github.com/php/php-src/blob/bc4c012611b6580b0717a6366357bd1699efb2bd/Zend/zend_language_parser.y#L45">zend_language_parser.y</a></p>
-<pre><code class=" rounded">%define api.prefix {zend}</code></pre>
+<pre><code class="language-php rounded">%define api.prefix {zend}</code></pre>
 <p>This means that all function prefixes will be <code>zend</code> instead of <code>yy</code>:
 <code>yyparse</code> -&gt; <code>zendparse</code>
 <code>yylex</code> -&gt; <code>zendlex</code></p>

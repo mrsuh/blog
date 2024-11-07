@@ -56,6 +56,10 @@ class MyParserdown extends \Parsedown
             'class' => 'table table-bordered'
         ];
 
+        $data['element']['text'][0]['attributes'] = [
+            'class' => 'table-secondary'
+        ];
+
         return $data;
     }
 

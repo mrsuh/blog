@@ -132,7 +132,7 @@ class Container&lt;T&gt; {
 This approach has a small performance/memory effect and some generics types restrictions (see example above).</p>
 <p>Type erasure generics visibility table for better understanding:</p>
 <table class="table table-bordered">
-<thead>
+<thead class="table-secondary">
 <tr>
 <th></th>
 <th>static analysis time</th>
@@ -159,7 +159,7 @@ This approach has a small performance/memory effect and some generics types rest
 <p>I can assume the PHP <a href="https://psalm.dev/docs/annotating_code/templated_annotations">Psalm annotations</a> are a kind of <code>type erasure generics</code>, but there is no such thing in PHP as generic types at <code>compile/run time</code>.
 PHP Psalm annotations visibility table:</p>
 <table class="table table-bordered">
-<thead>
+<thead class="table-secondary">
 <tr>
 <th></th>
 <th>static analysis time</th>
@@ -254,7 +254,7 @@ It means you can get the generics type at <code>runtime</code>.</p>
 Nikita Popov already had an <a href="https://github.com/PHPGenerics/php-generics-rfc/issues/45">attempt</a> to implement this type of generics in <code>PHP</code>.</p>
 <p><code>Reified</code> generics visibility table:</p>
 <table class="table table-bordered">
-<thead>
+<thead class="table-secondary">
 <tr>
 <th></th>
 <th>static analysis time</th>
@@ -309,7 +309,7 @@ $intContainer = new ContainerForInt(1);</code></pre>
 PHP doesn't support native generics, but you can test <code>monomorphic</code> generics with my <a href="https://github.com/mrsuh/php-generics">library</a>.</p>
 <p><code>Monomorphic</code> generics visibility table:</p>
 <table class="table table-bordered">
-<thead>
+<thead class="table-secondary">
 <tr>
 <th></th>
 <th>static analysis time</th>
