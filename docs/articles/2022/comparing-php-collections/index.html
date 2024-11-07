@@ -9,23 +9,23 @@
     <link rel="manifest" href="/site.webmanifest">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 
-    <meta name="description" content="Let&#039;s imagine that we want to store a `collection` of `Item` objects:```php&lt;?phpnamespace Ap..."/>
+    <meta name="description" content="Let&#039;s imagine that we want to store a collection of Item objects:&amp;lt;?phpnamespace App\Enti..."/>
     <meta name="keywords" content="anton sukhachev, mrsuh"/>
 
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="mrsuh.com">
-    <meta property="og:url" content="https://mrsuh.com2022/comparing-php-collections">
+    <meta property="og:url" content="https://mrsuh.com/articles/2022/comparing-php-collections">
     <meta property="og:title" content="Comparing PHP Collections">
-    <meta property="og:description" content="Let&#039;s imagine that we want to store a `collection` of `Item` objects:```php&lt;?phpnamespace Ap...">
+    <meta property="og:description" content="Let&#039;s imagine that we want to store a collection of Item objects:&amp;lt;?phpnamespace App\Enti...">
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:alt" content="Anton Sukhachev">
     
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="mrsuh.com">
-    <meta name="twitter:url" content="https://mrsuh.com2022/comparing-php-collections">
+    <meta name="twitter:url" content="https://mrsuh.com/articles/2022/comparing-php-collections">
     <meta name="twitter:title" content="Comparing PHP Collections">
     <meta name="twitter:creator" content="@mrsuh6">
-    <meta name="twitter:description" content="Let&#039;s imagine that we want to store a `collection` of `Item` objects:```php&lt;?phpnamespace Ap...">
+    <meta name="twitter:description" content="Let&#039;s imagine that we want to store a collection of Item objects:&amp;lt;?phpnamespace App\Enti...">
     <meta name="twitter:image:alt" content="Anton Sukhachev">
     
     <link href="/bootstrap.min.css" rel="stylesheet">
@@ -40,6 +40,10 @@
         
         h1 {
             margin-bottom: 30px;
+        }
+        
+        .img-max-height {
+            max-height: calc(50vh + 180px);
         }
 
         @media screen and (max-width: 600px) {
@@ -232,8 +236,8 @@ function test(Collection&lt;Item&gt; $data): Collection&lt;Item&gt; {}</code></p
 <li>IDE doesn't make hints about the type of <code>Item</code> objects in a collection</li>
 </ul>
 <a href="#h2-memory" id="h2-memory" class="text-decoration-none text-reset"><h2>Memory</h2></a>
-<p>Memory test is very simple.<br />
-It creates <code>$collection</code> and puts <code>Item</code> objects into it <code>count</code> times.<br />
+<p>Memory test is very simple.
+It creates <code>$collection</code> and puts <code>Item</code> objects into it <code>count</code> times.
 For measurement I use <a href="https://github.com/mrsuh/php-var-sizeof">var_sizeof()</a> and <code>memory_get_usage()</code>.</p>
 <p><em>Items in collection: 0</em></p>
 <table class="table table-bordered">
@@ -383,11 +387,11 @@ For measurement I use <a href="https://github.com/mrsuh/php-var-sizeof">var_size
 </tr>
 </tbody>
 </table>
-<p>It's not surprising an <code>array</code> requires the least amount of memory.<br />
+<p>It's not surprising an <code>array</code> requires the least amount of memory.
 Other approaches have roughly the same internal structure and require the same amount of memory.</p>
 <a href="#h2-performance" id="h2-performance" class="text-decoration-none text-reset"><h2>Performance</h2></a>
-<p>I used <a href="https://github.com/phpbench/phpbench">phpbench</a> to measure performance.<br />
-I think one of the big differences between all the solutions is the type checking. So I decided to try measure it.<br />
+<p>I used <a href="https://github.com/phpbench/phpbench">phpbench</a> to measure performance.
+I think one of the big differences between all the solutions is the type checking. So I decided to try measure it.
 How much faster will code with/without type checking?</p>
 <pre><code class="language-bash rounded">PHPBench (1.2.3) running benchmarks...
 with configuration file: /app/phpbench.json
@@ -412,10 +416,10 @@ Subjects: 4, Assertions: 0, Failures: 0, Errors: 0
 <p>If the tests are correct, the difference between a function argument with <code>class</code> type and a function argument without a type is ~20%.</p>
 <a href="#h2-conclusions" id="h2-conclusions" class="text-decoration-none text-reset"><h2>Conclusions</h2></a>
 <p>I have drawn some charts so you can compare all measurements in percentage. The results may vary slightly on different machines, but the percentage result should be the same</p>
-<p><a href="./images/time.png"><img src="./images/time.png" alt="PHP type checking time" class="img-fluid mx-auto d-block rounded" /></a></p>
-<p><a href="./images/memory.png"><img src="./images/memory.png" alt="PHP memory usage" class="img-fluid mx-auto d-block rounded" /></a></p>
-<p>If you are only using simple collections you can use <code>array</code> - it is very fast and requires little memory.<br />
-PHP doesn't support generic syntax and IDE can't make hints about the type of objects in a collection (yet),<br />
+<p><a href="./images/time.png"><img src="./images/time.png" alt="PHP type checking time" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/memory.png"><img src="./images/memory.png" alt="PHP memory usage" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p>If you are only using simple collections you can use <code>array</code> - it is very fast and requires little memory.
+PHP doesn't support generic syntax and IDE can't make hints about the type of objects in a collection (yet),
 but if you want PHP to do type checks at runtime you can test the <a href="https://github.com/mrsuh/php-generics">php-generics</a> library.</p>
 <p>I think for now the best solution is a combination of <code>array</code> with annotations for simple collections and <a href="https://psalm.dev/docs/annotating_code/templated_annotations">Psalm annotation templates</a> for complex objects.</p>
 <p>If you want to reproduce the tests result you can find the source code and instructions <a href="https://github.com/mrsuh/php-collections-comparison">here</a>.</p>

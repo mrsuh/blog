@@ -11,7 +11,7 @@ class MyParserdown extends \Parsedown
             return;
         }
 
-        $data['element']['attributes']['class'] = 'img-fluid mx-auto d-block rounded';
+        $data['element']['attributes']['class'] = 'img-fluid mx-auto d-block rounded img-max-height';
 
         $Inline = array(
             'extent' => $data['extent'],
@@ -141,16 +141,16 @@ class Article
 $articles = [
     2023 => [
         Article::create("How I Wrote PHP Skeleton For Bison", "https://devm.io/php/php-skeleton-bison-generics", "Sep 15"),
-        Article::create("JSON parser with PHP and Bison", "https://dev.to/mrsuh/json-parser-with-php-and-bison-385n", "Apr 3"),
-        Article::create("Nginx parser with PHP and Bison", "https://dev.to/mrsuh/nginx-parser-with-php-and-bison-1k5", "Mar 27"),
-        Article::create("AST parser with PHP and Bison", "https://dev.to/mrsuh/ast-parser-with-php-and-bison-l5h", "Mar 19"),
-        Article::create("PHP Skeleton for Bison", "https://dev.to/mrsuh/php-skeleton-for-bison-po2", "Mar 13"),
-        Article::create("Few steps to make your docker image smaller", "https://dev.to/mrsuh/few-steps-to-make-your-docker-image-smaller-4pc6", "Feb 20"),
+        Article::create("JSON parser with PHP and Bison", "/articles/2023/json-parser-with-php-and-bison/", "Apr 3"),
+        Article::create("Nginx parser with PHP and Bison", "/articles/2023/nginx-parser-with-php-and-bison/", "Mar 27"),
+        Article::create("AST parser with PHP and Bison", "/articles/2023/ast-parser-with-php-and-bison/", "Mar 19"),
+        Article::create("PHP Skeleton for Bison", "/articles/2023/php-skeleton-for-bison/", "Mar 13"),
+        Article::create("Few steps to make your docker image smaller", "/articles/2023/few-steps-to-make-your-docker-image-smaller/", "Feb 20"),
     ],
     2022 => [
         Article::create("PHP generics", "https://phprussia.ru/moscow/2022/abstracts/9165", "Nov 25"),
-        Article::create("How PHP engine builds AST", "https://dev.to/mrsuh/how-php-engine-builds-ast-1nc4", "Sep 5"),
-        Article::create("Parsing with PHP, Bison and re2c", "https://dev.to/mrsuh/parse-files-with-php-bison-and-re2c-1i6p", "Aug 26"),
+        Article::create("How PHP engine builds AST", "/articles/2022/how-php-engine-builds-ast/", "Sep 5"),
+        Article::create("Parsing with PHP, Bison and re2c", "/articles/2022/parsing-with-php-bison-and-re2c/", "Aug 26"),
         Article::create("Telegram bot that monitors currency availability in Tinkoff ATMs", "https://vc.ru/u/585016-anton-suhachev/393167-telegram-bot-kotoryi-sledit-za-valyutoi-v-bankomatah-tinkoff", "Apr 02"),
         Article::create("Comparing PHP Collections", "/articles/2022/comparing-php-collections/", "Mar 22"),
         Article::create("Generics implementation approaches", "/articles/2022/generics-implementation-approaches/", "Feb 8"),
@@ -226,6 +226,7 @@ file_put_contents(
     )
 );
 
+$parser = new MyParserdown();
 $directory = __DIR__ . '/../docs/articles';
 foreach (scandir($directory) as $yearDirectory) {
     $yearDirectoryPath = $directory . '/' . $yearDirectory;
@@ -233,14 +234,14 @@ foreach (scandir($directory) as $yearDirectory) {
         continue;
     }
 
-    if (!in_array($yearDirectory, ['2024', '2022'])) {
+    if (!in_array($yearDirectory, ['2024', '2023', '2022'])) {
         continue;
     }
 
     foreach (scandir($yearDirectoryPath) as $articleDirectory) {
         $articleDirectoryPath = $yearDirectoryPath . '/' . $articleDirectory;
         
-        $urlPath = $yearDirectory . '/' . $articleDirectory;
+        $urlPath = '/articles/' . $yearDirectory . '/' . $articleDirectory;
 
         $articleFilePath = $articleDirectoryPath . '/index.md';
         if (!is_file($articleFilePath)) {
@@ -251,7 +252,7 @@ foreach (scandir($directory) as $yearDirectory) {
         $name = trim(str_replace('#', '', fgets($file)));
         $description = '';
         while(strlen($description) < 100) {
-            $description .= htmlspecialchars(trim(fgets($file)));
+            $description .= htmlspecialchars(trim(strip_tags($parser->text(fgets($file)))));
         }
         $description = substr($description, 0, 100) . '...';
         fclose($file);

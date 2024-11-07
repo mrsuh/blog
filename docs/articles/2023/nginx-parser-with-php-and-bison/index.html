@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="author" content="Anton Sukhachev">
+    <title>Nginx parser with PHP and Bison</title>
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+
+    <meta name="description" content="Read this post if you don&#039;t know what Bison is.Today I&#039;ll try to parse Nginx config into A..."/>
+    <meta name="keywords" content="anton sukhachev, mrsuh"/>
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="mrsuh.com">
+    <meta property="og:url" content="https://mrsuh.com/articles/2023/nginx-parser-with-php-and-bison">
+    <meta property="og:title" content="Nginx parser with PHP and Bison">
+    <meta property="og:description" content="Read this post if you don&#039;t know what Bison is.Today I&#039;ll try to parse Nginx config into A...">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:alt" content="Anton Sukhachev">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="mrsuh.com">
+    <meta name="twitter:url" content="https://mrsuh.com/articles/2023/nginx-parser-with-php-and-bison">
+    <meta name="twitter:title" content="Nginx parser with PHP and Bison">
+    <meta name="twitter:creator" content="@mrsuh6">
+    <meta name="twitter:description" content="Read this post if you don&#039;t know what Bison is.Today I&#039;ll try to parse Nginx config into A...">
+    <meta name="twitter:image:alt" content="Anton Sukhachev">
+    
+    <link href="/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            color: #343a40;
+        }
+
+        hr.list {
+            margin: 0
+        }
+        
+        h1 {
+            margin-bottom: 30px;
+        }
+        
+        .img-max-height {
+            max-height: calc(50vh + 180px);
+        }
+
+        @media screen and (max-width: 600px) {
+            .list-date {
+                display: none;
+            }
+        }
+
+    </style>
+</head>
+<body class="container fs-5" style="max-width: 1000px">
+
+<div class="header" style="padding-top: 20px; padding-bottom: 10px">
+    <div class="row">
+        <div class="col">
+            <a href="/">Anton Sukhachev</a>
+        </div>
+        <div class="col text-end">
+            <a href="/articles/">Articles</a>
+        </div>
+    </div>
+    <hr/>
+</div>
+
+<div class="content">
+    <h1>Nginx parser with PHP and Bison</h1>
+<blockquote>
+<p>Read this <a href="/articles/2023/php-skeleton-for-bison/">post</a> if you don't know what Bison is.</p>
+</blockquote>
+<p>Today I'll try to parse Nginx config into AST.
+I get the actual <a href="https://symfony.com/doc/current/setup/web_server_configuration.html#nginx">Nginx config</a> from official Symfony documentation to test the parser.
+<code>nginx.conf</code></p>
+<pre><code class="language-php rounded">server {
+    server_name domain.tld www.domain.tld;
+    root /var/www/project/public;
+
+    location / {
+        # try to serve file directly, fallback to index.php
+        try_files $uri /index.php$is_args$args;
+    }
+
+    location /bundles {
+        try_files $uri =404;
+    }
+
+    location ~ ^/index\.php(/|$) {
+        fastcgi_pass unix:/var/run/php/php-fpm.sock;
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+        include fastcgi_params;
+
+        # optionally set the value of the environment variables used in the application
+        fastcgi_param APP_ENV prod;
+        fastcgi_param APP_SECRET &lt;app-secret-id&gt;;
+        fastcgi_param DATABASE_URL "mysql://db_user:db_pass@host:3306/db_name";
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_param DOCUMENT_ROOT $realpath_root;       
+        internal;
+    }
+
+    location ~ \.php$ {
+        return 404;
+    }
+
+    error_log /var/log/nginx/project_error.log;
+    access_log /var/log/nginx/project_access.log;
+}</code></pre>
+<p>First, we need to install PHP dependencies.</p>
+<pre><code class="language-bash rounded">composer require --dev mrsuh/php-bison-skeleton
+composer require mrsuh/tree-printer
+composer require doctrine/lexer</code></pre>
+<ul>
+<li><a href="https://github.com/mrsuh/php-bison-skeleton">mrsuh/php-bison-skeleton</a> - to build PHP parser with Bison</li>
+<li><a href="https://www.doctrine-project.org/projects/doctrine-lexer/en/1.2/index.html">mrsuh/tree-printer</a> - to print <code>AST</code></li>
+<li><a href="https://www.doctrine-project.org/projects/doctrine-lexer/en/1.2/index.html">doctrine/lexer</a> - to parse text into tokens</li>
+</ul>
+<p>We will store our files like this:</p>
+<pre><code class="language-bash rounded">.
+├── /ast-parser
+    ├── /bin
+    │   └── parse.php # entry point to parse nginx configs
+    ├── /lib
+    │   └── parser.php # generated file
+    ├── /src
+    │   ├── Lexer.php
+    │   └── Node.php # AST node
+    └── grammar.y       </code></pre>
+<p>The <code>Node</code> class must implement <code>Mrsuh\Tree\NodeInterface</code> to print <code>AST</code>.
+<code>src/Node.php</code></p>
+<pre><code class="language-php rounded">&lt;?php
+
+namespace App;
+
+use Mrsuh\Tree\NodeInterface;
+
+class Node implements NodeInterface
+{
+    private string $name;
+    /** @var array&lt;string, mixed&gt; */
+    private array $attributes;
+    /** @var Node[] */
+    private array $children;
+
+    public function __construct(string $name, array $attributes = [], array $children = [])
+    {
+        $this-&gt;name       = $name;
+        $this-&gt;attributes = $attributes;
+        $this-&gt;children   = $children;
+    }
+
+    public function getChildren(): array
+    {
+        return $this-&gt;children;
+    }
+
+    public function __toString(): string
+    {
+        $line = $this-&gt;name;
+        if (!empty($this-&gt;attributes)) {
+            $line .= ' {';
+            foreach ($this-&gt;attributes as $key =&gt; $value) {
+                $line .= sprintf(
+                    " %s: '%s'",
+                    $key,
+                    is_array($value) ? implode(', ', $value) : $value
+                );
+            }
+            $line .= ' }';
+        }
+
+        return $line;
+    }
+}</code></pre>
+<p>This time I'll use Doctrine lexer library. It can help to parse complex text.<br />
+<code>src/Lexer.php</code></p>
+<pre><code class="language-php rounded">&lt;?php
+
+namespace App;
+
+use Doctrine\Common\Lexer\AbstractLexer;
+
+class Lexer extends AbstractLexer implements LexerInterface
+{
+    public function __construct($resource)
+    {
+        $this-&gt;setInput(stream_get_contents($resource));
+        $this-&gt;moveNext();
+    }
+
+    protected function getCatchablePatterns(): array
+    {
+        return [';'];
+    }
+
+    protected function getNonCatchablePatterns(): array
+    {
+        return [' ','[\n]+','#[^\n]+']; // skip spaces, eol, and comments 
+    }
+
+    protected function getType(&amp;$value): int
+    {
+        switch ($value) {
+            case 'server':
+                return LexerInterface::T_SERVER;
+            case 'server_name':
+                return LexerInterface::T_SERVER_NAME;
+
+               ...
+        }
+
+        return ord($value);
+    }
+
+    public function yyerror(string $message): void
+    {
+        printf("%s\n", $message);
+    }
+
+    public function getLVal()
+    {
+        return $this-&gt;token-&gt;value;
+    }
+
+    public function yylex(): int
+    {
+        if (!$this-&gt;lookahead) {
+            return LexerInterface::YYEOF;
+        }
+
+        $this-&gt;moveNext();
+
+        return $this-&gt;token-&gt;type;
+    }
+}</code></pre>
+<p>For example, <code>Lexer</code> will translate the Nginx config below</p>
+<pre><code class="language-nginx rounded">server {
+    server_name domain.tld www.domain.tld;
+    root /var/www/project/public;
+
+    location / {
+        # try to serve file directly, fallback to index.php
+        try_files $uri /index.php$is_args$args;
+    }
+}</code></pre>
+<p>into this:</p>
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>word</th>
+<th>token</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>server</td>
+<td>LexerInterface::T_SERVER (258)</td>
+</tr>
+<tr>
+<td>{</td>
+<td>ASCII (123)</td>
+</tr>
+<tr>
+<td>server_name</td>
+<td>LexerInterface::T_SERVER_NAME (259)</td>
+</tr>
+<tr>
+<td>domain.tld</td>
+<td>LexerInterface::T_SERVER_NAME_VALUE (260)</td>
+</tr>
+<tr>
+<td>www.domain.tld</td>
+<td>LexerInterface::T_SERVER_NAME_VALUE (260)</td>
+</tr>
+<tr>
+<td>;</td>
+<td>ASCII (59)</td>
+</tr>
+<tr>
+<td>root</td>
+<td>LexerInterface::T_SERVER_ROOT (261)</td>
+</tr>
+<tr>
+<td>/var/www/project/public</td>
+<td>LexerInterface::T_SERVER_ROOT_PATH (262)</td>
+</tr>
+<tr>
+<td>;</td>
+<td>ASCII (59)</td>
+</tr>
+<tr>
+<td>location</td>
+<td>LexerInterface::T_LOCATION (263)</td>
+</tr>
+<tr>
+<td>/</td>
+<td>ASCII (264)</td>
+</tr>
+<tr>
+<td>{</td>
+<td>ASCII (123)</td>
+</tr>
+<tr>
+<td>try_files</td>
+<td>LexerInterface::T_TRY_FILES (283)</td>
+</tr>
+<tr>
+<td>$uri</td>
+<td>LexerInterface::T_TRY_FILES_PATH (284)</td>
+</tr>
+<tr>
+<td>/index.php$is_args$args</td>
+<td>LexerInterface::T_TRY_FILES_PATH (284)</td>
+</tr>
+<tr>
+<td>;</td>
+<td>ASCII (59)</td>
+</tr>
+<tr>
+<td>}</td>
+<td>ASCII (125)</td>
+</tr>
+<tr>
+<td>}</td>
+<td>ASCII (125)</td>
+</tr>
+<tr>
+<td></td>
+<td>LexerInterface::YYEOF (0)</td>
+</tr>
+</tbody>
+</table>
+<p>Time to create <code>grammar.y</code> file and build <code>lib/parser.php</code></p>
+<p>We will use block <code>%code parser</code> to define variables and methods to store <code>AST</code> into the <code>Parser</code> class.
+You can find full grammar file <a href="https://github.com/mrsuh/php-bison-skeleton/blob/master/examples/nginx-ast/grammar.y">here</a>.
+<code>grammar.y</code></p>
+<pre><code class="language-php rounded">%define api.parser.class {Parser}
+%define api.namespace {App}
+%code parser {
+    private Node $ast;
+    public function setAst(Node $ast): void { $this-&gt;ast = $ast; }
+    public function getAst(): Node { return $this-&gt;ast; }
+}
+
+%token T_SERVER
+%token T_SERVER_NAME
+%token T_SERVER_NAME_VALUE
+%token T_SERVER_ROOT
+%token T_SERVER_ROOT_PATH
+...
+%token T_TRY_FILES
+%token T_TRY_FILES_PATH
+
+%%
+server:
+  T_SERVER '{' server_body_list '}' { self::setAst(new Node('T_SERVER', [], $3)); }
+;
+
+server_name_values:
+  T_SERVER_NAME_VALUE                     { $$ = [$1]; }
+| server_name_values T_SERVER_NAME_VALUE  { $$ = $1; $$[] = $2; }
+;
+
+server_body:
+  T_SERVER_NAME server_name_values ';'  { $$ = new Node('T_SERVER_NAME', ['names' =&gt; $2]); }
+| T_SERVER_ROOT T_SERVER_ROOT_PATH ';'  { $$ = new Node('T_SERVER_ROOT', ['path' =&gt; $2]); }
+| T_ERROR_LOG T_ERROR_LOG_PATH ';'      { $$ = new Node('T_ERROR_LOG', ['path' =&gt; $2]); }
+| T_ACCESS_LOG T_ACCESS_LOG_PATH ';'    { $$ = new Node('T_ACCESS_LOG', ['path' =&gt; $2]); }
+;
+...</code></pre>
+<pre><code class="language-bash rounded">bison -S vendor/mrsuh/php-bison-skeleton/src/php-skel.m4 -o lib/parser.php grammar.y</code></pre>
+<p>Command options:</p>
+<ul>
+<li><code>-S vendor/mrsuh/php-bison-skeleton/src/php-skel.m4</code> - path to <code>skeleton</code> file</li>
+<li><code>-o parser.php</code> - output parser file</li>
+<li><code>grammar.y</code> - our grammar file</li>
+</ul>
+<p>The final PHP file is the entry point for the parser.
+<code>bin/parse.php</code></p>
+<pre><code class="language-php rounded">&lt;?php
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use App\Parser;
+use App\Lexer;
+use Mrsuh\Tree\Printer;
+
+$lexer  = new Lexer(fopen($argv[1], 'r'));
+$parser = new Parser($lexer);
+if (!$parser-&gt;parse()) {
+    exit(1);
+}
+
+$printer = new Printer();
+$printer-&gt;print($parser-&gt;getAst());</code></pre>
+<p>Autoload for generated <code>lib/parser.php</code> file.
+<code>composer.json</code></p>
+<pre><code class="language-json rounded">{
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        },
+        "files": ["lib/parser.php"]
+    },
+    ...
+}</code></pre>
+<p>Finally, we can test our parser.</p>
+<pre><code class="language-bash rounded">php bin/parse.php nginx.conf
+.
+├── T_SERVER
+    ├── T_SERVER_NAME { names: 'domain.tld, www.domain.tld' }
+    ├── T_SERVER_ROOT { path: '/var/www/project/public' }
+    ├── T_LOCATION { regexp: '' path: '/' }
+    │   └── T_TRY_FILES { paths: '$uri, /index.php$is_args$args' }
+    ├── T_LOCATION { regexp: '' path: '/bundles' }
+    │   └── T_TRY_FILES { paths: '$uri, =404' }
+    ├── T_LOCATION { regexp: '~' path: '^/index\.php(/|$)' }
+    │   ├── T_FAST_CGI_PATH { path: 'unix:/var/run/php/php-fpm.sock' }
+    │   ├── T_FAST_CGI_SPLIT_PATH_INFO { path: '^(.+\.php)(/.*)$' }
+    │   ├── T_INCLUDE { path: 'fastcgi_params' }
+    │   ├── T_FAST_CGI_PARAM { APP_ENV: 'prod' }
+    │   ├── T_FAST_CGI_PARAM { APP_SECRET: '&lt;app-secret-id&gt;' }
+    │   ├── T_FAST_CGI_PARAM { DATABASE_URL: '"mysql://db_user:db_pass@host:3306/db_name"' }
+    │   ├── T_FAST_CGI_PARAM { SCRIPT_FILENAME: '$realpath_root$fastcgi_script_name' }
+    │   ├── T_FAST_CGI_PARAM { DOCUMENT_ROOT: '$realpath_root' }
+    │   └── T_INTERNAL
+    ├── T_LOCATION { regexp: '~' path: '\.php$' }
+    │   └── T_RETURN { code: '404' body: '' }
+    ├── T_ERROR_LOG { path: '/var/log/nginx/project_error.log' }
+    └── T_ACCESS_LOG { path: '/var/log/nginx/project_access.log' }</code></pre>
+<p>It works!</p>
+<p>You can get the parser source code <a href="https://github.com/mrsuh/php-bison-skeleton/tree/master/examples/nginx-ast">here</a> and test it by yourself.</p>
+<p>Some useful links:</p>
+<ul>
+<li><a href="https://github.com/mrsuh/php-bison-skeleton/tree/master/examples">PHP Skeleton for Bison</a></li>
+<li><a href="/articles/2023/ast-parser-with-php-and-bison/">AST parser with PHP and Bison</a></li>
+<li><a href="https://github.com/mrsuh/docker-bison">Bison docker image</a></li>
+<li><a href="/articles/2022/parsing-with-php-bison-and-re2c/">Parsing with PHP, Bison, and re2c</a></li>
+</ul>
+</div>
+
+<div class="footer" style="height: 40px"></div>
+</body>
+
+<link rel="stylesheet" href="/highlight.github-dark-dimmed.min.css">
+<script src="/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+</html>

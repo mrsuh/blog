@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="author" content="Anton Sukhachev">
+    <title>JSON parser with PHP and Bison</title>
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+
+    <meta name="description" content="Read this post if you don&#039;t know what Bison is.Today I&#039;ll try to parse JSON into AST and c..."/>
+    <meta name="keywords" content="anton sukhachev, mrsuh"/>
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="mrsuh.com">
+    <meta property="og:url" content="https://mrsuh.com/articles/2023/json-parser-with-php-and-bison">
+    <meta property="og:title" content="JSON parser with PHP and Bison">
+    <meta property="og:description" content="Read this post if you don&#039;t know what Bison is.Today I&#039;ll try to parse JSON into AST and c...">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:alt" content="Anton Sukhachev">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="mrsuh.com">
+    <meta name="twitter:url" content="https://mrsuh.com/articles/2023/json-parser-with-php-and-bison">
+    <meta name="twitter:title" content="JSON parser with PHP and Bison">
+    <meta name="twitter:creator" content="@mrsuh6">
+    <meta name="twitter:description" content="Read this post if you don&#039;t know what Bison is.Today I&#039;ll try to parse JSON into AST and c...">
+    <meta name="twitter:image:alt" content="Anton Sukhachev">
+    
+    <link href="/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            color: #343a40;
+        }
+
+        hr.list {
+            margin: 0
+        }
+        
+        h1 {
+            margin-bottom: 30px;
+        }
+        
+        .img-max-height {
+            max-height: calc(50vh + 180px);
+        }
+
+        @media screen and (max-width: 600px) {
+            .list-date {
+                display: none;
+            }
+        }
+
+    </style>
+</head>
+<body class="container fs-5" style="max-width: 1000px">
+
+<div class="header" style="padding-top: 20px; padding-bottom: 10px">
+    <div class="row">
+        <div class="col">
+            <a href="/">Anton Sukhachev</a>
+        </div>
+        <div class="col text-end">
+            <a href="/articles/">Articles</a>
+        </div>
+    </div>
+    <hr/>
+</div>
+
+<div class="content">
+    <h1>JSON parser with PHP and Bison</h1>
+<blockquote>
+<p>Read this <a href="/articles/2023/php-skeleton-for-bison/">post</a> if you don't know what Bison is.</p>
+</blockquote>
+<p>Today I'll try to parse JSON into AST and compare it with the native PHP function <code>json_decode()</code>.
+To test our parser I will use this JSON file:</p>
+<p><code>test.json</code></p>
+<pre><code class="language-json rounded">{
+    "fieldString": "string",
+    "fieldNumber": 99,
+    "fieldBoolTrue": true,
+    "fieldBoolFalse": false,
+    "fieldNull": null,
+    "fieldEmptyArray": [],
+    "fieldEmptyObject": {},
+    "fieldArray": [
+        "string",
+        99,
+        true,
+        false,
+        null,
+        {},
+        []
+    ]
+}</code></pre>
+<p>First, we need to install PHP dependencies.</p>
+<pre><code class="language-bash rounded">composer require --dev mrsuh/php-bison-skeleton
+composer require mrsuh/tree-printer
+composer require doctrine/lexer</code></pre>
+<ul>
+<li><a href="https://github.com/mrsuh/php-bison-skeleton">mrsuh/php-bison-skeleton</a> - to build PHP parser with Bison</li>
+<li><a href="https://www.doctrine-project.org/projects/doctrine-lexer/en/1.2/index.html">mrsuh/tree-printer</a> - to print <code>AST</code></li>
+<li><a href="https://www.doctrine-project.org/projects/doctrine-lexer/en/1.2/index.html">doctrine/lexer</a> - to parse text into tokens</li>
+</ul>
+<p>We will store our files like this:</p>
+<pre><code class="language-bash rounded">.
+├── /ast-parser
+    ├── /bin
+    │   └── parse.php # entry point to parse JSON
+    ├── /lib
+    │   └── parser.php # generated file
+    ├── /src
+    │   ├── Lexer.php
+    │   └── Node.php # AST node
+    └── grammar.y       </code></pre>
+<p>The <code>Node</code> class must implement <code>Mrsuh\Tree\NodeInterface</code> to print <code>AST</code>.</p>
+<p><code>src/Node.php</code></p>
+<pre><code class="language-php rounded">&lt;?php
+
+namespace App;
+
+use Mrsuh\Tree\NodeInterface;
+
+class Node implements NodeInterface
+{
+    private string $name;
+    private string $value;
+    /** @var Node[] */
+    private array $children;
+
+    public function __construct(string $name, string $value, array $children = [])
+    {
+        $this-&gt;name     = $name;
+        $this-&gt;value    = $value;
+        $this-&gt;children = $children;
+    }
+
+    public function getChildren(): array
+    {
+        return $this-&gt;children;
+    }
+
+    public function __toString(): string
+    {
+        if (!empty($this-&gt;value)) {
+            return sprintf("%s: '%s'", $this-&gt;name, $this-&gt;value);
+        }
+
+        return $this-&gt;name;
+    }
+}</code></pre>
+<p>I'll use the Doctrine lexer library. It helps to parse complex text.</p>
+<p><code>src/Lexer.php</code></p>
+<pre><code class="language-php rounded">&lt;?php
+
+namespace App;
+
+use Doctrine\Common\Lexer\AbstractLexer;
+
+class Lexer extends AbstractLexer implements LexerInterface
+{
+...
+    protected function getCatchablePatterns(): array
+    {
+        return [
+            '\:',
+            '\{',
+            '\}',
+            '\[',
+            '\]',
+            '\,',
+            "\"[^\"]+\"",
+            'true',
+            'false',
+            'null',
+        ];
+    }
+
+    protected function getNonCatchablePatterns(): array
+    {
+        return [
+            ' ',
+            '\n'
+        ];
+    }
+
+    protected function getType(&amp;$value): int
+    {
+        if (in_array($value, [':', '{', '}', '[', ']', ','], true)) {
+            return ord($value);
+        }
+
+        if (is_numeric($value)) {
+            return LexerInterface::T_NUMBER;
+        }
+
+        switch (strtolower($value)) {
+            case 'true':
+            case 'false':
+                return LexerInterface::T_BOOL;
+            case 'null':
+                return LexerInterface::T_NULL;
+        }
+
+        return LexerInterface::T_STRING;
+    }
+...
+}</code></pre>
+<p>For example, <code>Lexer</code> will translate the JSON</p>
+<pre><code class="language-json rounded">{
+    "array": [
+        "string",
+        99,
+        true,
+        false,
+        null
+    ]
+}</code></pre>
+<p>into this:</p>
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>word</th>
+<th>token</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>{</td>
+<td>ASCII (123)</td>
+</tr>
+<tr>
+<td>&quot;array&quot;</td>
+<td>LexerInterface::T_STRING (258)</td>
+</tr>
+<tr>
+<td>:</td>
+<td>ASCII (58)</td>
+</tr>
+<tr>
+<td>[</td>
+<td>ASCII (91)</td>
+</tr>
+<tr>
+<td>&quot;string&quot;</td>
+<td>LexerInterface::T_STRING (258)</td>
+</tr>
+<tr>
+<td>,</td>
+<td>ASCII (44)</td>
+</tr>
+<tr>
+<td>99</td>
+<td>LexerInterface::T_NUMBER (259)</td>
+</tr>
+<tr>
+<td>,</td>
+<td>ASCII (44)</td>
+</tr>
+<tr>
+<td>true</td>
+<td>LexerInterface::T_BOOL (260)</td>
+</tr>
+<tr>
+<td>,</td>
+<td>ASCII (44)</td>
+</tr>
+<tr>
+<td>false</td>
+<td>LexerInterface::T_BOOL (260)</td>
+</tr>
+<tr>
+<td>,</td>
+<td>ASCII (44)</td>
+</tr>
+<tr>
+<td>null</td>
+<td>LexerInterface::T_NULL (261)</td>
+</tr>
+<tr>
+<td>,</td>
+<td>ASCII (44)</td>
+</tr>
+<tr>
+<td>]</td>
+<td>ASCII (93)</td>
+</tr>
+<tr>
+<td>}</td>
+<td>ASCII (125)</td>
+</tr>
+<tr>
+<td></td>
+<td>LexerInterface::YYEOF (0)</td>
+</tr>
+</tbody>
+</table>
+<p>Time to create <code>grammar.y</code> file and build <code>lib/parser.php</code></p>
+<p>PHP already has the native function <code>json_decode()</code> and it uses Bison to generate a C parser.
+I think we can get ready <a href="https://github.com/php/php-src/blob/master/ext/json/json_parser.y">Bison grammar file</a> from the php-src repository and modify it.
+The grammar file is very small because <a href="https://www.json.org/json-en.html">JSON standard</a> is very simple.</p>
+<p>We will use block <code>%code parser</code> to define variables and methods to store <code>AST</code> into the <code>Parser</code> class.</p>
+<p><code>grammar.y</code></p>
+<pre><code class="language-php rounded">%define api.parser.class {Parser}
+%define api.namespace {App}
+%code parser {
+    private Node $ast;
+    public function setAst(Node $ast): void { $this-&gt;ast = $ast; }
+    public function getAst(): Node { return $this-&gt;ast; }
+}
+
+%token T_STRING
+%token T_NUMBER
+%token T_BOOL
+%token T_NULL
+
+%%
+start:
+  value  { self::setAst($1); }
+;
+
+object:
+'{' members '}' { $$ = $2; }
+;
+
+members:
+  %empty             { $$ = []; }
+| member             { $$ = [$1]; }
+| members ',' member { $$ = $1; $$[] = $3; }
+;
+
+member:
+  T_STRING ':' value  { $$ = new Node('T_STRING', $1, [$3]); }
+;
+
+array:
+'['  elements ']' { $$ = $2; }
+;
+
+elements:
+  %empty             { $$ = []; }
+| value              { $$ = [$1]; }
+| elements ',' value { $$ = $1; $$[] = $3; }
+;
+
+value:
+  object   { $$ = new Node('T_OBJECT', '', $1); }
+| array    { $$ = new Node('T_ARRAY', '', $1); }
+| T_STRING { $$ = new Node('T_STRING', $1); }
+| T_NUMBER { $$ = new Node('T_NUMBER', $1); }
+| T_BOOL   { $$ = new Node('T_BOOL', $1); }
+| T_NULL   { $$ = new Node('T_NULL', $1); }
+;
+
+%%</code></pre>
+<pre><code class="language-bash rounded">bison -S vendor/mrsuh/php-bison-skeleton/src/php-skel.m4 -o lib/parser.php grammar.y</code></pre>
+<p>Command options:</p>
+<ul>
+<li><code>-S vendor/mrsuh/php-bison-skeleton/src/php-skel.m4</code> - path to <code>skeleton</code> file</li>
+<li><code>-o parser.php</code> - output parser file</li>
+<li><code>grammar.y</code> - our grammar file</li>
+</ul>
+<p>The final PHP file is the entry point for the parser.</p>
+<p><code>bin/parse.php</code></p>
+<pre><code class="language-php rounded">&lt;?php
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use App\Parser;
+use App\Lexer;
+use Mrsuh\Tree\Printer;
+
+$lexer  = new Lexer(fopen($argv[1], 'r'));
+$parser = new Parser($lexer);
+if (!$parser-&gt;parse()) {
+    exit(1);
+}
+
+$printer = new Printer();
+$printer-&gt;print($parser-&gt;getAst());</code></pre>
+<p>Autoload for generated <code>lib/parser.php</code> file.</p>
+<p><code>composer.json</code></p>
+<pre><code class="language-json rounded">{
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        },
+        "files": ["lib/parser.php"]
+    },
+    ...
+}</code></pre>
+<p>Finally, we can test our parser.</p>
+<pre><code class="language-bash rounded">php bin/parse.php test.json 
+.
+├── T_OBJECT
+    ├── T_STRING: 'fieldString'
+    │   └── T_STRING: 'string'
+    ├── T_STRING: 'fieldNumber'
+    │   └── T_NUMBER: '99'
+    ├── T_STRING: 'fieldBoolTrue'
+    │   └── T_BOOL: 'true'
+    ├── T_STRING: 'fieldBoolFalse'
+    │   └── T_BOOL: 'false'
+    ├── T_STRING: 'fieldNull'
+    │   └── T_NULL: 'null'
+    ├── T_STRING: 'fieldEmptyArray'
+    │   └── T_ARRAY
+    ├── T_STRING: 'fieldEmptyObject'
+    │   └── T_OBJECT
+    └── T_STRING: 'fieldArray'
+        └── T_ARRAY
+            ├── T_STRING: 'string'
+            ├── T_NUMBER: '99'
+            ├── T_BOOL: 'true'
+            ├── T_BOOL: 'false'
+            ├── T_NULL: 'null'
+            ├── T_OBJECT
+            └── T_ARRAY</code></pre>
+<p>It works!</p>
+<p>I think it will be cool if we compare the native <code>json_decode()</code> function and our parser.
+First, I need a JSON file for benchmarks. I can get JSON info about Bulbasaur pokemon from API <a href="https://pokeapi.co">https://pokeapi.co</a>.</p>
+<pre><code class="language-bash rounded">curl 'https://pokeapi.co/api/v2/pokemon/bulbasaur' &gt; bench.json</code></pre>
+<p>The file weight is 215KB.</p>
+<p>We need to modify our <code>grammar.y</code> file to avoid <code>Node</code> creating.</p>
+<p><code>grammar-bench.y</code></p>
+<pre><code class="language-php rounded">...
+value:
+  object   { $$ = $1; }
+| array    { $$ = $1; }
+| T_STRING { $$ = $1; }
+| T_NUMBER { $$ = $1; }
+| T_BOOL   { $$ = $1; }
+| T_NULL   { $$ = $1; }
+...</code></pre>
+<pre><code class="language-bash rounded">bison -S ../../src/php-skel.m4 -o lib/parser.php grammar-bench.y </code></pre>
+<p>We are ready to start the comparison.</p>
+<p>PHP 8.2</p>
+<pre><code class="language-bash rounded">php vendor/bin/phpbench run tests --report=my-report
++-------------+----------+----------+--------+
+| subject     | mem_peak | mode     | rstdev |
++-------------+----------+----------+--------+
+| benchNative | 2.539mb  | 1.570ms  | ±0.89% |
+| benchBison  | 12.443mb | 84.283ms | ±1.08% |
++-------------+----------+----------+--------+</code></pre>
+<p>PHP 8.1</p>
+<pre><code class="language-bash rounded">php vendor/bin/phpbench run tests --report=my-report
++-------------+----------+----------+--------+
+| subject     | mem_peak | mode     | rstdev |
++-------------+----------+----------+--------+
+| benchNative | 2.593mb  | 1.595ms  | ±0.68% |
+| benchBison  | 18.471mb | 87.471ms | ±0.68% |
++-------------+----------+----------+--------+</code></pre>
+<p>PHP 8.0</p>
+<pre><code class="language-bash rounded">php vendor/bin/phpbench run tests --report=my-report
++-------------+----------+----------+--------+
+| subject     | mem_peak | mode     | rstdev |
++-------------+----------+----------+--------+
+| benchNative | 2.700mb  | 1.586ms  | ±0.90% |
+| benchBison  | 18.578mb | 87.533ms | ±0.83% |
++-------------+----------+----------+--------+</code></pre>
+<p>PHP 7.4</p>
+<pre><code class="language-bash rounded">php vendor/bin/phpbench run tests --report=my-report
++-------------+----------+-----------+--------+
+| subject     | mem_peak | mode      | rstdev |
++-------------+----------+-----------+--------+
+| benchNative | 2.857mb  | 1.725ms   | ±1.00% |
+| benchBison  | 18.735mb | 105.099ms | ±0.91% |
++-------------+----------+-----------+--------+</code></pre>
+<p>PHP Bison parser shows the best result with PHP 8.2.
+It is ~56 times slower than the native <code>json_decode()</code> function.</p>
+<p>I hope it was interesting for you!</p>
+<p>You can get the parser source code <a href="https://github.com/mrsuh/php-bison-skeleton/tree/master/examples/json-ast">here</a> and test it by yourself.</p>
+<p>Some useful links:</p>
+<ul>
+<li><a href="https://github.com/mrsuh/php-bison-skeleton">PHP skeleton library</a></li>
+<li><a href="https://github.com/mrsuh/docker-bison">Bison docker image</a></li>
+<li><a href="/articles/2023/php-skeleton-for-bison/">PHP Skeleton for Bison</a></li>
+<li><a href="/articles/2023/ast-parser-with-php-and-bison/">AST parser with PHP and Bison</a></li>
+<li><a href="/articles/2023/nginx-parser-with-php-and-bison/">Nginx parser with PHP and Bison</a></li>
+</ul>
+</div>
+
+<div class="footer" style="height: 40px"></div>
+</body>
+
+<link rel="stylesheet" href="/highlight.github-dark-dimmed.min.css">
+<script src="/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+</html>

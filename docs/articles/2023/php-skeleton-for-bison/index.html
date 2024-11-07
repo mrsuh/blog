@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="author" content="Anton Sukhachev">
+    <title>PHP Skeleton for Bison</title>
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+
+    <meta name="description" content="What is Bison?Bison is a parser generator.For example, it can help you to build a parser to parse yo..."/>
+    <meta name="keywords" content="anton sukhachev, mrsuh"/>
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="mrsuh.com">
+    <meta property="og:url" content="https://mrsuh.com/articles/2023/php-skeleton-for-bison">
+    <meta property="og:title" content="PHP Skeleton for Bison">
+    <meta property="og:description" content="What is Bison?Bison is a parser generator.For example, it can help you to build a parser to parse yo...">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:alt" content="Anton Sukhachev">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="mrsuh.com">
+    <meta name="twitter:url" content="https://mrsuh.com/articles/2023/php-skeleton-for-bison">
+    <meta name="twitter:title" content="PHP Skeleton for Bison">
+    <meta name="twitter:creator" content="@mrsuh6">
+    <meta name="twitter:description" content="What is Bison?Bison is a parser generator.For example, it can help you to build a parser to parse yo...">
+    <meta name="twitter:image:alt" content="Anton Sukhachev">
+    
+    <link href="/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            color: #343a40;
+        }
+
+        hr.list {
+            margin: 0
+        }
+        
+        h1 {
+            margin-bottom: 30px;
+        }
+        
+        .img-max-height {
+            max-height: calc(50vh + 180px);
+        }
+
+        @media screen and (max-width: 600px) {
+            .list-date {
+                display: none;
+            }
+        }
+
+    </style>
+</head>
+<body class="container fs-5" style="max-width: 1000px">
+
+<div class="header" style="padding-top: 20px; padding-bottom: 10px">
+    <div class="row">
+        <div class="col">
+            <a href="/">Anton Sukhachev</a>
+        </div>
+        <div class="col text-end">
+            <a href="/articles/">Articles</a>
+        </div>
+    </div>
+    <hr/>
+</div>
+
+<div class="content">
+    <h1>PHP Skeleton for Bison</h1>
+<a href="#h2-what-is-bison?" id="h2-what-is-bison?" class="text-decoration-none text-reset"><h2>What is Bison?</h2></a>
+<p><a href="https://www.gnu.org/software/bison">Bison</a> is a parser generator.
+For example, it can help you to build a parser to parse your code into <a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree">AST</a>:</p>
+<pre><code class="language-php rounded">&lt;?php
+
+namespace App;
+
+class Test
+{
+    public function test($foo) {}
+}</code></pre>
+<pre><code class="language-bash rounded">.
+├── ZEND_AST_STMT_LIST
+    ├── ZEND_AST_NAMESPACE
+    │   └── ZEND_AST_ZVAL 'App'
+    └── ZEND_AST_CLASS 'Test'
+        └── ZEND_AST_STMT_LIST
+            └── ZEND_AST_METHOD 'test'
+                └── ZEND_AST_PARAM_LIST
+                    └── ZEND_AST_PARAM
+                        └── ZEND_AST_ZVAL 'foo'</code></pre>
+<p>There is software that uses Bison:</p>
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>software</th>
+<th>grammar.y</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PHP</td>
+<td><a href="https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y">https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y</a></td>
+</tr>
+<tr>
+<td>Bash</td>
+<td><a href="https://git.savannah.gnu.org/cgit/bash.git/tree/parse.y">https://git.savannah.gnu.org/cgit/bash.git/tree/parse.y</a></td>
+</tr>
+<tr>
+<td>Ruby</td>
+<td><a href="https://github.com/ruby/ruby/blob/master/parse.y">https://github.com/ruby/ruby/blob/master/parse.y</a></td>
+</tr>
+<tr>
+<td>MySQL</td>
+<td><a href="https://github.com/mysql/mysql-server/blob/8.0/sql/sql_yacc.yy">https://github.com/mysql/mysql-server/blob/8.0/sql/sql_yacc.yy</a></td>
+</tr>
+<tr>
+<td>PostgreSQL</td>
+<td><a href="https://github.com/postgres/postgres/blob/master/src/backend/parser/gram.y">https://github.com/postgres/postgres/blob/master/src/backend/parser/gram.y</a></td>
+</tr>
+<tr>
+<td>CMake</td>
+<td><a href="https://github.com/Kitware/CMake/blob/master/Source/LexerParser/cmExprParser.y">https://github.com/Kitware/CMake/blob/master/Source/LexerParser/cmExprParser.y</a></td>
+</tr>
+</tbody>
+</table>
+<a href="#h2-how-bison-works?" id="h2-how-bison-works?" class="text-decoration-none text-reset"><h2>How Bison works?</h2></a>
+<p><a href="./images/diagram.svg"><img src="./images/diagram.svg" alt="Bison" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p>Bison takes your <code>grammar.y</code> file, parses it, extracts all definitions, and then constructs a bunch of tables like this:</p>
+<pre><code class="language-php rounded">$yytable = [
+    6, 3, 7, 20, 8, 51, 28, 1, 52, 4,
+    9, 13, 10, 29, 15, 30, 18, 31, 16, 19,
+    32, 22, 33, 34, 23, 24, 35, 11, 37, 25,
+    21, 38, 39, 26, 45, 0, 40, 42, 0, 43,
+    41, 0, 0, 49, 0, 0, 0, 0, 0, 47,
+    48, 0, 50, 0, 53, 54
+];</code></pre>
+<p>Then, this data is passed to a template that is called <code>skeleton</code>.
+This <code>skeleton</code> is a special file written in <a href="https://en.wikipedia.org/wiki/M4_(computer_language)">M4</a> language that renders your <code>parser.php</code> file.
+By default, Bison supports C/C++/D/Java languages, but you can extend it with your own <code>skeleton</code> file.</p>
+<a href="#h2-simple-calculator" id="h2-simple-calculator" class="text-decoration-none text-reset"><h2>Simple calculator</h2></a>
+<p>Let's make a simple calculator with Bison and PHP. It will parse expression from <code>stdin</code> and print result.</p>
+<p>First, we must install <a href="https://github.com/mrsuh/php-bison-skeleton">PHP skeleton package</a>.</p>
+<pre><code class="language-bash rounded">composer require --dev mrsuh/php-bison-skeleton</code></pre>
+<p>Then we define a simple grammar file.</p>
+<p><code>grammar.y</code></p>
+<pre><code class="language-php rounded">%define api.parser.class {Parser}
+
+%token T_NUMBER
+
+%left '-' '+'
+
+%%
+start:
+  exp                { printf("%f\n", $1); }
+;
+
+exp:
+  T_NUMBER           { $$ = $1; }
+| exp '+' exp        { $$ = $1 + $3;  }
+| exp '-' exp        { $$ = $1 - $3;  }
+;
+
+%%</code></pre>
+<p>Let's build a parser from <code>grammar.y</code>:</p>
+<pre><code class="language-bash rounded">bison -S vendor/mrsuh/php-bison-skeleton/src/php-skel.m4 -o parser.php grammar.y</code></pre>
+<p>Command options:</p>
+<ul>
+<li><code>-S vendor/mrsuh/php-bison-skeleton/src/php-skel.m4</code> - path to <code>skeleton</code> file</li>
+<li><code>-o parser.php</code> - output parser file</li>
+<li><code>grammar.y</code> - our grammar file</li>
+</ul>
+<p>For now, <code>parser.php</code> does nothing. But we can see the interface <code>LexerInterface</code> inside it:</p>
+<p><code>parser.php</code></p>
+<pre><code class="language-php rounded">interface LexerInterface
+{
+    public const YYEOF = 0;    
+    public const YYerror = 256;    
+    public const YYUNDEF = 257;
+    public const T_NUMBER = 258; /** %token T_NUMBER */
+    ...
+}
+...</code></pre>
+<p>Interface contains constants with our tokens from <code>grammar.y</code> file and some special values for the end of file or errors.
+With this interface, we can write our class <code>Lexer</code> to parse calculation expressions into tokens.</p>
+<pre><code class="language-php rounded">class Lexer implements LexerInterface {
+
+    private array $words;
+    private int   $index = 0;
+    private int   $value = 0;
+
+    public function __construct($resource)
+    {
+        $this-&gt;words = explode(' ', trim(fgets($resource)));
+    }
+
+    public function getLVal()
+    {
+        return $this-&gt;value;
+    }
+
+    public function yylex(): int
+    {
+         $this-&gt;value = 0;
+
+        if ($this-&gt;index &gt;= count($this-&gt;words)) {
+            return LexerInterface::YYEOF;
+        }
+
+        $word = $this-&gt;words[$this-&gt;index++];
+
+        if (is_numeric($word)) {
+            $this-&gt;value = (int)$word;
+
+            return LexerInterface::T_NUMBER;
+        }
+
+        return ord($word);
+    }
+}</code></pre>
+<p>Every time we call the function <code>Lexer::yylex()</code>, it will return the token's identifier and store the word into the <code>value</code> property.
+For example, the expression <code>10 + 20 - 30</code> will translate into this:</p>
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>word</th>
+<th>token</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10</td>
+<td>LexerInterface::T_NUMBER (258)</td>
+<td>10</td>
+</tr>
+<tr>
+<td>+</td>
+<td>ASCII (43)</td>
+<td></td>
+</tr>
+<tr>
+<td>20</td>
+<td>LexerInterface::T_NUMBER (258)</td>
+<td>20</td>
+</tr>
+<tr>
+<td>-</td>
+<td>ASCII (45)</td>
+<td></td>
+</tr>
+<tr>
+<td>30</td>
+<td>LexerInterface::T_NUMBER (258)</td>
+<td>30</td>
+</tr>
+<tr>
+<td></td>
+<td>LexerInterface::YYEOF (0)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>And the last part.
+We must instantiate lexer, parser and bind them.</p>
+<pre><code class="language-php rounded">$lexer  = new Lexer(STDIN);
+$parser = new Parser($lexer);
+if (!$parser-&gt;parse()) {
+    exit(1);
+}</code></pre>
+<p>Let's assemble all parts above into a single <code>grammar.y</code> file.</p>
+<p><code>grammar.y</code></p>
+<pre><code class="language-php rounded">%define api.parser.class {Parser}
+
+%token T_NUMBER
+
+%left '-' '+'
+
+%%
+start:
+  exp                { printf("%f\n", $1); }
+;
+
+exp:
+  T_NUMBER           { $$ = $1; }
+| exp '+' exp        { $$ = $1 + $3;  }
+| exp '-' exp        { $$ = $1 - $3;  }
+;
+
+%%
+
+class Lexer implements LexerInterface {
+
+    private array $words;
+    private int   $index = 0;
+    private int   $value = 0;
+
+    public function __construct($resource)
+    {
+        $this-&gt;words = explode(' ', trim(fgets($resource)));
+    }
+
+    public function getLVal()
+    {
+        return $this-&gt;value;
+    }
+
+    public function yylex(): int
+    {
+         $this-&gt;value = 0;
+
+        if ($this-&gt;index &gt;= count($this-&gt;words)) {
+            return LexerInterface::YYEOF;
+        }
+
+        $word = $this-&gt;words[$this-&gt;index++];
+
+        if (is_numeric($word)) {
+            $this-&gt;value = (int)$word;
+
+            return LexerInterface::T_NUMBER;
+        }
+
+        return ord($word);
+    }
+}
+
+$lexer  = new Lexer(STDIN);
+$parser = new Parser($lexer);
+if (!$parser-&gt;parse()) {
+    exit(1);
+}</code></pre>
+<p>Build it:</p>
+<pre><code class="language-bash rounded">bison -S vendor/mrsuh/php-bison-skeleton/src/php-skel.m4 -o parser.php grammar.y</code></pre>
+<p>It's time to test our parser.</p>
+<pre><code class="language-bash rounded">php parser.php &lt;&lt;&lt; "1 + 2 - 3 + 4 - 5 + 6 - 7 + 8 - 9 + 10"
+7</code></pre>
+<p>It works!</p>
+<p>Some useful links:</p>
+<ul>
+<li><a href="https://github.com/mrsuh/php-bison-skeleton/tree/master/examples">PHP skeleton library</a></li>
+<li><code>parser.php</code> <a href="https://github.com/mrsuh/php-bison-skeleton/tree/master/examples/calc-pull">source code</a></li>
+<li>more <a href="https://github.com/mrsuh/php-bison-skeleton/tree/master/examples">examples</a></li>
+<li><a href="https://github.com/mrsuh/docker-bison">Bison docker image</a></li>
+<li><a href="/articles/2022/parsing-with-php-bison-and-re2c/">Parsing with PHP, Bison, and re2c</a></li>
+</ul>
+</div>
+
+<div class="footer" style="height: 40px"></div>
+</body>
+
+<link rel="stylesheet" href="/highlight.github-dark-dimmed.min.css">
+<script src="/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+</html>

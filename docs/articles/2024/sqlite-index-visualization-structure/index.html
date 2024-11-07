@@ -14,7 +14,7 @@
 
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="mrsuh.com">
-    <meta property="og:url" content="https://mrsuh.com2024/sqlite-index-visualization-structure">
+    <meta property="og:url" content="https://mrsuh.com/articles/2024/sqlite-index-visualization-structure">
     <meta property="og:title" content="SQLite Index Visualization: Structure">
     <meta property="og:description" content="While reading articles on index theory, I gained a general understanding of their structure.However,...">
     <meta property="og:image:type" content="image/png">
@@ -22,7 +22,7 @@
     
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="mrsuh.com">
-    <meta name="twitter:url" content="https://mrsuh.com2024/sqlite-index-visualization-structure">
+    <meta name="twitter:url" content="https://mrsuh.com/articles/2024/sqlite-index-visualization-structure">
     <meta name="twitter:title" content="SQLite Index Visualization: Structure">
     <meta name="twitter:creator" content="@mrsuh6">
     <meta name="twitter:description" content="While reading articles on index theory, I gained a general understanding of their structure.However,...">
@@ -40,6 +40,10 @@
         
         h1 {
             margin-bottom: 30px;
+        }
+        
+        .img-max-height {
+            max-height: calc(50vh + 180px);
         }
 
         @media screen and (max-width: 600px) {
@@ -66,10 +70,10 @@
 
 <div class="content">
     <h1>SQLite Index Visualization: Structure</h1>
-<p>While reading articles on index theory, I gained a general understanding of their structure.<br />
-However, I always wanted to look inside, see the data structure, understand the algorithm implementations, and how index data is stored in persistent memory.<br />
+<p>While reading articles on index theory, I gained a general understanding of their structure.
+However, I always wanted to look inside, see the data structure, understand the algorithm implementations, and how index data is stored in persistent memory.
 Theory and actual implementation can vary significantly, so I decided to dive into this topic.</p>
-<p>I wanted to visually see how a database management system (DBMS) stores an index in both persistent and random-access memory and understand how a cursor navigates the index during a search.<br />
+<p>I wanted to visually see how a database management system (DBMS) stores an index in both persistent and random-access memory and understand how a cursor navigates the index during a search.
 I chose <a href="https://en.wikipedia.org/wiki/SQLite">SQLite</a> for this because:</p>
 <ul>
 <li>It’s a very common DBMS, used in browsers, mobile development, and operating systems</li>
@@ -78,23 +82,23 @@ I chose <a href="https://en.wikipedia.org/wiki/SQLite">SQLite</a> for this becau
 <li>It’s open-source.</li>
 </ul>
 <a href="#h2-node-and-page-structure" id="h2-node-and-page-structure" class="text-decoration-none text-reset"><h2>Node and Page Structure</h2></a>
-<p>According to SQLite3 documentation, indexes are stored in a B-Tree structure, which is a balanced tree where each node can have several children.<br />
-Usually, it’s depicted as follows:<br />
-<a href="./images/b-tree.svg"><img src="./images/b-tree.svg" alt="" class="img-fluid mx-auto d-block rounded" /></a></p>
-<p>To understand how SQLite stores nodes, let's look at the Page and Cell structures.<br />
-A Page (analogous to a Node) stores Cells data and a reference to its right child Page.<br />
-A Cell contains index data, a rowId, and a reference to its left child Page.<br />
+<p>According to SQLite3 documentation, indexes are stored in a B-Tree structure, which is a balanced tree where each node can have several children.
+Usually, it’s depicted as follows:
+<a href="./images/b-tree.svg"><img src="./images/b-tree.svg" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p>To understand how SQLite stores nodes, let's look at the Page and Cell structures.
+A Page (analogous to a Node) stores Cells data and a reference to its right child Page.
+A Cell contains index data, a rowId, and a reference to its left child Page.
 By default, every row in an SQLite table has a unique rowid identifier, which acts similarly to a primary key if one isn’t explicitly defined.</p>
-<p>Чтобы понять, как SQLite хранит узлы, рассмотрим структуру Page и Cell.<br />
-Page (аналог Node) хранит данные всех Cell и ссылку на правого ребёнка Page.<br />
-Cell содержит индексные данные, <a href="https://www.sqlite.org/lang_createtable.html#rowid">rowId</a> и ссылку на левого ребёнка Page.<br />
+<p>Чтобы понять, как SQLite хранит узлы, рассмотрим структуру Page и Cell.
+Page (аналог Node) хранит данные всех Cell и ссылку на правого ребёнка Page.
+Cell содержит индексные данные, <a href="https://www.sqlite.org/lang_createtable.html#rowid">rowId</a> и ссылку на левого ребёнка Page.
 SQLite используется rowID Вместо Primary Key в таблицах.</p>
-<p>Here’s a representation of index B-Tree:<br />
-<a href="./images/b-tree-sqlite.svg"><img src="./images/b-tree-sqlite.svg" alt="" class="img-fluid mx-auto d-block rounded" /></a></p>
-<p>Index data is stored in persistent memory like this:<br />
-<a href="./images/b-tree-store.svg"><img src="./images/b-tree-store.svg" alt="" class="img-fluid mx-auto d-block rounded" /></a></p>
-<p>Each page has a size that’s a power of two, between 512 and 65,536 bytes.<br />
-All database pages are the same size. Page and Cell headers occupy 4 bytes each and aren’t stored in C structures.<br />
+<p>Here’s a representation of index B-Tree:
+<a href="./images/b-tree-sqlite.svg"><img src="./images/b-tree-sqlite.svg" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p>Index data is stored in persistent memory like this:
+<a href="./images/b-tree-store.svg"><img src="./images/b-tree-store.svg" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p>Each page has a size that’s a power of two, between 512 and 65,536 bytes.
+All database pages are the same size. Page and Cell headers occupy 4 bytes each and aren’t stored in C structures.
 To find a child’s page number, you need to read the header separately using function:</p>
 <pre><code class="language-c rounded">get4byte(...)</code></pre>
 <p>Here’s how these structures appear in code:</p>
@@ -124,10 +128,10 @@ Number of entries................................. 1000
 B-tree depth...................................... 2         
 Total pages used.................................. 4        
 ... </code></pre>
-<p>This tool analyzes the structure and usage of indexes within your SQLite database.<br />
+<p>This tool analyzes the structure and usage of indexes within your SQLite database.
 Sqlite3 analyzer provides general information about index pages and size, though it doesn’t detail pages or their data per tree level.</p>
 <a href="#h2-analyzing-sqlite-source-code" id="h2-analyzing-sqlite-source-code" class="text-decoration-none text-reset"><h2>Analyzing SQLite Source Code</h2></a>
-<p>After a few weeks of experimenting, I wrote my first version of functions for index analysis.<br />
+<p>After a few weeks of experimenting, I wrote my first version of functions for index analysis.
 The function reads the content of the pages and cells of the selected index, outputting data to STDOUT in this format:</p>
 <pre><code class="language-bash rounded">SQL query -&gt; selected index -&gt; dump</code></pre>
 <p>You can view the code <a href="https://github.com/mrsuh/sqlite-index/blob/main/sqlite.patch">here</a>:</p>
@@ -136,7 +140,7 @@ The function reads the content of the pages and cells of the selected index, out
 char **sqlite3DebugGetCellPayloadAndRowId(BtCursor *pCur, MemPage *pPage, int cellIndex);
 
 void sqlite3DebugBtreeIndexDump(BtCursor *pCur, int pageNumber);</code></pre>
-<p>The function outputs data by page, then by each cell on that page, recursively for all pages in the tree.<br />
+<p>The function outputs data by page, then by each cell on that page, recursively for all pages in the tree.
 Output example:</p>
 <pre><code class="language-bash rounded">sqlite3BtreeIndexDump: page, number=3, rightChildPageNumber=99
 sqlite3BtreeIndexDump: cell, number=0, leftChildPageNumber=7, payload=384, rowId=384
@@ -160,14 +164,14 @@ sqlite3BtreeIndexDump: cell, number=0, leftChildPageNumber=-1, payload=1, rowId=
 sqlite3BtreeIndexDump: cell, number=1, leftChildPageNumber=-1, payload=2, rowId=2
 ...</code></pre>
 <p>Great! Now the easiest part remains — displaying all of this visually.</p>
-<p>I found a library <a href="https://github.com/benyasin/d3-org-tree">d3-org-tree</a> for visualizing index structures.<br />
-Here’s what it looked like in early stages:<br />
-<a href="./images/test-tree-d3.png"><img src="./images/test-tree-d3.png" alt="" class="img-fluid mx-auto d-block rounded" /></a></p>
-<p>There was a problem: spacing between pages wasn’t customizable, and as tree depth and page count per level increased,<br />
-the image became very large, making details hard to view.<br />
-<a href="./images/test-tree-d3-wide.png"><img src="./images/test-tree-d3-wide.png" alt="" class="img-fluid mx-auto d-block rounded" /></a></p>
+<p>I found a library <a href="https://github.com/benyasin/d3-org-tree">d3-org-tree</a> for visualizing index structures.
+Here’s what it looked like in early stages:
+<a href="./images/test-tree-d3.png"><img src="./images/test-tree-d3.png" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p>There was a problem: spacing between pages wasn’t customizable, and as tree depth and page count per level increased,
+the image became very large, making details hard to view.
+<a href="./images/test-tree-d3-wide.png"><img src="./images/test-tree-d3-wide.png" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
 <p>I tried editing JS/CSS, but it wasn’t effective.</p>
-<p>After several trials with d3-org-tree, I decided it was more convenient to use text.<br />
+<p>After several trials with d3-org-tree, I decided it was more convenient to use text.
 Example:</p>
 <pre><code class="language-bash rounded">------------------------------------------------------------------------------------------------------------------------
  Total Pages: 29
@@ -197,39 +201,39 @@ Example:</p>
                |Payload: 000000000000000000000000000000     | │Payload: 000000000000000000000000000000     |
                |============================================| |============================================|
 ------------------------------------------------------------------------------------------------------------------------</code></pre>
-<p>Not bad, but I could go further. PHP has an extension for drawing images, <a href="https://www.php.net/manual/en/intro.imagick.php">imagemagick</a>, allowing even more customization than the text-based version.<br />
-After a dozen iterations, here’s the final result:<br />
-<a href="./images/test-tree-php.webp"><img src="./images/test-tree-php.webp" alt="" class="img-fluid mx-auto d-block rounded" /></a></p>
-<p>The image now contains all the necessary data and can be clearly viewed.<br />
-In the top-left corner, there's general information about the index:<br />
-Each level shows the total number of pages and cells for that level.<br />
-Each page displays its number, the link to its right child, and data about the first and last cell.<br />
-Each level displays only a few pages, including the first and last pages of the level.<br />
+<p>Not bad, but I could go further. PHP has an extension for drawing images, <a href="https://www.php.net/manual/en/intro.imagick.php">imagemagick</a>, allowing even more customization than the text-based version.
+After a dozen iterations, here’s the final result:
+<a href="./images/test-tree-php.webp"><img src="./images/test-tree-php.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p>The image now contains all the necessary data and can be clearly viewed.
+In the top-left corner, there's general information about the index:
+Each level shows the total number of pages and cells for that level.
+Each page displays its number, the link to its right child, and data about the first and last cell.
+Each level displays only a few pages, including the first and last pages of the level.
 At the first level, the root page is located.</p>
 <p>To generate an image from the dump:</p>
 <pre><code class="language-bash rounded">php bin/console app:render-index --dumpIndexPath=dump.txt --outputImagePath=image.webp</code></pre>
-<p>Now it’s time to experiment!<br />
+<p>Now it’s time to experiment!
 We can generate different data for the indexes and explore what's inside them.</p>
-<p>To start, it would be interesting to see how the index size increases from 1 to 1,000,000 records.<br />
+<p>To start, it would be interesting to see how the index size increases from 1 to 1,000,000 records.
 Before each index image, I'll show the table's data structure, how the index was created, and how the table was populated with data.</p>
 <a href="#h2-index-with-1-record" id="h2-index-with-1-record" class="text-decoration-none text-reset"><h2>Index with 1 record</h2></a>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 INT NOT NULL);
 INSERT INTO table_test (column1) VALUES (1);
 CREATE INDEX idx ON table_test (column1 ASC);</code></pre>
-<p><a href="./images/index-1.webp"><img src="./images/index-1.webp" alt="" class="img-fluid mx-auto d-block rounded" /></a><br />
+<p><a href="./images/index-1.webp"><img src="./images/index-1.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a>
 One level, one page, one cell. Simple!</p>
 <a href="#h2-index-with-1000-records" id="h2-index-with-1000-records" class="text-decoration-none text-reset"><h2>Index with 1000 records</h2></a>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 INT NOT NULL);
 INSERT INTO table_test (column1) VALUES (1),(2),(3),...,(998),(999),(1000);
 CREATE INDEX idx ON table_test (column1 ASC);</code></pre>
-<p><a href="./images/index-1000.webp"><img src="./images/index-1000.webp" alt="" class="img-fluid mx-auto d-block rounded" /></a></p>
+<p><a href="./images/index-1000.webp"><img src="./images/index-1000.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
 <a href="#h2-index-with-1.000.000-records" id="h2-index-with-1.000.000-records" class="text-decoration-none text-reset"><h2>Index with 1.000.000 records</h2></a>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 INT NOT NULL);
 INSERT INTO table_test (column1) VALUES (1),(2),(3),...,(999998),(999999),(1000000);
 CREATE INDEX idx ON table_test (column1 ASC);</code></pre>
-<p><a href="./images/index-1000000.webp"><img src="./images/index-1000000.webp" alt="" class="img-fluid mx-auto d-block rounded" /></a></p>
-<p>Now we've reached the image used earlier as an example.<br />
-It has 3 levels, 2,930 pages, and 1,000,000 cells. Since the data was incrementally inserted, for rowId = 1, column1 = 1.<br />
+<p><a href="./images/index-1000000.webp"><img src="./images/index-1000000.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p>Now we've reached the image used earlier as an example.
+It has 3 levels, 2,930 pages, and 1,000,000 cells. Since the data was incrementally inserted, for rowId = 1, column1 = 1.
 The index stores data from column1 as specified.</p>
 <a href="#h2-comparing-asc-and-desc-indexes" id="h2-comparing-asc-and-desc-indexes" class="text-decoration-none text-reset"><h2>Comparing ASC and DESC Indexes</h2></a>
 <p>Adding two indexes with different sort directions.</p>
@@ -237,40 +241,40 @@ The index stores data from column1 as specified.</p>
 INSERT INTO table_test (column1) VALUES (1),(2),(3),...,(999998),(999999),(1000000);
 CREATE INDEX idx_asc ON table_test (column1 ASC);
 CREATE INDEX idx_desc ON table_test (column1 DESC);</code></pre>
-<p><a href="./images/index-order-asc.webp"><img src="./images/index-order-asc.webp" alt="" class="img-fluid mx-auto d-block rounded" /></a></p>
-<p>The ASC index is the same as above, as ASC sorting is used by default.<br />
-In the first cell of the leftmost page, it contains the table's first entry: rowId=1, column1=1, payload=1.<br />
+<p><a href="./images/index-order-asc.webp"><img src="./images/index-order-asc.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p>The ASC index is the same as above, as ASC sorting is used by default.
+In the first cell of the leftmost page, it contains the table's first entry: rowId=1, column1=1, payload=1.
 In the last cell on the rightmost page, we see rowId=1,000,000, column1=1,000,000, payload=1,000,000.</p>
-<p><a href="./images/index-order-desc.webp"><img src="./images/index-order-desc.webp" alt="" class="img-fluid mx-auto d-block rounded" /></a></p>
-<p>The DESC index is reversed.<br />
-In the first cell of the leftmost page, it contains the table's last entry: rowId=1,000,000, column1=1,000,000, payload=1,000,000.<br />
+<p><a href="./images/index-order-desc.webp"><img src="./images/index-order-desc.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p>The DESC index is reversed.
+In the first cell of the leftmost page, it contains the table's last entry: rowId=1,000,000, column1=1,000,000, payload=1,000,000.
 In the last cell on the rightmost page, we see rowId=1, column1=1, payload=1.</p>
 <a href="#h2-index-with-expression-based-data" id="h2-index-with-expression-based-data" class="text-decoration-none text-reset"><h2>Index with expression-based data</h2></a>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 TEXT NOT NULL);
 INSERT INTO table_test (column1) VALUES ('{"timestamp":1}'),('{"timestamp":2}'),('{"timestamp":3}'),...,('{"timestamp":999998}'),('{"timestamp":999999}'),('{"timestamp":1000000}');
 CREATE INDEX idx ON table_test (strftime('%Y-%m-%d %H:%M:%S', json_extract(column1, '$.timestamp'), 'unixepoch') ASC);</code></pre>
-<p><a href="./images/index-expression.webp"><img src="./images/index-expression.webp" alt="" class="img-fluid mx-auto d-block rounded" /></a><br />
+<p><a href="./images/index-expression.webp"><img src="./images/index-expression.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a>
 The index now holds a string generated by the expression. You can use complex expressions, and the index will store the result for quick searches.</p>
 <a href="#h2-unique-index-with-null-values" id="h2-unique-index-with-null-values" class="text-decoration-none text-reset"><h2>Unique index with NULL values</h2></a>
 <p>SQLite supports unique indexes with NULL values:</p>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 INT)
 INSERT INTO table_test (column1) VALUES (1),(NULL),(NULL),...,(NULL),(NULL),(1000000);
 CREATE UNIQUE INDEX idx ON table_test (column1 ASC);</code></pre>
-<p><a href="./images/index-unique.webp"><img src="./images/index-unique.webp" alt="" class="img-fluid mx-auto d-block rounded" /></a></p>
+<p><a href="./images/index-unique.webp"><img src="./images/index-unique.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
 <p>This index behaves the same as if we were storing only non-NULL values, with no change in the number of pages or cells.</p>
 <a href="#h2-filtering-null-values-with-partial-indexes" id="h2-filtering-null-values-with-partial-indexes" class="text-decoration-none text-reset"><h2>Filtering NULL Values with Partial Indexes</h2></a>
 <p>An index containing only non-NULL values:</p>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 INT)
 INSERT INTO table_test (column1) VALUES (1),(NULL),(NULL),...,(NULL),(NULL),(1000000);
 CREATE INDEX idx ON table_test (column1 ASC) WHERE column1 IS NOT NULL;</code></pre>
-<p><a href="./images/index-partial.webp"><img src="./images/index-partial.webp" alt="" class="img-fluid mx-auto d-block rounded" /></a></p>
+<p><a href="./images/index-partial.webp"><img src="./images/index-partial.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
 <p>The index now contains just one page, leading to faster searches than the previous example.</p>
 <a href="#h2-multi-column-index" id="h2-multi-column-index" class="text-decoration-none text-reset"><h2>Multi-Column Index</h2></a>
 <p>Данные по всем полям в ячейке хранятся следом друг за другом.</p>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 INT NOT NULL, column2 INT NOT NULL);
 INSERT INTO table_test (column1, column2) VALUES (1,1),(2,2),(3,3),...,(999998,999998),(999999,999999),(1000000,1000000);
 CREATE INDEX idx ON table_test (column1 ASC, column2 ASC);</code></pre>
-<p><a href="./images/index-complex.webp"><img src="./images/index-complex.webp" alt="" class="img-fluid mx-auto d-block rounded" /></a></p>
+<p><a href="./images/index-complex.webp"><img src="./images/index-complex.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
 <p>The fields are separated visually with a colon <code>:</code>.</p>
 <a href="#h2-comparing-indexes-created-before-and-after-data-population" id="h2-comparing-indexes-created-before-and-after-data-population" class="text-decoration-none text-reset"><h2>Comparing Indexes Created Before and After Data Population</h2></a>
 <p>When adding data, the tree must rebalance itself, potentially less efficiently than creating it with pre-existing data.</p>
@@ -279,9 +283,9 @@ CREATE INDEX idx_before ON table_test (column1 ASC);
 INSERT INTO table_test (column1) VALUES (1),(2),(3),...,(999998),(999999),(1000000);
 CREATE INDEX idx_after ON table_test (column1 ASC);</code></pre>
 <a href="#h3-before" id="h3-before" class="text-decoration-none text-reset"><h3>Before</h3></a>
-<p><a href="./images/index-time-before.webp"><img src="./images/index-time-before.webp" alt="" class="img-fluid mx-auto d-block rounded" /></a></p>
+<p><a href="./images/index-time-before.webp"><img src="./images/index-time-before.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
 <a href="#h3-after" id="h3-after" class="text-decoration-none text-reset"><h3>After</h3></a>
-<p><a href="./images/index-time-after.webp"><img src="./images/index-time-after.webp" alt="" class="img-fluid mx-auto d-block rounded" /></a></p>
+<p><a href="./images/index-time-after.webp"><img src="./images/index-time-after.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
 <p>While the indexes look similar, the page count differs. With fewer pages, the second index must be faster:</p>
 <pre><code class="language-bash rounded">+--------+-------------+-------------+
 |        | Total pages | Total cells |
@@ -315,33 +319,33 @@ REINDEX idx;</code></pre>
 +--------+-------------+-------------+</code></pre>
 <p>After performing VACUUM/REINDEX, the number of pages in the index significantly decreased. </p>
 <a href="#h2-text-data-in-indexes" id="h2-text-data-in-indexes" class="text-decoration-none text-reset"><h2>Text Data in Indexes</h2></a>
-<p>Let's see how text is stored.<br />
+<p>Let's see how text is stored.
 In fact, short strings are stored directly in the index cells. Longer text must be stored separately.</p>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 text NOT NULL);
 INSERT INTO table_test (column1) VALUES ('text-1'),('text-2'),('text-3'),...,('text-999998'),('text-999999'),('text-1000000');
 CREATE INDEX idx ON table_test (column1 ASC);</code></pre>
-<p><a href="./images/index-text.webp"><img src="./images/index-text.webp" alt="" class="img-fluid mx-auto d-block rounded" /></a></p>
+<p><a href="./images/index-text.webp"><img src="./images/index-text.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
 <p>You can clearly see the actual string stored directly in the index.</p>
 <a href="#h2-float-point-data-in-indexes" id="h2-float-point-data-in-indexes" class="text-decoration-none text-reset"><h2>Float-point Data in Indexes</h2></a>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 REAL NOT NULL);
 INSERT INTO table_test (column1) VALUES ('1.14'),('2.14'),('3.14'),...,('999998.14'),('999999.14'),('1000000.14');
 CREATE INDEX idx ON table_test (column1 ASC);</code></pre>
-<p><a href="./images/index-real.webp"><img src="./images/index-real.webp" alt="" class="img-fluid mx-auto d-block rounded" /></a></p>
+<p><a href="./images/index-real.webp"><img src="./images/index-real.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
 <a href="#h2-combining-integer-and-text-in-a-single-index:" id="h2-combining-integer-and-text-in-a-single-index:" class="text-decoration-none text-reset"><h2>Combining integer and text in a single index:</h2></a>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 INT NOT NULL, column2 TEXT NOT NULL);
 INSERT INTO table_test (column1, column2) VALUES (1,'text-1'),(2,'text-2'),(3,'text-3'),...,(999998,'text-999998'),(999999,'text-999999'),(1000000,'text-1000000');
 CREATE INDEX idx ON table_test (column1 ASC, column2 ASC);</code></pre>
-<p><a href="./images/index-integer-text.webp"><img src="./images/index-integer-text.webp" alt="" class="img-fluid mx-auto d-block rounded" /></a><br />
+<p><a href="./images/index-integer-text.webp"><img src="./images/index-integer-text.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a>
 The integer and string are stored together in the cell, just as we specified when creating the index.</p>
 <p>To recreate all of these examples, you can run the following:</p>
 <pre><code class="language-bash rounded">docker run -it --rm -v "$PWD":/app/data --platform linux/x86_64 mrsuh/sqlite-index bash
 sh bin/test-index.sh</code></pre>
 <p>Code and examples are available <a href="https://github.com/mrsuh/sqlite-index">here</a> </p>
 <a href="#h2-conclusion" id="h2-conclusion" class="text-decoration-none text-reset"><h2>Conclusion</h2></a>
-<p>Based on the work performed, it was possible to visualize the internal structure of indexes in SQLite,<br />
-examining how record data is stored in persistent and operational memory, and how the B-Tree organizes storage and access to data.<br />
-Using custom tools for analyzing and visualizing the structure of index trees, along with creating detailed images across various data volumes,<br />
-we can clearly observe differences in page sizes, page arrangement, the number of cells at each level, and the effect of sort order or expressions on index content.<br />
+<p>Based on the work performed, it was possible to visualize the internal structure of indexes in SQLite,
+examining how record data is stored in persistent and operational memory, and how the B-Tree organizes storage and access to data.
+Using custom tools for analyzing and visualizing the structure of index trees, along with creating detailed images across various data volumes,
+we can clearly observe differences in page sizes, page arrangement, the number of cells at each level, and the effect of sort order or expressions on index content.
 The visualization has helped demonstrate how the structure changes with the addition of new records and how using VACUUM and REINDEX can optimize and reduce the number of pages needed to store the same data.</p>
 <p>In the next part, I'll try to visualize index-based searches and look into some interesting SQL queries.</p>
 </div>

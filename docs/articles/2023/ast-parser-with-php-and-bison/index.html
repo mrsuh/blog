@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="author" content="Anton Sukhachev">
+    <title>AST parser with PHP and Bison</title>
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+
+    <meta name="description" content="Read this post if you don&#039;t know what Bison is.I already have the Bison AST parser, but this ti..."/>
+    <meta name="keywords" content="anton sukhachev, mrsuh"/>
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="mrsuh.com">
+    <meta property="og:url" content="https://mrsuh.com/articles/2023/ast-parser-with-php-and-bison">
+    <meta property="og:title" content="AST parser with PHP and Bison">
+    <meta property="og:description" content="Read this post if you don&#039;t know what Bison is.I already have the Bison AST parser, but this ti...">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:alt" content="Anton Sukhachev">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="mrsuh.com">
+    <meta name="twitter:url" content="https://mrsuh.com/articles/2023/ast-parser-with-php-and-bison">
+    <meta name="twitter:title" content="AST parser with PHP and Bison">
+    <meta name="twitter:creator" content="@mrsuh6">
+    <meta name="twitter:description" content="Read this post if you don&#039;t know what Bison is.I already have the Bison AST parser, but this ti...">
+    <meta name="twitter:image:alt" content="Anton Sukhachev">
+    
+    <link href="/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            color: #343a40;
+        }
+
+        hr.list {
+            margin: 0
+        }
+        
+        h1 {
+            margin-bottom: 30px;
+        }
+        
+        .img-max-height {
+            max-height: calc(50vh + 180px);
+        }
+
+        @media screen and (max-width: 600px) {
+            .list-date {
+                display: none;
+            }
+        }
+
+    </style>
+</head>
+<body class="container fs-5" style="max-width: 1000px">
+
+<div class="header" style="padding-top: 20px; padding-bottom: 10px">
+    <div class="row">
+        <div class="col">
+            <a href="/">Anton Sukhachev</a>
+        </div>
+        <div class="col text-end">
+            <a href="/articles/">Articles</a>
+        </div>
+    </div>
+    <hr/>
+</div>
+
+<div class="content">
+    <h1>AST parser with PHP and Bison</h1>
+<blockquote>
+<p>Read this <a href="/articles/2023/php-skeleton-for-bison/">post</a> if you don't know what Bison is.</p>
+</blockquote>
+<p>I already have the <a href="https://github.com/mrsuh/php-ast">Bison AST parser</a>, but this time I will do it without PHP FFI.</p>
+<p>First, we need to install the <a href="https://github.com/mrsuh/php-bison-skeleton">PHP skeleton package</a> to build the parser and <a href="https://github.com/mrsuh/tree-printer">tree printer package</a> to print <code>AST</code>.</p>
+<pre><code class="language-bash rounded">composer require --dev mrsuh/php-bison-skeleton
+composer require mrsuh/tree-printer</code></pre>
+<p>It will more readable if we separate code from <code>printer.php</code> to individual files.</p>
+<pre><code class="language-bash rounded">.
+├── /ast-parser
+    ├── /bin
+    │   └── parse.php # entry point for parser
+    ├── /lib
+    │   └── parser.php # generated file
+    ├── /src
+    │   ├── Lexer.php
+    │   └── Node.php # AST node
+    └── grammar.y       </code></pre>
+<p>To print <code>AST</code> with the tree printer package <code>Node</code> class must implement <code>Mrsuh\Tree\NodeInterface</code>.</p>
+<p><code>src/Node.php</code></p>
+<pre><code class="language-php rounded">&lt;?php
+
+namespace App;
+
+use Mrsuh\Tree\NodeInterface;
+
+class Node implements NodeInterface
+{
+    private string $name;
+    private string $value;
+    /** @var Node[] */
+    private array $children;
+
+    public function __construct(string $name, string $value, array $children = [])
+    {
+        $this-&gt;name     = $name;
+        $this-&gt;value    = $value;
+        $this-&gt;children = $children;
+    }
+
+    public function getChildren(): array
+    {
+        return $this-&gt;children;
+    }
+
+    public function __toString(): string
+    {
+        $line = $this-&gt;name;
+        if (!empty($this-&gt;value)) {
+            $line .= sprintf(" '%s'", $this-&gt;value);
+        }
+
+        return $line;
+    }
+}</code></pre>
+<p><code>Lexer</code> is not modified from <a href="/articles/2023/php-skeleton-for-bison/">previous post</a>, but this time we will put it in a separate file <code>src/Lexer.php</code>.</p>
+<p><code>src/Lexer.php</code></p>
+<pre><code class="language-php rounded">&lt;?php
+
+namespace App;
+
+class Lexer implements LexerInterface {
+
+    private array $words;
+    private int   $index = 0;
+    private int   $value = 0;
+
+    public function __construct($resource)
+    {
+        $this-&gt;words = explode(' ', trim(fgets($resource)));
+    }
+
+    public function yyerror(string $message): void
+    {
+        printf("%s\n", $message);
+    }
+
+    public function getLVal()
+    {
+        return $this-&gt;value;
+    }
+
+    public function yylex(): int
+    {
+        if ($this-&gt;index &gt;= count($this-&gt;words)) {
+            return LexerInterface::YYEOF;
+        }
+
+        $word = $this-&gt;words[$this-&gt;index++];
+        if (is_numeric($word)) {
+            $this-&gt;value = (int)$word;
+
+            return LexerInterface::T_NUMBER;
+        }
+
+        return ord($word);
+    }
+}</code></pre>
+<p>For example, <code>Lexer</code> will translate the expression <code>10 + 20 - 30</code> into this:</p>
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>word</th>
+<th>token</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10</td>
+<td>LexerInterface::T_NUMBER (258)</td>
+<td>10</td>
+</tr>
+<tr>
+<td>+</td>
+<td>ASCII (43)</td>
+<td></td>
+</tr>
+<tr>
+<td>20</td>
+<td>LexerInterface::T_NUMBER (258)</td>
+<td>20</td>
+</tr>
+<tr>
+<td>-</td>
+<td>ASCII (45)</td>
+<td></td>
+</tr>
+<tr>
+<td>30</td>
+<td>LexerInterface::T_NUMBER (258)</td>
+<td>30</td>
+</tr>
+<tr>
+<td></td>
+<td>LexerInterface::YYEOF (0)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>It's time to create the <code>grammar.y</code> file and build <code>lib/parser.php</code>
+You can define <code>%code</code> blocks, so Bison will render code as is in <code>printer.php</code></p>
+<p><code>grammar.y</code></p>
+<pre><code class="language-php rounded">%code imports { // code imports };
+%code parser  { // code parser }; 
+%code init    { // code init };           </code></pre>
+<p><code>printer.php</code></p>
+<pre><code class="language-php rounded">&lt;?php
+
+// code imports
+
+class Parser {
+    // code parser
+    public function __construct() {
+        // code init
+    }
+}</code></pre>
+<p>We will use block <code>%code parser</code> to define variables and methods to store <code>AST</code> into the <code>Parser</code> class.
+Bison has reserved the symbol <code>$</code> in grammar actions.
+It's very sad for PHP developers, but we can call the function <code>setAst()</code> with <code>self::setAst()</code> instead of <code>$this-&gt;setAst()</code>.</p>
+<p><code>grammar.y</code></p>
+<pre><code class="language-php rounded">%define api.parser.class {Parser}
+%define api.namespace {App}
+%code parser {
+    private Node $ast;
+    public function setAst(Node $ast): void { $this-&gt;ast = $ast; }
+    public function getAst(): Node { return $this-&gt;ast; }
+}
+
+%token T_NUMBER
+
+%left '-' '+'
+
+%%
+start:
+  expression                 {  self::setAst($1); }
+;
+
+expression:
+  T_NUMBER                   { $$ = new Node('NUMBER', $1); }
+| expression '+' expression  { $$ = new Node('OPERATION_PLUS', '', [$1, $3]);  }
+| expression '-' expression  { $$ = new Node('OPERATION_MINUS', '', [$1, $3]);  }
+;</code></pre>
+<pre><code class="language-bash rounded">bison -S vendor/mrsuh/php-bison-skeleton/src/php-skel.m4 -o lib/parser.php grammar.y</code></pre>
+<p>Command options:</p>
+<ul>
+<li><code>-S vendor/mrsuh/php-bison-skeleton/src/php-skel.m4</code> - path to <code>skeleton</code> file</li>
+<li><code>-o parser.php</code> - output parser file</li>
+<li><code>grammar.y</code> - our grammar file</li>
+</ul>
+<p>And final PHP file is the entry point <code>bin/parse.php</code>.</p>
+<p><code>bin/parse.php</code></p>
+<pre><code class="language-php rounded">&lt;?php
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use App\Lexer;
+use App\Parser;
+use Mrsuh\Tree\Printer;
+
+$lexer  = new Lexer(STDIN);
+$parser = new Parser($lexer);
+if (!$parser-&gt;parse()) {
+    exit(1);
+}
+
+$printer = new Printer(STDOUT);
+$printer-&gt;print($parser-&gt;getAst());</code></pre>
+<p>We need to add a special autoload section to <code>composer.json</code> for generated <code>lib/parser.php</code> file.</p>
+<p><code>composer.json</code></p>
+<pre><code class="language-json rounded">{
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        },
+        "files": ["lib/parser.php"]
+    },
+    ...
+}</code></pre>
+<p>Ok. Our parser is ready and we can test it:</p>
+<pre><code class="language-bash rounded">php bin/parse.php &lt;&lt;&lt; "1 + 2 - 3"
+.
+├── OPERATION_MINUS
+    ├── OPERATION_PLUS
+    │   ├── NUMBER '1'
+    │   └── NUMBER '2'
+    └── NUMBER '3'</code></pre>
+<p>Try to parse big expression:</p>
+<pre><code class="language-bash rounded">php bin/parse.php &lt;&lt;&lt; "1 + 2 - 3 + 4 - 5 + 6 - 7 + 8 - 9 + 10"
+.
+├── OPERATION_PLUS
+    ├── OPERATION_MINUS
+    │   ├── OPERATION_PLUS
+    │   │   ├── OPERATION_MINUS
+    │   │   │   ├── OPERATION_PLUS
+    │   │   │   │   ├── OPERATION_MINUS
+    │   │   │   │   │   ├── OPERATION_PLUS
+    │   │   │   │   │   │   ├── OPERATION_MINUS
+    │   │   │   │   │   │   │   ├── OPERATION_PLUS
+    │   │   │   │   │   │   │   │   ├── NUMBER '1'
+    │   │   │   │   │   │   │   │   └── NUMBER '2'
+    │   │   │   │   │   │   │   └── NUMBER '3'
+    │   │   │   │   │   │   └── NUMBER '4'
+    │   │   │   │   │   └── NUMBER '5'
+    │   │   │   │   └── NUMBER '6'
+    │   │   │   └── NUMBER '7'
+    │   │   └── NUMBER '8'
+    │   └── NUMBER '9'
+    └── NUMBER '10'</code></pre>
+<p>Great!</p>
+<p>You can get the parser source code <a href="https://github.com/mrsuh/php-bison-skeleton/tree/master/examples/calc-ast">here</a> and test it by yourself.</p>
+<p>Some useful links:</p>
+<ul>
+<li><a href="https://github.com/mrsuh/php-bison-skeleton/tree/master/examples">PHP skeleton library</a></li>
+<li>more <a href="https://github.com/mrsuh/php-bison-skeleton/tree/master/examples">examples</a></li>
+<li><a href="https://github.com/mrsuh/docker-bison">Bison docker image</a></li>
+<li><a href="/articles/2022/parsing-with-php-bison-and-re2c/">Parsing with PHP, Bison, and re2c</a></li>
+</ul>
+</div>
+
+<div class="footer" style="height: 40px"></div>
+</body>
+
+<link rel="stylesheet" href="/highlight.github-dark-dimmed.min.css">
+<script src="/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+</html>

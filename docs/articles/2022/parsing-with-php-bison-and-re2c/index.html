@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="author" content="Anton Sukhachev">
+    <title>Parsing with PHP, Bison and re2c</title>
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+
+    <meta name="description" content="The PHP engine uses Bison and re2c to parse code into AST.I&#039;ll show you how we can use these to..."/>
+    <meta name="keywords" content="anton sukhachev, mrsuh"/>
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="mrsuh.com">
+    <meta property="og:url" content="https://mrsuh.com/articles/2022/parsing-with-php-bison-and-re2c">
+    <meta property="og:title" content="Parsing with PHP, Bison and re2c">
+    <meta property="og:description" content="The PHP engine uses Bison and re2c to parse code into AST.I&#039;ll show you how we can use these to...">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:alt" content="Anton Sukhachev">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="mrsuh.com">
+    <meta name="twitter:url" content="https://mrsuh.com/articles/2022/parsing-with-php-bison-and-re2c">
+    <meta name="twitter:title" content="Parsing with PHP, Bison and re2c">
+    <meta name="twitter:creator" content="@mrsuh6">
+    <meta name="twitter:description" content="The PHP engine uses Bison and re2c to parse code into AST.I&#039;ll show you how we can use these to...">
+    <meta name="twitter:image:alt" content="Anton Sukhachev">
+    
+    <link href="/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            color: #343a40;
+        }
+
+        hr.list {
+            margin: 0
+        }
+        
+        h1 {
+            margin-bottom: 30px;
+        }
+        
+        .img-max-height {
+            max-height: calc(50vh + 180px);
+        }
+
+        @media screen and (max-width: 600px) {
+            .list-date {
+                display: none;
+            }
+        }
+
+    </style>
+</head>
+<body class="container fs-5" style="max-width: 1000px">
+
+<div class="header" style="padding-top: 20px; padding-bottom: 10px">
+    <div class="row">
+        <div class="col">
+            <a href="/">Anton Sukhachev</a>
+        </div>
+        <div class="col text-end">
+            <a href="/articles/">Articles</a>
+        </div>
+    </div>
+    <hr/>
+</div>
+
+<div class="content">
+    <h1>Parsing with PHP, Bison and re2c</h1>
+<p>The <code>PHP</code> engine uses <code>Bison</code> and <code>re2c</code> to parse code into <code>AST</code>.
+I'll show you how we can use these tools with and without <code>PHP</code> to parse any structured text.</p>
+<p><a href="https://re2c.org">re2c</a> is an open-source lexer generator. It uses regular expressions to recognize tokens.</p>
+<p>A simple lexer example:</p>
+<p>lexer.l</p>
+<pre><code class="language-c rounded">#include &lt;stdio.h&gt;
+
+const char *lex(const char *s)
+{
+    /*!re2c
+        re2c:yyfill:enable = 0;
+        re2c:define:YYCTYPE = char;
+        re2c:define:YYCURSOR = s;
+
+        [0-9]+ { return "TOK_NUMBER"; }
+        *      { return "TOK_ANY"; }
+    */
+
+    return "";
+}
+
+int main(int argc, char *argv[])
+{
+    printf("%s\n", lex(argv[1]));
+
+    return 0;
+}</code></pre>
+<p>Lexer reads <code>stdin</code>, determines <code>token</code> using a regular expression and prints <code>token</code>.</p>
+<p>The <code>re2c</code> replaces the <code>/*!re2c ... */</code> block with actual code:</p>
+<pre><code class="language-bash rounded">re2c lexer.l &gt; lexer.c</code></pre>
+<p>Lexer code after <code>re2c</code>:
+lexer.c</p>
+<pre><code class="language-c rounded">#line 1 "lexer.l"
+#include &lt;stdio.h&gt;
+
+const char *lex(const char *s)
+{
+
+#line 9 "&lt;stdout&gt;"
+{
+    char yych;
+    yych = *s;
+    switch (yych) {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9': goto yy2;
+        default: goto yy1;
+    }
+yy1:
+    ++s;
+#line 11 "lexer.l"
+    { return "TOK_ANY"; }
+#line 30 "&lt;stdout&gt;"
+yy2:
+    yych = *++s;
+    switch (yych) {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9': goto yy2;
+        default: goto yy3;
+    }
+yy3:
+#line 10 "lexer.l"
+    { return "TOK_NUMBER"; }
+#line 49 "&lt;stdout&gt;"
+}
+#line 12 "lexer.l"
+
+    return "";
+}
+
+int main(int argc, char *argv[])
+{
+    printf("%s\n", lex(argv[1]));
+
+    return 0;
+}</code></pre>
+<p>Let's compile and test it:</p>
+<pre><code class="language-bash rounded">gcc lexer.c -o lexer</code></pre>
+<pre><code class="language-bash rounded">./lexer 123
+TOK_NUMBER</code></pre>
+<pre><code class="language-bash rounded">./lexer test
+TOK_ANY</code></pre>
+<p>Not bad. Now we can recognize numbers.</p>
+<p>The next part is parsing.</p>
+<p><a href="https://www.gnu.org/software/bison">Bison</a> is an open-source context-free parser generator.
+It can generate a parser from <a href="https://en.wikipedia.org/wiki/Backus–Naur_form">BNF</a>.</p>
+<p>A simple Bison example:</p>
+<p>parser.y</p>
+<pre><code class="language-c rounded">%code top {
+  #include &lt;ctype.h&gt;  /* isdigit. */
+  #include &lt;stdio.h&gt;  /* printf. */
+
+  int yylex();
+  void yyerror(char const *);
+}
+
+%define api.header.include {"parser.h"}
+
+%define api.value.type {double}
+%token TOK_NUMBER
+%type  expr
+
+%left '-' '+'
+
+%% /* The grammar follows. */
+input:
+  %empty
+| expr '\n'  { printf ("%.10g\n", $1); }
+;
+
+expr:
+  TOK_NUMBER    { $$ = $1; }
+| expr '+' expr { $$ = $1 + $3; }
+| expr '-' expr { $$ = $1 - $3; }
+;
+
+%%
+
+int yylex()
+{
+    int c;
+
+    /* Ignore white space, get first nonwhite character.  */
+    while ((c = getchar()) == ' ' || c == '\t')
+    {
+        continue;
+    }
+
+    if (c == EOF)
+    {
+        return YYEOF;
+    }
+
+    /* Char starts a number =&gt; parse the number. */
+    if (c == '.' || isdigit(c))
+    {
+        ungetc(c, stdin);
+        if (scanf("%lf", &amp;yylval) != 1)
+        {
+            return YYUNDEF;
+        }
+
+        return TOK_NUMBER;
+    }
+
+    return c;
+}
+
+void yyerror(char const *s)
+{
+    fprintf(stderr, "%s\n", s);
+}
+
+int main()
+{
+    return yyparse();
+}</code></pre>
+<p>The main parser function is <code>yyparse</code>. <code>Bison</code> generates it himself.
+Each time the parser needs the next token it calls the <code>yylex</code> function.
+The <code>yylex</code> function reads a word, recognizes the word's <code>token</code>, stores the word in <code>yyval</code> and returns the <code>token</code>.</p>
+<p>We have changed the type of <code>yyval</code> to store a <code>double</code> number.</p>
+<pre><code class="language-c rounded">%define api.value.type {double}</code></pre>
+<p>Bison grammar says:</p>
+<ul>
+<li>parse text with numbers and signs (for example <code>1 + 2 - 3</code>);</li>
+<li>math it;</li>
+<li>print the result.</li>
+</ul>
+<pre><code class="language-c rounded">input:
+  %empty
+| expr '\n'  { printf ("%.10g\n", $1); }
+;
+
+expr:
+  TOK_NUMBER    { $$ = $1 }
+| expr '+' expr { $$ = $1 + $3; }
+| expr '-' expr { $$ = $1 - $3; }
+;</code></pre>
+<p>Generate a parser and compile it:</p>
+<pre><code class="language-bash rounded">bison --header -o parser.c parser.y
+gcc parser.c -o parser</code></pre>
+<pre><code class="language-bash rounded">./parser
+1 + 7
+8</code></pre>
+<p>It works!</p>
+<p>Let's combine <code>Bison</code> and <code>re2c</code> to parse simple math expressions into an <a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree">AST</a>.</p>
+<p>First we need an <code>AST</code> node structure and functions to create this structure:
+<a href="https://github.com/mrsuh/calc-parser/blob/main/src/ast.c">ast.c</a></p>
+<pre><code class="language-c rounded">typedef struct parser_ast {
+    const char* kind;
+    const char* value;
+    struct parser_ast* children[2];
+} parser_ast;
+
+parser_ast* create_ast(const char* kind, const char* value);
+
+parser_ast* create_ast_operation(const char* kind, parser_ast* left, parser_ast* right);</code></pre>
+<p>We need a <code>char*</code> type for <code>TOK_NUMBER</code> and a <code>parser_ast*</code> type for AST.
+The <code>yyval</code> type has become the <code>parser_t</code> structure:
+<a href="https://github.com/mrsuh/calc-parser/blob/main/src/ast.c">ast.c</a></p>
+<pre><code class="language-c rounded">typedef union parser_t {
+    char* number;
+    parser_ast* ast;
+} parser_t;</code></pre>
+<p>Let's rewrite <code>parser.y</code> with a new <code>yyval</code> type and <code>AST</code> functions:
+<a href="https://github.com/mrsuh/calc-parser/blob/main/src/parser.y">parser.y</a></p>
+<pre><code class="language-c rounded">%require "3.8"
+
+%code top {
+  #include &lt;stdio.h&gt;  /* fprintf. */
+  #include "ast.h"
+
+  int yylex(char **content);
+  void yyerror(char **content, char const *);
+  parser_ast *ast = NULL;
+}
+
+%param {char **content}
+
+%define api.header.include {"parser.h"}
+%define api.value.type {parser_t}
+
+%token &lt;number&gt; TOK_NUMBER
+%type  &lt;ast&gt; expr
+
+%left '-' '+'
+
+%%
+
+line:
+  %empty
+|  expr { ast = $1; }
+;
+
+expr:
+    TOK_NUMBER    { $$ = create_ast("NUMBER", $1); }
+|   expr '+' expr { $$ = create_ast_operation("OPERATION_PLUS", $1, $3); }
+|   expr '-' expr { $$ = create_ast_operation("OPERATION_MINUS", $1, $3); }
+;
+
+%%
+
+void yyerror (char **content, char const *s)
+{
+  fprintf (stderr, "%s\n", s);
+}
+
+parser_ast* parse(char *content) {
+
+    yyparse(&amp;content);
+
+    return ast;
+}
+
+int main(int argc, char *argv[])
+{
+    ast = parse(argv[1]);
+    if (ast == NULL) {
+       return 1;
+    }
+
+    dump_ast(ast, 0);
+
+    return 0;
+}</code></pre>
+<p>The new grammar creates a <code>parser_ast</code> structure with <code>AST</code> functions:
+<a href="https://github.com/mrsuh/calc-parser/blob/main/src/parser.y">parser.y</a></p>
+<pre><code class="language-c rounded">expr:
+    TOK_NUMBER    { $$ = create_ast("NUMBER", $1); }
+|   expr '+' expr { $$ = create_ast_operation("OPERATION_PLUS", $1, $3); }
+|   expr '-' expr { $$ = create_ast_operation("OPERATION_MINUS", $1, $3); }</code></pre>
+<p>Let's rewrite the <code>yylex</code> function with <code>re2c</code> and a new <code>yyval</code> type:
+<a href="https://github.com/mrsuh/calc-parser/blob/main/src/lexer.l">lexer.l</a></p>
+<pre><code class="language-c rounded">#include "ast.h"
+#include "parser.h"
+#include &lt;stdio.h&gt; // sprintf
+#include &lt;stdlib.h&gt; // malloc
+
+int yylex(char **content)
+{
+    for(;;) {
+        char *last = *content;
+        /*!re2c
+            re2c:define:YYCTYPE  = char;
+            re2c:define:YYCURSOR = *content;
+            re2c:yyfill:enable   = 0;
+            [\+\-]                { return *(*content-1); }
+            [0-9]+                {
+                                    int size = *content-last;
+                                    yylval.number = (char *)malloc(size);
+                                    sprintf(yylval.number, "%.*s", size, last);
+                                    return TOK_NUMBER;
+                                  }
+            [ \t]+                { continue; }
+            [\x00]                { return YYEOF; }
+        */
+    }
+
+    return YYUNDEF;
+}</code></pre>
+<p>For dump AST we need help function:
+<a href="https://github.com/mrsuh/calc-parser/blob/main/src/ast.c">ast.c</a></p>
+<pre><code class="language-c rounded">void dump_ast(parser_ast* ast, int indent) {
+    for(int i = 0; i &lt; indent; i++) {
+        printf(" ");
+    }
+
+    printf("%s", ast-&gt;kind);
+
+    if(ast-&gt;value != "") {
+        printf(" \"%s\"", ast-&gt;value);
+    }
+    printf("\n");
+
+    for(int i = 0; i &lt; 2; i++) {
+        if(ast-&gt;children[i] != NULL) {
+            dump_ast(ast-&gt;children[i], indent + 2);
+        }
+    }
+}</code></pre>
+<p>Now we can compile all files into one and test it:</p>
+<pre><code class="language-bash rounded">bison --header -o parser.c parser.y
+re2c lexer.l &gt; lexer.c
+gcc ast.c lexer.c parser.c -o parser</code></pre>
+<pre><code class="language-bash rounded">./parser "10 - 20 + 30"
+OPERATION_PLUS
+  OPERATION_MINUS
+    NUMBER "10"
+    NUMBER "20"
+  NUMBER "30"</code></pre>
+<p>Cool. But I want to use it with <code>PHP</code>.
+I need to compile a <code>shared</code> library:</p>
+<pre><code class="language-bash rounded">gcc -fPIC -shared -I . -o library_linux.so ast.c lexer.c parser.c</code></pre>
+<p>It's time to include <code>library_linux.so</code> into <code>PHP</code> with <code>FFI</code>:
+<a href="https://github.com/mrsuh/calc-parser/blob/main/bin/parse.php">parse.php</a></p>
+<pre><code class="language-php rounded">&lt;?php
+
+$libc = \FFI::cdef('
+typedef struct parser_ast {
+    const char* kind;
+    const char* value;
+    struct parser_ast* children[2];
+} parser_ast;
+parser_ast* parse(char *content);
+', __DIR__ . "/library_linux.so");
+
+function dump($ast, int $indent = 0): void
+{
+    $node = $ast[0];
+    printf("%s%s%s\n",
+        (str_repeat(' ', $indent)),
+        $node-&gt;kind,
+        $node-&gt;value ? sprintf(" \"%s\"", $node-&gt;value) : ''
+    );
+    for ($i = 0; $i &lt; 2; $i++) {
+        if ($node-&gt;children[$i] !== null) {
+            dump($node-&gt;children[$i], $indent + 2);
+        }
+    }
+}
+
+$ast = $libc-&gt;parse($argv[1]);
+dump($ast);</code></pre>
+<pre><code class="language-bash rounded">php parse.php "10 - 20 + 30"
+OPERATION_PLUS
+  OPERATION_MINUS
+    NUMBER "10"
+    NUMBER "20"
+  NUMBER "30"</code></pre>
+<p>And it works again!</p>
+<p>I posted the source code on <a href="https://github.com/mrsuh/calc-parser">GitHub</a>.</p>
+<p>Hope it will be useful for you!</p>
+</div>
+
+<div class="footer" style="height: 40px"></div>
+</body>
+
+<link rel="stylesheet" href="/highlight.github-dark-dimmed.min.css">
+<script src="/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+</html>
