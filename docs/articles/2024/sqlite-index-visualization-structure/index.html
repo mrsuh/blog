@@ -93,8 +93,8 @@ I chose <a href="https://en.wikipedia.org/wiki/SQLite">SQLite</a> for this becau
 </ul>
 <a href="#h2-node-and-page-structure" id="h2-node-and-page-structure" class="text-decoration-none text-reset"><h2>Node and Page Structure</h2></a>
 <p>According to SQLite3 documentation, indexes are stored in a B-Tree structure, which is a balanced tree where each node can have several children.
-Usually, it’s depicted as follows:
-<a href="./images/b-tree.svg"><img src="./images/b-tree.svg" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+Usually, it’s depicted as follows:</p>
+<p><a href="./images/b-tree.svg"><img src="./images/b-tree.svg" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
 <p>To understand how SQLite stores nodes, let's look at the Page and Cell structures.
 A Page (analogous to a Node) stores Cells data and a reference to its right child Page.
 A Cell contains index data, a rowId, and a reference to its left child Page.
@@ -103,10 +103,10 @@ By default, every row in an SQLite table has a unique rowid identifier, which ac
 Page (аналог Node) хранит данные всех Cell и ссылку на правого ребёнка Page.
 Cell содержит индексные данные, <a href="https://www.sqlite.org/lang_createtable.html#rowid">rowId</a> и ссылку на левого ребёнка Page.
 SQLite используется rowID Вместо Primary Key в таблицах.</p>
-<p>Here’s a representation of index B-Tree:
-<a href="./images/b-tree-sqlite.svg"><img src="./images/b-tree-sqlite.svg" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
-<p>Index data is stored in persistent memory like this:
-<a href="./images/b-tree-store.svg"><img src="./images/b-tree-store.svg" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p>Here’s a representation of index B-Tree:</p>
+<p><a href="./images/b-tree-sqlite.svg"><img src="./images/b-tree-sqlite.svg" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p>Index data is stored in persistent memory like this:</p>
+<p><a href="./images/b-tree-store.svg"><img src="./images/b-tree-store.svg" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
 <p>Each page has a size that’s a power of two, between 512 and 65,536 bytes.
 All database pages are the same size. Page and Cell headers occupy 4 bytes each and aren’t stored in C structures.
 To find a child’s page number, you need to read the header separately using function:</p>
@@ -175,11 +175,11 @@ sqlite3BtreeIndexDump: cell, number=1, leftChildPageNumber=-1, payload=2, rowId=
 ...</code></pre>
 <p>Great! Now the easiest part remains — displaying all of this visually.</p>
 <p>I found a library <a href="https://github.com/benyasin/d3-org-tree">d3-org-tree</a> for visualizing index structures.
-Here’s what it looked like in early stages:
-<a href="./images/test-tree-d3.png"><img src="./images/test-tree-d3.png" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+Here’s what it looked like in early stages:</p>
+<p><a href="./images/test-tree-d3.png"><img src="./images/test-tree-d3.png" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
 <p>There was a problem: spacing between pages wasn’t customizable, and as tree depth and page count per level increased,
-the image became very large, making details hard to view.
-<a href="./images/test-tree-d3-wide.png"><img src="./images/test-tree-d3-wide.png" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+the image became very large, making details hard to view.</p>
+<p><a href="./images/test-tree-d3-wide.png"><img src="./images/test-tree-d3-wide.png" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
 <p>I tried editing JS/CSS, but it wasn’t effective.</p>
 <p>After several trials with d3-org-tree, I decided it was more convenient to use text.
 Example:</p>
@@ -212,8 +212,8 @@ Example:</p>
                |============================================| |============================================|
 ------------------------------------------------------------------------------------------------------------------------</code></pre>
 <p>Not bad, but I could go further. PHP has an extension for drawing images, <a href="https://www.php.net/manual/en/intro.imagick.php">imagemagick</a>, allowing even more customization than the text-based version.
-After a dozen iterations, here’s the final result:
-<a href="./images/test-tree-php.webp"><img src="./images/test-tree-php.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+After a dozen iterations, here’s the final result:</p>
+<p><a href="./images/test-tree-php.webp"><img src="./images/test-tree-php.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
 <p>The image now contains all the necessary data and can be clearly viewed.
 In the top-left corner, there's general information about the index:
 Each level shows the total number of pages and cells for that level.
@@ -230,8 +230,8 @@ Before each index image, I'll show the table's data structure, how the index was
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 INT NOT NULL);
 INSERT INTO table_test (column1) VALUES (1);
 CREATE INDEX idx ON table_test (column1 ASC);</code></pre>
-<p><a href="./images/index-1.webp"><img src="./images/index-1.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a>
-One level, one page, one cell. Simple!</p>
+<p><a href="./images/index-1.webp"><img src="./images/index-1.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p>One level, one page, one cell. Simple!</p>
 <a href="#h2-index-with-1000-records" id="h2-index-with-1000-records" class="text-decoration-none text-reset"><h2>Index with 1000 records</h2></a>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 INT NOT NULL);
 INSERT INTO table_test (column1) VALUES (1),(2),(3),...,(998),(999),(1000);
@@ -263,8 +263,8 @@ In the last cell on the rightmost page, we see rowId=1, column1=1, payload=1.</p
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 TEXT NOT NULL);
 INSERT INTO table_test (column1) VALUES ('{"timestamp":1}'),('{"timestamp":2}'),('{"timestamp":3}'),...,('{"timestamp":999998}'),('{"timestamp":999999}'),('{"timestamp":1000000}');
 CREATE INDEX idx ON table_test (strftime('%Y-%m-%d %H:%M:%S', json_extract(column1, '$.timestamp'), 'unixepoch') ASC);</code></pre>
-<p><a href="./images/index-expression.webp"><img src="./images/index-expression.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a>
-The index now holds a string generated by the expression. You can use complex expressions, and the index will store the result for quick searches.</p>
+<p><a href="./images/index-expression.webp"><img src="./images/index-expression.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p>The index now holds a string generated by the expression. You can use complex expressions, and the index will store the result for quick searches.</p>
 <a href="#h2-unique-index-with-null-values" id="h2-unique-index-with-null-values" class="text-decoration-none text-reset"><h2>Unique index with NULL values</h2></a>
 <p>SQLite supports unique indexes with NULL values:</p>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 INT)
@@ -345,8 +345,8 @@ CREATE INDEX idx ON table_test (column1 ASC);</code></pre>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 INT NOT NULL, column2 TEXT NOT NULL);
 INSERT INTO table_test (column1, column2) VALUES (1,'text-1'),(2,'text-2'),(3,'text-3'),...,(999998,'text-999998'),(999999,'text-999999'),(1000000,'text-1000000');
 CREATE INDEX idx ON table_test (column1 ASC, column2 ASC);</code></pre>
-<p><a href="./images/index-integer-text.webp"><img src="./images/index-integer-text.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a>
-The integer and string are stored together in the cell, just as we specified when creating the index.</p>
+<p><a href="./images/index-integer-text.webp"><img src="./images/index-integer-text.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p>The integer and string are stored together in the cell, just as we specified when creating the index.</p>
 <p>To recreate all of these examples, you can run the following:</p>
 <pre><code class="language-bash rounded">docker run -it --rm -v "$PWD":/app/data --platform linux/x86_64 mrsuh/sqlite-index bash
 sh bin/test-index.sh</code></pre>

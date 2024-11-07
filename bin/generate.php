@@ -138,7 +138,15 @@ class Article
     }
 }
 
+$new = [
+    2024 => [
+        Article::create("SQLite Index Visualization: Search", "/articles/2024/sqlite-index-visualization-search/", "Nov 15"),
+        Article::create("SQLite Index Visualization: Structure", "/articles/2024/sqlite-index-visualization-structure/", "Nov 5"),
+    ],
+];
+
 $articles = [
+   
     2023 => [
         Article::create("How I Wrote PHP Skeleton For Bison", "https://devm.io/php/php-skeleton-bison-generics", "Sep 15"),
         Article::create("JSON parser with PHP and Bison", "/articles/2023/json-parser-with-php-and-bison/", "Apr 3"),

@@ -80,8 +80,8 @@
 
 <div class="content">
     <h1>How PHP engine builds AST</h1>
-<p>First let's look at the PHP codeflow:
-<a href="./images/flow.png"><img src="./images/flow.png" alt="PHP codeflow" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p>First let's look at the PHP codeflow:</p>
+<p><a href="./images/flow.png"><img src="./images/flow.png" alt="PHP codeflow" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
 <p>Prior to version 7, PHP generated <code>OPcodes</code> right inside the parser. PHP 7 introduced a new code abstraction - <a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree">AST</a>.
 Now we can separate <code>parsing</code> and <code>compilation</code>.</p>
 <p>In this post I want to talk about the <code>Lexer + Parser</code> part.</p>

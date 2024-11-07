@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="author" content="Anton Sukhachev">
+    <title>SQLite Index Visualization: Search</title>
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+
+    <meta name="description" content="In the previous post, I explained how I learned to extract data from SQLite indexes and visualize it..."/>
+    <meta name="keywords" content="anton sukhachev, mrsuh"/>
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="mrsuh.com">
+    <meta property="og:url" content="https://mrsuh.com/articles/2024/sqlite-index-visualization-search">
+    <meta property="og:title" content="SQLite Index Visualization: Search">
+    <meta property="og:description" content="In the previous post, I explained how I learned to extract data from SQLite indexes and visualize it...">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:alt" content="Anton Sukhachev">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="mrsuh.com">
+    <meta name="twitter:url" content="https://mrsuh.com/articles/2024/sqlite-index-visualization-search">
+    <meta name="twitter:title" content="SQLite Index Visualization: Search">
+    <meta name="twitter:creator" content="@mrsuh6">
+    <meta name="twitter:description" content="In the previous post, I explained how I learned to extract data from SQLite indexes and visualize it...">
+    <meta name="twitter:image:alt" content="Anton Sukhachev">
+    
+    <link href="/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            color: #343a40;
+        }
+
+        hr.list {
+            margin: 0
+        }
+        
+        h1 {
+            margin-bottom: 30px;
+        }
+        
+        .img-max-height {
+            max-height: calc(50vh + 180px);
+        }
+
+        @media screen and (max-width: 600px) {
+            .list-date {
+                display: none;
+            }
+        }
+
+    </style>
+</head>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GMXWT1YP3F"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-GMXWT1YP3F');
+</script>
+
+<body class="container fs-5" style="max-width: 1000px">
+
+<div class="header" style="padding-top: 20px; padding-bottom: 10px">
+    <div class="row">
+        <div class="col">
+            <a href="/">Anton Sukhachev</a>
+        </div>
+        <div class="col text-end">
+            <a href="/articles/">Articles</a>
+        </div>
+    </div>
+    <hr/>
+</div>
+
+<div class="content">
+    <h1>SQLite Index Visualization: Search</h1>
+<p>In the previous post, I explained how I learned to extract data from SQLite indexes and visualize it.
+This time, I'll try to visualize a search within an index.</p>
+<a href="#h2-how-does-sqlite-search-within-an-index?" id="h2-how-does-sqlite-search-within-an-index?" class="text-decoration-none text-reset"><h2>How does SQLite search within an index?</h2></a>
+<p><a href="./images/b-tree-sqlite-search.svg"><img src="./images/b-tree-sqlite-search.svg" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p>Inside each page, a binary search occurs among the cell values. After the search, the left child of the nearest cell is chosen.
+If all the cell values on the page are smaller than the searched value, the right child of the page is selected.</p>
+<p>If you compile SQLite with <a href="https://www.sqlite.org/debugging.html">debugging</a> enabled and activate it for queries, you can get a lot of information about SQLite's internal structure and the specific query being run.
+First, you should know that SQLite has a virtual machine. This is likely designed to support a wide range of devices on which it can run.
+Even with a simple EXPLAIN, we can see the OPCODEs of the virtual machine, its registers (p1, p2...), and comments. You can read more about the virtual machine's internals <a href="https://www.sqlite.org/opcode.html">here</a>.</p>
+<pre><code class="language-sql rounded">EXPLAIN SELECT rowId, column1 FROM table_test INDEXED BY idx WHERE column1 = 1;
+addr  opcode         p1    p2    p3    p4             p5  comment      
+----  -------------  ----  ----  ----  -------------  --  -------------
+0     Init           0     11    0                    0   Start at 11
+1     OpenRead       1     2694  0     k(2,,)         2   root=2694 iDb=0; idx
+2     Explain        2     0     0     SEARCH table_test USING COVERING INDEX idx (column1=?) 0   
+3     Integer        1     1     0                    0   r[1]=1
+4     SeekGE         1     10    1     1              0   key=r[1]
+5       IdxGT          1     10    1     1              0   key=r[1]
+6       IdxRowid       1     2     0                    0   r[2]=rowid; table_test.rowid
+7       Column         1     0     3                    0   r[3]= cursor 1 column 0
+8       ResultRow      2     2     0                    0   output=r[2..3]
+9     Next           1     5     1                    0   
+10    Halt           0     0     0                    0   
+11    Transaction    0     0     3     0              1   usesStmtJournal=0
+12    TableLock      0     2     0     table_test     0   iDb=0 root=2 write=0
+13    Goto           0     1     0                    0</code></pre>
+<p>From the EXPLAIN output, you can see the root page number of the index, the opcodes used to search for data in the index, and the associated values:</p>
+<pre><code class="language-bash rounded">1     OpenRead       1     2694  0     k(2,,)         2   root=2694 iDb=0; idx
+...
+3     Integer        1     1     0                    0   r[1]=1
+4     SeekGE         1     10    1     1              0   key=r[1]</code></pre>
+<p>After the query runs, you can check the search counter, which will tell you how many times data was searched in the index:</p>
+<pre><code class="language-SQL rounded">SELECT rowId, column1 FROM table_test INDEXED BY idx WHERE column1 = 1;
+.testctrl seek_count
+1</code></pre>
+<p>More detailed information about the pages involved and the cells compared cannot be obtained easily.
+I dug into the code and added output to track all the pages and cells read during the search.
+The output looks like this:</p>
+<pre><code class="language-bash rounded">sqlite3DebugMoveToRoot:
+sqlite3DebugBtreeIndexMoveto: pageNumber=2694, cellNumber=5, payload=532656, rowId=532656
+sqlite3DebugBtreeIndexCompare: index=1, type=int, value=1
+sqlite3DebugBtreeIndexMoveto: pageNumber=2694, cellNumber=2, payload=270768, rowId=270768
+sqlite3DebugBtreeIndexCompare: index=1, type=int, value=1
+...
+sqlite3DebugBtreeIndexMoveto: pageNumber=2695, cellNumber=0, payload=1, rowId=1
+sqlite3DebugBtreeIndexCompare: index=1, type=int, value=1
+sqlite3DebugResultRow:
+1|1</code></pre>
+<p>This gives a detailed trace of the pages and cells involved in the search, allowing us to count the number of basic operations and compare it to the theoretical complexity of the algorithm.
+Then I modified the index visualization code, and here's what I came up with:</p>
+<p><a href="./images/search-equal.webp"><img src="./images/search-equal.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p>In the upper left corner, we display the general index information and search details: </p>
+<ul>
+<li>Total number of pages/cells in the index.</li>
+<li>Number of pages loaded for the search.</li>
+<li>Number of cells checked during the search.</li>
+<li>Number of times the data was searched in the index.</li>
+<li>Number of cell comparisons.</li>
+<li>Number of filtered cells.</li>
+</ul>
+<p>The searched cell and the cells it linked to are highlighted in bright colors.</p>
+<p>It should be clear, when you see the number of pages/cells/comparisons during the search.
+However, the number of filtered values needs a bit of explanation.
+For example, you search for a specific number in the index:</p>
+<pre><code class="language-sql rounded">SELECT * FROM table WHERE column = 10;</code></pre>
+<p>SQLite will first find the first cell with the value 10, and then it will check subsequent cells, as they may also be 10.
+So, we no longer perform a search, but we read the next cells and filter them.
+This means that for simple queries, there should always be at least one filtering operation.</p>
+<p>To generate such an image, you'll need a dump of the index and the search.
+This can be done using the following commands:</p>
+<pre><code class="language-bash rounded">docker run -it --rm -v "$PWD":/app/data --platform linux/x86_64 mrsuh/sqlite-index bash
+sh bin/dump-index.sh database.sqlite "SELECT column1 FROM table_test INDEXED BY idx WHERE column1 = 1;" dump-index.txt
+sh bin/dump-search.sh database.sqlite "SELECT column1 FROM table_test INDEXED BY idx WHERE column1 = 1;" dump-search.txt
+php bin/console app:render-search --dumpIndexPath=dump-index.txt --dumpSearchPath=dump-search.txt --outputImagePath=image.webp</code></pre>
+<p>The search dump file contains a lot of useful information about the query.
+If you want to compare several queries or just see how a query works internally, simply open this file:</p>
+<pre><code class="language-bash rounded">### QUERY
+SELECT rowId, column1 FROM table_test INDEXED BY idx WHERE column1 = 1;
+
+### EXPLAIN QUERY PLAN
+`--SEARCH table_test USING COVERING INDEX idx (column1=?)
+
+### EXPLAIN QUERY
+addr  opcode         p1    p2    p3    p4             p5  comment      
+----  -------------  ----  ----  ----  -------------  --  -------------
+0     Init           0     11    0                    0   Start at 11
+1     OpenRead       1     2694  0     k(2,,)         2   root=2694 iDb=0; idx
+
+...
+
+### RESULT
+rowid  column1
+-----  -------
+1      1      </code></pre>
+<p>Let’s experiment!</p>
+<a href="#h2-query-with-a-single-column-and-equality-condition" id="h2-query-with-a-single-column-and-equality-condition" class="text-decoration-none text-reset"><h2>Query with a single column and equality condition</h2></a>
+<p>Before showing each index image, I will describe the table structure, how the index was created, and how the table was populated.</p>
+<pre><code class="language-SQL rounded">CREATE TABLE table_test (column1 INT NOT NULL);
+INSERT INTO table_test (column1) VALUES (1),(2),(3),...,(999998),(999999),(1000000);
+CREATE INDEX idx ON table_test (column1 ASC);</code></pre>
+<pre><code class="language-sql rounded">SELECT rowId, column1 FROM table_test INDEXED BY idx WHERE column1 = 1;
+rowid  column1
+-----  -------
+1      1</code></pre>
+<p><a href="./images/search-equal.webp"><img src="./images/search-equal.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p>We read 3 pages, compared 19 cells, and filtered out one cell. The actual number of comparisons in our specific example is 19, which is less than the theoretical worst-case complexity of binary search
+O(log2(n)) -&gt; O(log2(1.000.000)) -&gt; 19.93</p>
+<a href="#h2-testing-queries-with-multiple-values-in-in()" id="h2-testing-queries-with-multiple-values-in-in()" class="text-decoration-none text-reset"><h2>Testing Queries with Multiple Values in IN()</h2></a>
+<pre><code class="language-SQL rounded">CREATE TABLE table_test (column1 INT NOT NULL);
+INSERT INTO table_test (column1) VALUES (1),(2),(3),...,(999998),(999999),(1000000);
+CREATE INDEX idx ON table_test (column1 ASC);</code></pre>
+<pre><code class="language-sql rounded">SELECT rowId, column1 FROM table_test INDEXED BY idx WHERE column1 IN (1,1000000);
+rowid    column1
+-------  -------
+1        1      
+1000000  1000000</code></pre>
+<p><a href="./images/search-range-1000000.webp"><img src="./images/search-range-1000000.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p>The information on the total search is displayed in the top left, but only the cells involved in finding each value are highlighted.
+For each value in the IN list, SQLite performs a separate index search. In some cases, optimizations may reduce the number of seeks, but in general,
+the DBMS will traverse the index from the root to the target value for each item in the IN list.</p>
+<a href="#h2-comparing-searches-in-asc/desc-indices" id="h2-comparing-searches-in-asc/desc-indices" class="text-decoration-none text-reset"><h2>Comparing Searches in ASC/DESC Indices</h2></a>
+<pre><code class="language-SQL rounded">CREATE TABLE table_test (column1 INT NOT NULL);
+INSERT INTO table_test (column1) VALUES (1),(2),(3),...,(999998),(999999),(1000000);
+CREATE INDEX idx_asc ON table_test (column1 ASC);
+CREATE INDEX idx_desc ON table_test (column1 DESC);</code></pre>
+<pre><code class="language-sql rounded">SELECT rowId, column1 FROM table_test INDEXED BY idx_asc WHERE column1 IN (1,500000,1000000);
+rowid    column1
+-------  -------
+1        1      
+500000   500000 
+1000000  1000000</code></pre>
+<p><a href="./images/search-order-asc.webp"><img src="./images/search-order-asc.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p>Here, three values are being searched, each requiring an index lookup.
+Fewer filters than lookups are needed since no filtering is necessary after the last value.</p>
+<a href="#h2-descending-order-search" id="h2-descending-order-search" class="text-decoration-none text-reset"><h2>Descending Order Search</h2></a>
+<pre><code class="language-sql rounded">SELECT rowId, column1 FROM table_test INDEXED BY idx_desc WHERE column1 IN (1,500000,1000000);
+rowid    column1
+-------  -------
+1000000  1000000
+500000   500000 
+1        1</code></pre>
+<p><a href="./images/search-order-desc.webp"><img src="./images/search-order-desc.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p>As shown, searches in a DESC index work the same way as in an ASC index for specific values.</p>
+<a href="#h2-testing-range-searches" id="h2-testing-range-searches" class="text-decoration-none text-reset"><h2>Testing Range Searches</h2></a>
+<pre><code class="language-SQL rounded">CREATE TABLE table_test (column1 INT NOT NULL);
+INSERT INTO table_test (column1) VALUES (1),(2),(3),...,(999998),(999999),(1000000);
+CREATE INDEX idx ON table_test (column1 ASC);</code></pre>
+<pre><code class="language-sql rounded">SELECT rowId, column1 FROM table_test INDEXED BY idx WHERE column1 &gt;= 500000 LIMIT 5;
+rowid   column1
+------  -------
+500000  500000 
+500001  500001 
+500002  500002 
+500003  500003 
+500004  500004</code></pre>
+<p><a href="./images/search-greater-than.webp"><img src="./images/search-greater-than.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p>In this query, the target value was found in 20 comparisons, with 0 filtering, because the search was done on an ascending (ASC) index for a &gt;= comparison.
+SQLite simply read the next several values. There was no need for further comparisons, as all data in the index was already sorted in the required order.</p>
+<a href="#h2-expression-based-searches" id="h2-expression-based-searches" class="text-decoration-none text-reset"><h2>Expression-Based Searches</h2></a>
+<pre><code class="language-SQL rounded">CREATE TABLE table_test (column1 TEXT NOT NULL);
+INSERT INTO table_test (column1) VALUES ('{"timestamp":1}'),('{"timestamp":2}'),('{"timestamp":3}'),...,('{"timestamp":999998}'),('{"timestamp":999999}'),('{"timestamp":1000000}');
+CREATE INDEX idx ON table_test (strftime('%Y-%m-%d %H:%M:%S', json_extract(column1, '$.timestamp'), 'unixepoch') ASC);</code></pre>
+<pre><code class="language-sql rounded">SELECT rowId, strftime('%Y-%m-%d %H:%M:%S',json_extract(column1, '$.timestamp'), 'unixepoch') AS date FROM table_test INDEXED BY idx WHERE strftime('%Y-%m-%d %H:%M:%S',json_extract(column1, '$.timestamp'), 'unixepoch') = '1970-01-01 00:00:01';
+rowid  date               
+-----  -------------------
+1      1970-01-01 00:00:01</code></pre>
+<p><a href="./images/search-expression.webp"><img src="./images/search-expression.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p>A search for an exact value formed by an expression, in terms of the number of cells compared, is no different from a simple number search.
+No matter how complex the expression, its index-based search will be fast.
+The most important thing is that the expression in the index exactly matches the expression in the query.</p>
+<p>For example, if you have an index like this:</p>
+<pre><code class="language-sql rounded">CREATE INDEX idx ON table_test (column1 + column2);</code></pre>
+<p>won't work for the query</p>
+<pre><code class="language-sql rounded">SELECT * FROM table_test WHERE (column2 + column1) = 1</code></pre>
+<p>The expressions are identical in math but not in syntax. Use the exact expression as in the index:</p>
+<pre><code class="language-sql rounded">SELECT * FROM table_test WHERE (column1 + column2) = 1</code></pre>
+<a href="#h2-let&#039;s-try-searching-within-a-unique-index-where-nearly-all-values-are-filled-with-null" id="h2-let&#039;s-try-searching-within-a-unique-index-where-nearly-all-values-are-filled-with-null" class="text-decoration-none text-reset"><h2>Let's try searching within a unique index where nearly all values are filled with NULL</h2></a>
+<pre><code class="language-SQL rounded">CREATE TABLE table_test (column1 INT)
+INSERT INTO table_test (column1) VALUES (1),(NULL),(NULL),...,(NULL),(NULL),(1000000);
+CREATE UNIQUE INDEX idx ON table_test (column1 ASC);</code></pre>
+<pre><code class="language-sql rounded">SELECT rowId, column1 FROM table_test INDEXED BY idx WHERE column1 = 1;
+rowid  column1
+-----  -------
+1      1</code></pre>
+<p><a href="./images/search-unique.webp"><img src="./images/search-unique.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p>This query does not differ from an index without NULL values in terms of the number of cells read.</p>
+<a href="#h2-let&#039;s-try-a-search-in-an-index-without-null-values." id="h2-let&#039;s-try-a-search-in-an-index-without-null-values." class="text-decoration-none text-reset"><h2>Let's try a search in an index without NULL values.</h2></a>
+<p>We modified the index slightly, and now it has no NULL values.</p>
+<pre><code class="language-SQL rounded">CREATE TABLE table_test (column1 INT)
+INSERT INTO table_test (column1) VALUES (1),(NULL),(NULL),...,(NULL),(NULL),(1000000);
+CREATE INDEX idx ON table_test (column1 ASC) WHERE column1 IS NOT NULL;</code></pre>
+<pre><code class="language-sql rounded">SELECT rowId, column1 FROM table_test INDEXED BY idx WHERE column1 = 1;
+rowid  column1
+-----  -------
+1      1</code></pre>
+<p><a href="./images/search-partial.webp"><img src="./images/search-partial.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p>Now, the index contains only the required values, and the query executes instantly!</p>
+<a href="#h2-testing-a-two-column-index" id="h2-testing-a-two-column-index" class="text-decoration-none text-reset"><h2>Testing a Two-Column Index</h2></a>
+<pre><code class="language-SQL rounded">CREATE TABLE table_test (column1 INT NOT NULL, column2 INT NOT NULL);
+INSERT INTO table_test (column1, column2) VALUES (1,1),(2,2),(3,3),...,(999998,999998),(999999,999999),(1000000,1000000);
+CREATE INDEX idx ON table_test (column1 ASC, column2 ASC);</code></pre>
+<pre><code class="language-sql rounded">SELECT rowId, column1, column2 FROM table_test INDEXED BY idx WHERE column1 = 1 AND column2 = 1;
+rowid  column1  column2
+-----  -------  -------
+1      1        1</code></pre>
+<p><a href="./images/search-complex-equal.webp"><img src="./images/search-complex-equal.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p>The only difference from an index with a single column is the slightly more complex comparison algorithm.
+First, the first column is compared; if it matches the target value, then the second column is compared. If the first column doesn't match the target value, the second column is not compared.
+As a result, 19 cells were read, and 20 comparisons were made. This is because the first 18 cells were filtered out based on the first comparison. In the 19th cell, two comparisons were made.</p>
+<a href="#h2-search-complex-cardinality-equal" id="h2-search-complex-cardinality-equal" class="text-decoration-none text-reset"><h2>search-complex-cardinality-equal</h2></a>
+<p>Let's try searching for values in an index with two columns, but with different cardinalities.
+The first column has high cardinality, with values ranging from 1 to 1,000,000. The second column has low cardinality, with only values 1 and 2.</p>
+<p>We will create two indexes with different column orders.</p>
+<pre><code class="language-SQL rounded">CREATE TABLE table_test (column1 INT NOT NULL, column2 INT NOT NULL);
+INSERT INTO table_test (column1, column2) VALUES (1,1),(2,2),(3,1),...,(999998,2),(999999,1),(1000000,2);
+CREATE INDEX idx_column1_column2 ON table_test (column1 ASC, column2 ASC);
+CREATE INDEX idx_column2_column1 ON table_test (column2 ASC, column1 ASC);</code></pre>
+<pre><code class="language-sql rounded">SELECT rowId, column1, column2 FROM table_test INDEXED BY idx_column1_column2 WHERE column1 = 1 AND column2 = 1;
+rowid  column1  column2
+-----  -------  -------
+1      1        1</code></pre>
+<p><a href="./images/search-complex-cardinality-equal-column1.webp"><img src="./images/search-complex-cardinality-equal-column1.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<pre><code class="language-sql rounded">SELECT rowId, column1 column2 FROM table_test INDEXED BY idx_column2_column1 WHERE column1 = 1 AND column2 = 1;
+rowid  column2
+-----  -------
+1      1</code></pre>
+<p><a href="./images/search-complex-cardinality-equal-column2.webp"><img src="./images/search-complex-cardinality-equal-column2.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p>As shown above, searching in the index for an exact value, where the first column has high cardinality, results in fewer comparisons.
+If you can immediately determine whether the value is suitable, there's no need for a second comparison.</p>
+<a href="#h2-search-complex-cardinality-greater-than" id="h2-search-complex-cardinality-greater-than" class="text-decoration-none text-reset"><h2>search-complex-cardinality-greater-than</h2></a>
+<p>Let's try searching again using indexes with columns of high and low cardinality, but this time the query will be more complex.
+We will search for an exact match on the column with low cardinality and a range value on the column with high cardinality.</p>
+<pre><code class="language-SQL rounded">CREATE TABLE table_test (column1 INT NOT NULL, column2 INT NOT NULL);
+INSERT INTO table_test (column1, column2) VALUES (1,1),(2,2),(3,1),...,(999998,2),(999999,1),(1000000,2);
+CREATE INDEX idx_column1_column2 ON table_test (column1 ASC, column2 ASC);
+CREATE INDEX idx_column2_column1 ON table_test (column2 ASC, column1 ASC);</code></pre>
+<pre><code class="language-sql rounded">SELECT rowId, column1, column2 FROM table_test INDEXED BY idx_column1_column2 WHERE column1 &gt;= 500000 AND column2 = 2  LIMIT 10;
+rowid   column1  column2
+------  -------  -------
+500000  500000   2      
+500002  500002   2      
+500004  500004   2      
+500006  500006   2      
+500008  500008   2      
+500010  500010   2      
+500012  500012   2      
+500014  500014   2      
+500016  500016   2      
+500018  500018   2</code></pre>
+<p><a href="./images/search-complex-cardinality-greater-than-column1.webp"><img src="./images/search-complex-cardinality-greater-than-column1.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<a href="#h2-search-complex-cardinality-greater-than-column2" id="h2-search-complex-cardinality-greater-than-column2" class="text-decoration-none text-reset"><h2>search-complex-cardinality-greater-than-column2</h2></a>
+<pre><code class="language-sql rounded">SELECT rowId, column1, column2 FROM table_test INDEXED BY idx_column2_column1 WHERE column1 &gt;= 500000 AND column2 = 2 LIMIT 10;
+rowid   column1  column2
+------  -------  -------
+500000  500000   2      
+500002  500002   2      
+500004  500004   2      
+500006  500006   2      
+500008  500008   2      
+500010  500010   2      
+500012  500012   2      
+500014  500014   2      
+500016  500016   2      
+500018  500018   2</code></pre>
+<p><a href="./images/search-complex-cardinality-greater-than-column2.webp"><img src="./images/search-complex-cardinality-greater-than-column2.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p>From the examples above, it is clear that in this case, it is better to use an index where the column with low cardinality is placed first.
+In our case, after finding the first match, the DBMS can simply select all the following values without additional filtering.
+For an index where the column with high cardinality is placed first, finding the first value might be faster (as we saw in the strict search example),
+but filtering the subsequent values based on the second column could be much slower.</p>
+<p>All the images generated above can be reproduced using the following commands:</p>
+<pre><code class="language-bash rounded">docker run -it --rm -v "$PWD":/app/data --platform linux/x86_64 mrsuh/sqlite-index bash
+sh bin/test-search.sh</code></pre>
+<p>The code and examples are available <a href="https://github.com/mrsuh/sqlite-index">here</a></p>
+<p>The visualization of index search operations in SQLite3 provides a better understanding of how this database works at the
+level of internal data structures. We observed that SQLite performs binary search on cells and uses a virtual machine to optimize operations.
+Thanks to detailed logs, we can not only see the number of operations but also the specific steps that lead to finding the desired values.
+The example of different types of queries, such as searching for a single value, a range, or a combination of conditions,
+demonstrates how changes in data structure and indexes can impact search efficiency.
+Ultimately, a deep understanding of SQLite's internal workings helps optimize queries and makes interacting with indexes much more predictable and manageable.</p>
+</div>
+
+<div class="footer" style="height: 40px"></div>
+</body>
+
+<link rel="stylesheet" href="/highlight.github-dark-dimmed.min.css">
+<script src="/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+</html>

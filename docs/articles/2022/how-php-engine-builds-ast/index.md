@@ -1,6 +1,7 @@
 # How PHP engine builds AST
 
 First let's look at the PHP codeflow:
+
 ![PHP codeflow](./images/flow.png)
 
 Prior to version 7, PHP generated `OPcodes` right inside the parser. PHP 7 introduced a new code abstraction - [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree).
