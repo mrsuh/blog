@@ -81,7 +81,7 @@
 <div class="content">
     <h1>Few steps to make your docker image smaller</h1>
 <p>I have some projects where I need <a href="https://www.gnu.org/software/bison/">bison</a>. I decided to build my image when I didn't find official or fresh unofficial docker images.</p>
-<p>To compile bison you need to install some apt dependencies and compile the last version of <code>autoconf</code> from the source code.
+<p>To compile bison you need to install some apt dependencies and compile the last version of <code>autoconf</code> from the source code.<br />
 I decided to make it from <code>debian:bullseye-slim</code> image. It is the latest Debian light image which size is 80.5MB (without compression).</p>
 <pre><code class="language-bash rounded">docker images --format="table {{.Repository}}\t{{.Tag}}\t{{ .Size }}"  | grep "REPOSITORY\|debian"
 REPOSITORY    TAG             SIZE
@@ -154,7 +154,7 @@ RUN /bin/sh -c set -eux;     apt-get update;…   348MB
 REPOSITORY    TAG             SIZE
 bison-test    1.0             633MB</code></pre>
 <a href="#h2-bison-test:2.0" id="h2-bison-test:2.0" class="text-decoration-none text-reset"><h2>bison-test:2.0</h2></a>
-<p>Let's reduce layers.
+<p>Let's reduce layers.<br />
 Instead of creating many separate <code>RUN</code> commands, I wrote two scripts.</p>
 <pre><code class="language-bash rounded">RUN set -eux; \
    wget ftp://ftp.gnu.org/gnu/autoconf/autoconf-$AUTOCONF_VERSION.tar.gz; \
@@ -222,9 +222,9 @@ RUN /bin/sh -c set -eux;     apt-get update;…   330MB
 REPOSITORY    TAG             SIZE
 bison-test    3.0             422MB</code></pre>
 <a href="#h2-bison-test:4.0" id="h2-bison-test:4.0" class="text-decoration-none text-reset"><h2>bison-test:4.0</h2></a>
-<p>The last image is smaller, but too large compared to the original <code>debian:bullseye-slim</code> image.
-When you see the previous image layers, you may notice that the <code>apt-install</code> layer is very big and the last command does not reduce the size of the image.
-I need to install dependencies, compile bison and remove dependencies inside one layer.
+<p>The last image is smaller, but too large compared to the original <code>debian:bullseye-slim</code> image.<br />
+When you see the previous image layers, you may notice that the <code>apt-install</code> layer is very big and the last command does not reduce the size of the image.<br />
+I need to install dependencies, compile bison and remove dependencies inside one layer.<br />
 Let's do it.</p>
 <pre><code class="language-bash rounded">FROM debian:bullseye-slim
 

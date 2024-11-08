@@ -80,7 +80,7 @@
 
 <div class="content">
     <h1>Parsing with PHP, Bison and re2c</h1>
-<p>The <code>PHP</code> engine uses <code>Bison</code> and <code>re2c</code> to parse code into <code>AST</code>.
+<p>The <code>PHP</code> engine uses <code>Bison</code> and <code>re2c</code> to parse code into <code>AST</code>.<br />
 I'll show you how we can use these tools with and without <code>PHP</code> to parse any structured text.</p>
 <p><a href="https://re2c.org">re2c</a> is an open-source lexer generator. It uses regular expressions to recognize tokens.</p>
 <p>A simple lexer example:</p>
@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
 <p>Lexer reads <code>stdin</code>, determines <code>token</code> using a regular expression and prints <code>token</code>.</p>
 <p>The <code>re2c</code> replaces the <code>/*!re2c ... */</code> block with actual code:</p>
 <pre><code class="language-bash rounded">re2c lexer.l &gt; lexer.c</code></pre>
-<p>Lexer code after <code>re2c</code>:
+<p>Lexer code after <code>re2c</code>:<br />
 lexer.c</p>
 <pre><code class="language-c rounded">#line 1 "lexer.l"
 #include &lt;stdio.h&gt;
@@ -179,7 +179,7 @@ TOK_NUMBER</code></pre>
 TOK_ANY</code></pre>
 <p>Not bad. Now we can recognize numbers.</p>
 <p>The next part is parsing.</p>
-<p><a href="https://www.gnu.org/software/bison">Bison</a> is an open-source context-free parser generator.
+<p><a href="https://www.gnu.org/software/bison">Bison</a> is an open-source context-free parser generator.<br />
 It can generate a parser from <a href="https://en.wikipedia.org/wiki/Backus–Naur_form">BNF</a>.</p>
 <p>A simple Bison example:</p>
 <p>parser.y</p>
@@ -252,8 +252,8 @@ int main()
 {
     return yyparse();
 }</code></pre>
-<p>The main parser function is <code>yyparse</code>. <code>Bison</code> generates it himself.
-Each time the parser needs the next token it calls the <code>yylex</code> function.
+<p>The main parser function is <code>yyparse</code>. <code>Bison</code> generates it himself.<br />
+Each time the parser needs the next token it calls the <code>yylex</code> function.<br />
 The <code>yylex</code> function reads a word, recognizes the word's <code>token</code>, stores the word in <code>yyval</code> and returns the <code>token</code>.</p>
 <p>We have changed the type of <code>yyval</code> to store a <code>double</code> number.</p>
 <pre><code class="language-c rounded">%define api.value.type {double}</code></pre>
@@ -281,7 +281,7 @@ gcc parser.c -o parser</code></pre>
 8</code></pre>
 <p>It works!</p>
 <p>Let's combine <code>Bison</code> and <code>re2c</code> to parse simple math expressions into an <a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree">AST</a>.</p>
-<p>First we need an <code>AST</code> node structure and functions to create this structure:
+<p>First we need an <code>AST</code> node structure and functions to create this structure:<br />
 <a href="https://github.com/mrsuh/calc-parser/blob/main/src/ast.c">ast.c</a></p>
 <pre><code class="language-c rounded">typedef struct parser_ast {
     const char* kind;
@@ -292,14 +292,14 @@ gcc parser.c -o parser</code></pre>
 parser_ast* create_ast(const char* kind, const char* value);
 
 parser_ast* create_ast_operation(const char* kind, parser_ast* left, parser_ast* right);</code></pre>
-<p>We need a <code>char*</code> type for <code>TOK_NUMBER</code> and a <code>parser_ast*</code> type for AST.
-The <code>yyval</code> type has become the <code>parser_t</code> structure:
+<p>We need a <code>char*</code> type for <code>TOK_NUMBER</code> and a <code>parser_ast*</code> type for AST.<br />
+The <code>yyval</code> type has become the <code>parser_t</code> structure:<br />
 <a href="https://github.com/mrsuh/calc-parser/blob/main/src/ast.c">ast.c</a></p>
 <pre><code class="language-c rounded">typedef union parser_t {
     char* number;
     parser_ast* ast;
 } parser_t;</code></pre>
-<p>Let's rewrite <code>parser.y</code> with a new <code>yyval</code> type and <code>AST</code> functions:
+<p>Let's rewrite <code>parser.y</code> with a new <code>yyval</code> type and <code>AST</code> functions:<br />
 <a href="https://github.com/mrsuh/calc-parser/blob/main/src/parser.y">parser.y</a></p>
 <pre><code class="language-c rounded">%require "3.8"
 
@@ -360,13 +360,13 @@ int main(int argc, char *argv[])
 
     return 0;
 }</code></pre>
-<p>The new grammar creates a <code>parser_ast</code> structure with <code>AST</code> functions:
+<p>The new grammar creates a <code>parser_ast</code> structure with <code>AST</code> functions:<br />
 <a href="https://github.com/mrsuh/calc-parser/blob/main/src/parser.y">parser.y</a></p>
 <pre><code class="language-c rounded">expr:
     TOK_NUMBER    { $$ = create_ast("NUMBER", $1); }
 |   expr '+' expr { $$ = create_ast_operation("OPERATION_PLUS", $1, $3); }
 |   expr '-' expr { $$ = create_ast_operation("OPERATION_MINUS", $1, $3); }</code></pre>
-<p>Let's rewrite the <code>yylex</code> function with <code>re2c</code> and a new <code>yyval</code> type:
+<p>Let's rewrite the <code>yylex</code> function with <code>re2c</code> and a new <code>yyval</code> type:<br />
 <a href="https://github.com/mrsuh/calc-parser/blob/main/src/lexer.l">lexer.l</a></p>
 <pre><code class="language-c rounded">#include "ast.h"
 #include "parser.h"
@@ -395,7 +395,7 @@ int yylex(char **content)
 
     return YYUNDEF;
 }</code></pre>
-<p>For dump AST we need help function:
+<p>For dump AST we need help function:<br />
 <a href="https://github.com/mrsuh/calc-parser/blob/main/src/ast.c">ast.c</a></p>
 <pre><code class="language-c rounded">void dump_ast(parser_ast* ast, int indent) {
     for(int i = 0; i &lt; indent; i++) {
@@ -425,10 +425,10 @@ OPERATION_PLUS
     NUMBER "10"
     NUMBER "20"
   NUMBER "30"</code></pre>
-<p>Cool. But I want to use it with <code>PHP</code>.
+<p>Cool. But I want to use it with <code>PHP</code>.<br />
 I need to compile a <code>shared</code> library:</p>
 <pre><code class="language-bash rounded">gcc -fPIC -shared -I . -o library_linux.so ast.c lexer.c parser.c</code></pre>
-<p>It's time to include <code>library_linux.so</code> into <code>PHP</code> with <code>FFI</code>:
+<p>It's time to include <code>library_linux.so</code> into <code>PHP</code> with <code>FFI</code>:<br />
 <a href="https://github.com/mrsuh/calc-parser/blob/main/bin/parse.php">parse.php</a></p>
 <pre><code class="language-php rounded">&lt;?php
 

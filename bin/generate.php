@@ -261,7 +261,6 @@ file_put_contents(
     )
 );
 
-$parser = new MyParserdown();
 $directory = __DIR__ . '/../docs/articles';
 foreach (scandir($directory) as $yearDirectory) {
     $yearDirectoryPath = $directory . '/' . $yearDirectory;

@@ -83,8 +83,8 @@
 <blockquote>
 <p>Read this <a href="/articles/2023/php-skeleton-for-bison/">post</a> if you don't know what Bison is.</p>
 </blockquote>
-<p>Today I'll try to parse Nginx config into AST.
-I get the actual <a href="https://symfony.com/doc/current/setup/web_server_configuration.html#nginx">Nginx config</a> from official Symfony documentation to test the parser.
+<p>Today I'll try to parse Nginx config into AST.<br />
+I get the actual <a href="https://symfony.com/doc/current/setup/web_server_configuration.html#nginx">Nginx config</a> from official Symfony documentation to test the parser.<br />
 <code>nginx.conf</code></p>
 <pre><code class="language-php rounded">server {
     server_name domain.tld www.domain.tld;
@@ -140,7 +140,7 @@ composer require doctrine/lexer</code></pre>
     │   ├── Lexer.php
     │   └── Node.php # AST node
     └── grammar.y       </code></pre>
-<p>The <code>Node</code> class must implement <code>Mrsuh\Tree\NodeInterface</code> to print <code>AST</code>.
+<p>The <code>Node</code> class must implement <code>Mrsuh\Tree\NodeInterface</code> to print <code>AST</code>.<br />
 <code>src/Node.php</code></p>
 <pre><code class="language-php rounded">&lt;?php
 
@@ -345,8 +345,8 @@ class Lexer extends AbstractLexer implements LexerInterface
 </tbody>
 </table>
 <p>Time to create <code>grammar.y</code> file and build <code>lib/parser.php</code></p>
-<p>We will use block <code>%code parser</code> to define variables and methods to store <code>AST</code> into the <code>Parser</code> class.
-You can find full grammar file <a href="https://github.com/mrsuh/php-bison-skeleton/blob/master/examples/nginx-ast/grammar.y">here</a>.
+<p>We will use block <code>%code parser</code> to define variables and methods to store <code>AST</code> into the <code>Parser</code> class.<br />
+You can find full grammar file <a href="https://github.com/mrsuh/php-bison-skeleton/blob/master/examples/nginx-ast/grammar.y">here</a>.<br />
 <code>grammar.y</code></p>
 <pre><code class="language-php rounded">%define api.parser.class {Parser}
 %define api.namespace {App}
@@ -389,7 +389,7 @@ server_body:
 <li><code>-o parser.php</code> - output parser file</li>
 <li><code>grammar.y</code> - our grammar file</li>
 </ul>
-<p>The final PHP file is the entry point for the parser.
+<p>The final PHP file is the entry point for the parser.<br />
 <code>bin/parse.php</code></p>
 <pre><code class="language-php rounded">&lt;?php
 
@@ -407,7 +407,7 @@ if (!$parser-&gt;parse()) {
 
 $printer = new Printer();
 $printer-&gt;print($parser-&gt;getAst());</code></pre>
-<p>Autoload for generated <code>lib/parser.php</code> file.
+<p>Autoload for generated <code>lib/parser.php</code> file.<br />
 <code>composer.json</code></p>
 <pre><code class="language-json rounded">{
     "autoload": {

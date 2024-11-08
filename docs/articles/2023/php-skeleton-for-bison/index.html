@@ -81,7 +81,7 @@
 <div class="content">
     <h1>PHP Skeleton for Bison</h1>
 <a href="#h2-what-is-bison?" id="h2-what-is-bison?" class="text-decoration-none text-reset"><h2>What is Bison?</h2></a>
-<p><a href="https://www.gnu.org/software/bison">Bison</a> is a parser generator.
+<p><a href="https://www.gnu.org/software/bison">Bison</a> is a parser generator.<br />
 For example, it can help you to build a parser to parse your code into <a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree">AST</a>:</p>
 <pre><code class="language-php rounded">&lt;?php
 
@@ -147,8 +147,8 @@ class Test
     41, 0, 0, 49, 0, 0, 0, 0, 0, 47,
     48, 0, 50, 0, 53, 54
 ];</code></pre>
-<p>Then, this data is passed to a template that is called <code>skeleton</code>.
-This <code>skeleton</code> is a special file written in <a href="https://en.wikipedia.org/wiki/M4_(computer_language)">M4</a> language that renders your <code>parser.php</code> file.
+<p>Then, this data is passed to a template that is called <code>skeleton</code>.<br />
+This <code>skeleton</code> is a special file written in <a href="https://en.wikipedia.org/wiki/M4_(computer_language)">M4</a> language that renders your <code>parser.php</code> file.<br />
 By default, Bison supports C/C++/D/Java languages, but you can extend it with your own <code>skeleton</code> file.</p>
 <a href="#h2-simple-calculator" id="h2-simple-calculator" class="text-decoration-none text-reset"><h2>Simple calculator</h2></a>
 <p>Let's make a simple calculator with Bison and PHP. It will parse expression from <code>stdin</code> and print result.</p>
@@ -193,7 +193,7 @@ exp:
     ...
 }
 ...</code></pre>
-<p>Interface contains constants with our tokens from <code>grammar.y</code> file and some special values for the end of file or errors.
+<p>Interface contains constants with our tokens from <code>grammar.y</code> file and some special values for the end of file or errors.<br />
 With this interface, we can write our class <code>Lexer</code> to parse calculation expressions into tokens.</p>
 <pre><code class="language-php rounded">class Lexer implements LexerInterface {
 
@@ -230,7 +230,7 @@ With this interface, we can write our class <code>Lexer</code> to parse calculat
         return ord($word);
     }
 }</code></pre>
-<p>Every time we call the function <code>Lexer::yylex()</code>, it will return the token's identifier and store the word into the <code>value</code> property.
+<p>Every time we call the function <code>Lexer::yylex()</code>, it will return the token's identifier and store the word into the <code>value</code> property.<br />
 For example, the expression <code>10 + 20 - 30</code> will translate into this:</p>
 <table class="table table-bordered">
 <thead class="table-secondary">
@@ -273,7 +273,7 @@ For example, the expression <code>10 + 20 - 30</code> will translate into this:<
 </tr>
 </tbody>
 </table>
-<p>And the last part.
+<p>And the last part.<br />
 We must instantiate lexer, parser and bind them.</p>
 <pre><code class="language-php rounded">$lexer  = new Lexer(STDIN);
 $parser = new Parser($lexer);

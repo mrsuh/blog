@@ -80,8 +80,8 @@
 
 <div class="content">
     <h1>Generics implementation approaches</h1>
-<p>I want to introduce you to generics implementation approaches with some simple examples everyone can understand.
-The description of each approach includes key features without details.
+<p>I want to introduce you to generics implementation approaches with some simple examples everyone can understand.<br />
+The description of each approach includes key features without details.<br />
 Basic examples are written in PHP because I'm a PHP developer, but there are also Hack/Java/C++ examples.</p>
 <a href="#h2-type-erasure" id="h2-type-erasure" class="text-decoration-none text-reset"><h2>Type erasure</h2></a>
 <p>This approach means generics arguments are dropped after compilation.</p>
@@ -128,7 +128,7 @@ class Container&lt;T&gt; {
         }
     }  
 }</code></pre>
-<p>During <code>static analysis</code> and <code>compile time</code> generics types can be reflected and checked, but after <code>type erasure</code> at <code>run time</code>, this is not possible.
+<p>During <code>static analysis</code> and <code>compile time</code> generics types can be reflected and checked, but after <code>type erasure</code> at <code>run time</code>, this is not possible.<br />
 This approach has a small performance/memory effect and some generics types restrictions (see example above).</p>
 <p>Type erasure generics visibility table for better understanding:</p>
 <table class="table table-bordered">
@@ -156,7 +156,7 @@ This approach has a small performance/memory effect and some generics types rest
 </tbody>
 </table>
 <p>no* - generics types of some languages like <code>Java</code>/<code>Hack</code> may be reflected and not used by VM at <code>runtime</code>.</p>
-<p>I can assume the PHP <a href="https://psalm.dev/docs/annotating_code/templated_annotations">Psalm annotations</a> are a kind of <code>type erasure generics</code>, but there is no such thing in PHP as generic types at <code>compile/run time</code>.
+<p>I can assume the PHP <a href="https://psalm.dev/docs/annotating_code/templated_annotations">Psalm annotations</a> are a kind of <code>type erasure generics</code>, but there is no such thing in PHP as generic types at <code>compile/run time</code>.<br />
 PHP Psalm annotations visibility table:</p>
 <table class="table table-bordered">
 <thead class="table-secondary">
@@ -211,7 +211,7 @@ docker run -it --rm -v $PWD:/app -w /app openjdk:latest java Programm</code></pr
                          ^</code></pre>
 <a href="#h2-reification" id="h2-reification" class="text-decoration-none text-reset"><h2>Reification</h2></a>
 <p>Generic arguments are retained at <code>compile/run time</code> and can be reflected.</p>
-<p>There is a real example of <code>reified</code> generics in <code>Hack</code>.
+<p>There is a real example of <code>reified</code> generics in <code>Hack</code>.<br />
 The keyword <code>reify</code> is very important to mark a generics as <code>reified</code>.</p>
 <p>test.hack</p>
 <pre><code class="language-php rounded">class MyContainer&lt;reify T&gt; {
@@ -234,7 +234,7 @@ function main(): void {
 <pre><code class="language-bash rounded">docker run -it --rm -v $PWD:/app -w /app hhvm/hhvm:latest hhvm test.hack</code></pre>
 <p>If you try to pass <code>string "hello"</code> to <code>$intContainer-&gt;set()</code> you will get a <code>compile time</code> error:</p>
 <pre><code class="language-bash rounded">Fatal error: Uncaught TypeError: Argument 1 passed to MyContainer::set() must be an instance of int, string given in /app/test.hack:6</code></pre>
-<p>At <code>runtime</code>, there is only one class <code>MyContainer</code> with many generic types.
+<p>At <code>runtime</code>, there is only one class <code>MyContainer</code> with many generic types.<br />
 Let's look inside the <code>$stringContainer</code> variable by <code>var_dump()</code>:</p>
 <pre><code class="language-bash rounded">object(MyContainer) (2) {
   ["86reified_prop"]=&gt;
@@ -247,10 +247,10 @@ Let's look inside the <code>$stringContainer</code> variable by <code>var_dump()
   ["var":"MyContainer":private]=&gt;
   string(5) "hello"
 }</code></pre>
-<p>The example above describes the <code>MyContainer</code> class and the <code>kind</code> property.
-I think <code>kind =&gt; 4</code> is a constant for type <code>string</code>.
+<p>The example above describes the <code>MyContainer</code> class and the <code>kind</code> property.<br />
+I think <code>kind =&gt; 4</code> is a constant for type <code>string</code>.<br />
 It means you can get the generics type at <code>runtime</code>.</p>
-<p>This approach has a small performance/memory effect.
+<p>This approach has a small performance/memory effect.<br />
 Nikita Popov already had an <a href="https://github.com/PHPGenerics/php-generics-rfc/issues/45">attempt</a> to implement this type of generics in <code>PHP</code>.</p>
 <p><code>Reified</code> generics visibility table:</p>
 <table class="table table-bordered">
@@ -305,7 +305,7 @@ class ContainerForInt {
 }
 
 $intContainer = new ContainerForInt(1);</code></pre>
-<p>This approach has a big memory effect.
+<p>This approach has a big memory effect.<br />
 PHP doesn't support native generics, but you can test <code>monomorphic</code> generics with my <a href="https://github.com/mrsuh/php-generics">library</a>.</p>
 <p><code>Monomorphic</code> generics visibility table:</p>
 <table class="table table-bordered">
@@ -368,8 +368,8 @@ test.cpp:8:17: note:   initializing argument 1 of 'void MyContainer&lt;T&gt;::se
     8 |      void set(T _data) {
       |               ~~^~~~~</code></pre>
 <p>This approach increases <code>compile time</code>, but improves performance <code>runtime</code>.</p>
-<p>I hope it was helpful to you.
-Play around with the examples above - it's a really interesting process!
+<p>I hope it was helpful to you.<br />
+Play around with the examples above - it's a really interesting process!<br />
 If you want to go further, read this great <a href="https://thume.ca/2019/07/14/a-tour-of-metaprogramming-models-for-generics/">article</a> about generics.</p>
 <p>Have a nice day!</p>
 </div>

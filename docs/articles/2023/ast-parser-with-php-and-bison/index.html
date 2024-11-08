@@ -220,7 +220,7 @@ class Lexer implements LexerInterface {
 </tr>
 </tbody>
 </table>
-<p>It's time to create the <code>grammar.y</code> file and build <code>lib/parser.php</code>
+<p>It's time to create the <code>grammar.y</code> file and build <code>lib/parser.php</code><br />
 You can define <code>%code</code> blocks, so Bison will render code as is in <code>printer.php</code></p>
 <p><code>grammar.y</code></p>
 <pre><code class="language-php rounded">%code imports { // code imports };
@@ -237,8 +237,8 @@ class Parser {
         // code init
     }
 }</code></pre>
-<p>We will use block <code>%code parser</code> to define variables and methods to store <code>AST</code> into the <code>Parser</code> class.
-Bison has reserved the symbol <code>$</code> in grammar actions.
+<p>We will use block <code>%code parser</code> to define variables and methods to store <code>AST</code> into the <code>Parser</code> class.<br />
+Bison has reserved the symbol <code>$</code> in grammar actions.<br />
 It's very sad for PHP developers, but we can call the function <code>setAst()</code> with <code>self::setAst()</code> instead of <code>$this-&gt;setAst()</code>.</p>
 <p><code>grammar.y</code></p>
 <pre><code class="language-php rounded">%define api.parser.class {Parser}

@@ -82,13 +82,13 @@
     <h1>How PHP engine builds AST</h1>
 <p>First let's look at the PHP codeflow:</p>
 <p><a href="./images/flow.png"><img src="./images/flow.png" alt="PHP codeflow" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
-<p>Prior to version 7, PHP generated <code>OPcodes</code> right inside the parser. PHP 7 introduced a new code abstraction - <a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree">AST</a>.
+<p>Prior to version 7, PHP generated <code>OPcodes</code> right inside the parser. PHP 7 introduced a new code abstraction - <a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree">AST</a>.<br />
 Now we can separate <code>parsing</code> and <code>compilation</code>.</p>
 <p>In this post I want to talk about the <code>Lexer + Parser</code> part.</p>
 <p>PHP uses <code>re2c</code> to create a lexer and <code>Bison</code> to create a parser. If you don't know about these tools, I recommend reading this <a href="/articles/2022/parsing-with-php-bison-and-re2c/">post</a>.</p>
-<p>Let's start with the lexer.
+<p>Let's start with the lexer.<br />
 The main function of the lexer is to parse the code into tokens.</p>
-<p>The PHP 8 tokenizer module provides us with the <a href="https://www.php.net/manual/en/class.phptoken.php">PhpToken</a> class to parse code into tokens.
+<p>The PHP 8 tokenizer module provides us with the <a href="https://www.php.net/manual/en/class.phptoken.php">PhpToken</a> class to parse code into tokens.<br />
 This is very similar to PHP's internal lexer.</p>
 <p>Let's write <code>lexer.php</code> and use it to parse the <code>test.php</code> file.</p>
 <p><code>lexer.php</code></p>
@@ -120,11 +120,11 @@ T_ECHO T_WHITESPACE T_VARIABLE ;</code></pre>
 $a = 1;  |   T_VARIABLE T_WHITESPACE = T_WHITESPACE T_LNUMBER ;
          |   T_WHITESPACE
 echo $a; |   T_ECHO T_WHITESPACE T_VARIABLE ;</code></pre>
-<p>How does the PHP lexer parse code into tokens?
-<code>re2c</code> helps with this.
+<p>How does the PHP lexer parse code into tokens?<br />
+<code>re2c</code> helps with this.<br />
 <a href="https://re2c.org">re2c</a> is an open-source lexer generator. It uses regular expressions to recognize tokens.</p>
-<p>The PHP lexer code is in <a href="https://github.com/php/php-src/blob/master/Zend/zend_language_scanner.l">zend_language_scanner.l</a>
-The main function that recognizes the code and returns the token is <code>lex_scan</code>:
+<p>The PHP lexer code is in <a href="https://github.com/php/php-src/blob/master/Zend/zend_language_scanner.l">zend_language_scanner.l</a><br />
+The main function that recognizes the code and returns the token is <code>lex_scan</code>:<br />
 <a href="https://github.com/php/php-src/blob/master/Zend/zend_language_scanner.l">zend_language_scanner.l</a></p>
 <pre><code class="language-c rounded">int ZEND_FASTCALL lex_scan(zval *zendlval, zend_parser_stack_elem *elem)
 {
@@ -157,9 +157,9 @@ ONUM    "0o"[0-7]+(_[0-7]+)*
 ...
 
 */</code></pre>
-<p>After the <code>lexer</code> we have tokens, but we need a <code>parser</code> to build <code>AST</code>.
-<code>Bison</code> can help us with this.
-<a href="https://www.gnu.org/software/bison">Bison</a> is an open-source context-free parser generator.
+<p>After the <code>lexer</code> we have tokens, but we need a <code>parser</code> to build <code>AST</code>.<br />
+<code>Bison</code> can help us with this.<br />
+<a href="https://www.gnu.org/software/bison">Bison</a> is an open-source context-free parser generator.<br />
 It can generate a parser from <a href="https://en.wikipedia.org/wiki/Backus–Naur_form">BNF</a>.</p>
 <p>Example of <code>Bison BNF</code>:</p>
 <pre><code class="language-php rounded">line:
@@ -173,7 +173,7 @@ expr:
 |   expr '-' expr { $$ = $1 - $3; }
 ;</code></pre>
 <p>The parser code is in <a href="https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y">zend_language_parser.y</a></p>
-<p>For example, this part parses PHP attributes (<code>#[Attribute]</code>)
+<p>For example, this part parses PHP attributes (<code>#[Attribute]</code>)<br />
 <a href="https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y">zend_language_parser.y</a></p>
 <pre><code class="language-php rounded">attribute_decl:
         class_name
@@ -181,11 +181,11 @@ expr:
     |   class_name argument_list
             { $$ = zend_ast_create(ZEND_AST_ATTRIBUTE, $1, $2); }
 ;</code></pre>
-<p>When the parser finds a PHP attribute, it calls <code>zend_ast_create</code> function.
+<p>When the parser finds a PHP attribute, it calls <code>zend_ast_create</code> function.<br />
 <a href="https://github.com/php/php-src/blob/10a27bc47b34902763a8ca08ad059dd74e9e5709/Zend/zend_ast.c#L380">zend_ast.c</a></p>
 <pre><code class="language-c rounded">ZEND_API zend_ast *zend_ast_create(zend_ast_kind kind, ...)</code></pre>
 <p><code>zend_ast_create</code> is one of several functions that help create an <code>AST</code> node.</p>
-<p>PHP represents the <code>AST</code> node as a <code>_zend_ast</code> structure for simple nodes, and several more complex structures for other nodes.
+<p>PHP represents the <code>AST</code> node as a <code>_zend_ast</code> structure for simple nodes, and several more complex structures for other nodes.<br />
 <a href="https://github.com/php/php-src/blob/66aed3a86f2b9368888e22c30784286b3eeb24ad/Zend/zend_ast.h#L180">zend_ast.h</a></p>
 <pre><code class="language-c rounded">struct _zend_ast {
     zend_ast_kind kind; /* Type of the node (ZEND_AST_* enum constant) */
@@ -193,27 +193,27 @@ expr:
     uint32_t lineno;    /* Line number */
     zend_ast *child[1]; /* Array of children (using struct hack) */
 };</code></pre>
-<p>The main parser function is <code>yyparse</code>. You don't need to write it - <code>Bison</code> will generate it itself;
-Each time <code>yyparse</code> needs to get the next token, it calls the <code>yylex</code> lexer function.
+<p>The main parser function is <code>yyparse</code>. You don't need to write it - <code>Bison</code> will generate it itself;<br />
+Each time <code>yyparse</code> needs to get the next token, it calls the <code>yylex</code> lexer function.<br />
 We already have the lexer function <code>lex_scan</code>.</p>
 <p>How do parser and lexer work together?</p>
 <p><code>Bison</code> has parameter <code>api.prefix</code>:</p>
 <p><a href="https://github.com/php/php-src/blob/bc4c012611b6580b0717a6366357bd1699efb2bd/Zend/zend_language_parser.y#L45">zend_language_parser.y</a></p>
 <pre><code class="language-php rounded">%define api.prefix {zend}</code></pre>
-<p>This means that all function prefixes will be <code>zend</code> instead of <code>yy</code>:
-<code>yyparse</code> -&gt; <code>zendparse</code>
+<p>This means that all function prefixes will be <code>zend</code> instead of <code>yy</code>:<br />
+<code>yyparse</code> -&gt; <code>zendparse</code><br />
 <code>yylex</code> -&gt; <code>zendlex</code></p>
-<p>We have the <code>zendlex</code> function in
+<p>We have the <code>zendlex</code> function in<br />
 <a href="https://github.com/php/php-src/blob/master/Zend/zend_compile.c#L1791">zend_compile.c</a></p>
 <pre><code class="language-c rounded">int ZEND_FASTCALL zendlex(zend_parser_stack_elem *elem)</code></pre>
 <p>it calls the already known <code>lex_scan</code> function from <a href="https://github.com/php/php-src/blob/master/Zend/zend_language_scanner.l">zend_language_scanner.l</a></p>
-<p>And <code>zendparse</code> is called in the function <code>zend_compile_string_to_ast</code>
+<p>And <code>zendparse</code> is called in the function <code>zend_compile_string_to_ast</code><br />
 <a href="https://github.com/php/php-src/blob/master/Zend/zend_language_scanner.l">zend_language_scanner.l</a></p>
 <pre><code class="language-c rounded">ZEND_API zend_ast *zend_compile_string_to_ast(zend_string *code, zend_arena **ast_arena, zend_string *filename)</code></pre>
 <p>In the final, we have a chain of calls:</p>
 <pre><code class="language-c rounded">zend_compile_string_to_ast() -&gt; zendparse() -&gt; zendlex() -&gt; lex_scan()</code></pre>
-<p>Now we can call the <code>zend_compile_string_to_ast</code> function and get the real PHP <code>AST</code>.
-I wrote a <code>get_ast</code> function to get the <code>AST</code> from <code>zend_compile_string_to_ast</code>, parse it and store it in a simple structure <code>_node_ast</code> so we can easily export it to PHP using <a href="https://www.php.net/manual/en/class.ffi.php">FFI</a>.
+<p>Now we can call the <code>zend_compile_string_to_ast</code> function and get the real PHP <code>AST</code>.<br />
+I wrote a <code>get_ast</code> function to get the <code>AST</code> from <code>zend_compile_string_to_ast</code>, parse it and store it in a simple structure <code>_node_ast</code> so we can easily export it to PHP using <a href="https://www.php.net/manual/en/class.ffi.php">FFI</a>.<br />
 <a href="https://github.com/mrsuh/php-ast/blob/890891ddef2f7c22611162254ccf51f44f751640/library/ast.c#L952">mrsuh/ast.c</a></p>
 <pre><code class="language-c rounded">node_ast *get_ast(char *input)</code></pre>
 <p><a href="https://github.com/mrsuh/php-ast/blob/main/library/ast.h">mrsuh/ast.h</a></p>
@@ -225,7 +225,7 @@ I wrote a <code>get_ast</code> function to get the <code>AST</code> from <code>z
     int children;
     node_ast *child[100];
 };</code></pre>
-<p>After compilation, I included it in PHP
+<p>After compilation, I included it in PHP<br />
 <a href="https://github.com/mrsuh/php-ast/blob/main/src/Parser.php">mrsuh/Parser.php</a></p>
 <pre><code class="language-c rounded">&lt;?php
 
@@ -245,7 +245,7 @@ struct _node_ast {
 node_ast *get_ast(char *input);
 ",
 __DIR__ . "ast_linux.so");</code></pre>
-<p>and translated the <code>C</code> structure into a PHP <code>Node</code> class.
+<p>and translated the <code>C</code> structure into a PHP <code>Node</code> class.<br />
 <a href="https://github.com/mrsuh/php-ast/blob/main/src/Node.php">mrsuh/Node.php</a></p>
 <pre><code class="language-php rounded">&lt;?php
 
@@ -303,7 +303,7 @@ Printer::print($node);</code></pre>
 [009]                 ZEND_AST_ZVAL "foo"</code></pre>
 <p>The complete parser code is <a href="https://github.com/mrsuh/php-ast">here</a>.</p>
 <p>Nikita Popov already has a <code>php-ast</code> parser that uses <code>zend_compile_string_to_ast</code> function and a <code>php-parser</code> that uses the <code>PHP tokenizer</code> module as a lexer and a PHP version of <code>YACC</code> as a parser generator.</p>
-<p>Below I have shown the outputs of three libraries for this code:
+<p>Below I have shown the outputs of three libraries for this code:<br />
 <code>test.php</code></p>
 <pre><code class="language-php rounded">&lt;?php
 

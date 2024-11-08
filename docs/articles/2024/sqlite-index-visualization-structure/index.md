@@ -1,49 +1,44 @@
 # SQLite Index Visualization: Structure
 
-While reading articles on index theory, I gained a general understanding of their structure. 
-However, I always wanted to look inside, see the data structure, understand the algorithm implementations, and how index data is stored in persistent memory. 
-Theory and actual implementation can vary significantly, so I decided to dive into this topic.
+After reading about Indexes, I understood their general structure. 
+But I wanted to look inside — to see the data structure, understand the algorithm, and know how Index data is stored on disk. 
+The theory and actual implementation can differ, so I decided to explore this topic further.
 
-I wanted to visually see how a database management system (DBMS) stores an index in both persistent and random-access memory and understand how a cursor navigates the index during a search. 
-I chose [SQLite](https://en.wikipedia.org/wiki/SQLite) for this because:
-* It’s a very common DBMS, used in browsers, mobile development, and operating systems
-* It’s simple: no separate server and works on the client-side.
-* The SQLite codebase is much smaller than MySQL or PostgreSQL, although it uses similar data structures for main indexes.
-* It’s open-source.
+I wanted to see how a database management system (DBMS) stores an index in both disk and memory, and how it searches through an Index.
+I chose SQLite for my experiments:
+* it’s a widely used DBMS, found in browsers, mobile apps, and operating systems;
+* it's easier to debug: no separate server, just a client-side application;
+* its codebase is smaller than MySQL or PostgreSQL but uses similar data structures for Indexes;
+* it’s open-source.
 
 ## Node and Page Structure
 
-According to SQLite3 documentation, indexes are stored in a B-Tree structure, which is a balanced tree where each node can have several children.
-Usually, it’s depicted as follows:
+According to SQLite [documentation](https://sqlite.org/fileformat2.html), Indexes are stored in a B-Tree structure, which is a balanced tree where each node has multiple children. 
+It typically looks like this:
 
 ![](./images/b-tree.svg)
 
-To understand how SQLite stores nodes, let's look at the Page and Cell structures. 
-A Page (analogous to a Node) stores Cells data and a reference to its right child Page. 
-A Cell contains index data, a rowId, and a reference to its left child Page.
-By default, every row in an SQLite table has a unique rowid identifier, which acts similarly to a primary key if one isn’t explicitly defined.
+To understand how SQLite stores Nodes, let’s look at the Page and Cell structures. 
+A Page (analog of a Node on SQLite) stores Cells data and has a link to its right child Page. 
+A Cell contains Index data, a rowId, and a link to its left child Page. 
+By default, each SQLite table row has a unique rowId, which works like a primary key if one isn’t explicitly defined.
 
-Чтобы понять, как SQLite хранит узлы, рассмотрим структуру Page и Cell. 
-Page (аналог Node) хранит данные всех Cell и ссылку на правого ребёнка Page. 
-Cell содержит индексные данные, [rowId](https://www.sqlite.org/lang_createtable.html#rowid) и ссылку на левого ребёнка Page.
-SQLite используется rowID Вместо Primary Key в таблицах.
-
-Here’s a representation of index B-Tree:
+Here’s a visual example of a B-Tree Index in SQLite:
 
 ![](./images/b-tree-sqlite.svg)
 
-Index data is stored in persistent memory like this:
+Index data is stored on disk in this structure:
 
 ![](./images/b-tree-store.svg)
 
-Each page has a size that’s a power of two, between 512 and 65,536 bytes. 
-All database pages are the same size. Page and Cell headers occupy 4 bytes each and aren’t stored in C structures. 
-To find a child’s page number, you need to read the header separately using function:
+Each Page has a fixed size, ranging from 512 to 65,536 bytes. Page and Cell headers use 4 bytes to store child links. 
+If you want to know child Page number - you need to read the header separately with this function:
+
 ```c
 get4byte(...)
 ```
 
-Here’s how these structures appear in code:
+For other Page and Cell data, you can use these C structures:
 
 ### Page
 sqlite/src/btreeInt.h
@@ -66,8 +61,6 @@ struct CellInfo {
 };
 ```
 
-You can read more about the storage format [here](https://sqlite.org/fileformat2.html).
-
 To view index data, you can use [sqlite3 analyzer](https://www.sqlite.org/sqlanalyze.html):
 ```bash
 sqlite3_analyzer database.sqlite
@@ -78,18 +71,13 @@ Page size in bytes................................ 4096
 Number of entries................................. 1000      
 B-tree depth...................................... 2         
 Total pages used.................................. 4        
-... 
+..
 ```
-This tool analyzes the structure and usage of indexes within your SQLite database.
-Sqlite3 analyzer provides general information about index pages and size, though it doesn’t detail pages or their data per tree level.
+This tool provides only general information about index.
 
 ## Analyzing SQLite Source Code
 
-After a few weeks of experimenting, I wrote my first version of functions for index analysis.
-The function reads the content of the pages and cells of the selected index, outputting data to STDOUT in this format:
-```bash
-SQL query -> selected index -> dump
-```
+After a few weeks of experimenting, I wrote my first version of function for index analysis.
 
 You can view the code [here](https://github.com/mrsuh/sqlite-index/blob/main/sqlite.patch):
 ```c
@@ -100,8 +88,12 @@ char **sqlite3DebugGetCellPayloadAndRowId(BtCursor *pCur, MemPage *pPage, int ce
 void sqlite3DebugBtreeIndexDump(BtCursor *pCur, int pageNumber);
 ```
 
-The function outputs data by page, then by each cell on that page, recursively for all pages in the tree.
-Output example:
+The function reads the content of selected index and outputting data to STDOUT:
+```bash
+SQL query -> selected index -> stdout
+```
+
+Here’s an example output:
 ```bash
 sqlite3BtreeIndexDump: page, number=3, rightChildPageNumber=99
 sqlite3BtreeIndexDump: cell, number=0, leftChildPageNumber=7, payload=384, rowId=384
@@ -114,7 +106,7 @@ I packed everything into a docker if you want to test it:
 docker run -it --rm -v "$PWD":/app/data --platform linux/x86_64 mrsuh/sqlite-index bash
 ```
 
-You can run the script like this:
+You can use the script like this:
 ```bash
 sh bin/dump-index.sh database.sqlite "SELECT * FROM table INDEXED BY index WHERE column=1" dump.txt
 ```
@@ -135,21 +127,21 @@ sqlite3BtreeIndexDump: cell, number=1, leftChildPageNumber=-1, payload=2, rowId=
 ...
 ```
 
-Great! Now the easiest part remains — displaying all of this visually.
+Great!
+The next step was to display everything visually — an easy part of the process.
 
-I found a library [d3-org-tree](https://github.com/benyasin/d3-org-tree) for visualizing index structures. 
-Here’s what it looked like in early stages:
+I found a library called [d3-org-tree](https://github.com/benyasin/d3-org-tree) for visualizing index structures. 
+Here’s how it looked in the early stages:
 
 ![](./images/test-tree-d3.png)
 
-There was a problem: spacing between pages wasn’t customizable, and as tree depth and page count per level increased, 
-the image became very large, making details hard to view.
+However, there was a problem: I couldn’t adjust the spacing between Pages, so as the tree became deeper and more Pages were added at each level, the image became too large and hard to read.
 
 ![](./images/test-tree-d3-wide.png)
 
-I tried editing JS/CSS, but it wasn’t effective.
+I tried adjusting it with JavaScript and CSS, but it didn’t work well.
+After a few tries with d3-org-tree, I decided that using text to display the structure would be simpler.
 
-After several trials with d3-org-tree, I decided it was more convenient to use text.
 Example:
 ```bash
 ------------------------------------------------------------------------------------------------------------------------
@@ -182,28 +174,29 @@ Example:
 ------------------------------------------------------------------------------------------------------------------------
 ```
 
-Not bad, but I could go further. PHP has an extension for drawing images, [imagemagick](https://www.php.net/manual/en/intro.imagick.php), allowing even more customization than the text-based version. 
-After a dozen iterations, here’s the final result:
+Not bad, but I could go further.
+PHP's [ImageMagick](https://www.php.net/manual/en/intro.imagick.php) extension lets you create images with more control over design and spacing than text alone. After about a dozen tries, here's the final version I came up with:
 
 ![](./images/test-tree-php.webp)
 
-The image now contains all the necessary data and can be clearly viewed.
-In the top-left corner, there's general information about the index:
-Each level shows the total number of pages and cells for that level. 
-Each page displays its number, the link to its right child, and data about the first and last cell. 
-Each level displays only a few pages, including the first and last pages of the level. 
-At the first level, the root page is located.
+The image now includes all the needed data and is easy to read.
 
-To generate an image from the dump:
+In the top-left corner, there’s general information about the Index.
+Each level shows the total number of Pages and Cells.
+Each Page shows its Page number, the link to its right child, and details about the first and last Cell.
+Only a few Pages are shown per level, including the first and last Pages for each level.
+The root Page is located at the first level.
+
+Use this command to generate an image from the dump 
 ```bash
 php bin/console app:render-index --dumpIndexPath=dump.txt --outputImagePath=image.webp
 ```
 
-Now it’s time to experiment!
-We can generate different data for the indexes and explore what's inside them.
+Now it's time to experiment!
 
-To start, it would be interesting to see how the index size increases from 1 to 1,000,000 records.
-Before each index image, I'll show the table's data structure, how the index was created, and how the table was populated with data.
+We can create different data for the Indexes and explore what's inside them.
+To start, it would be interesting to see how the Index size grows from 1 to 1,000,000 records.
+Before each Index image, I'll show the table's data structure, the way the Index was made, and how the table was filled with data.
 
 ## Index with 1 record
 
@@ -215,7 +208,7 @@ CREATE INDEX idx ON table_test (column1 ASC);
 
 ![](./images/index-1.webp)
 
-One level, one page, one cell. Simple!
+One level, one Page, one Cell. Simple!
 
 ## Index with 1000 records
 ```sql
@@ -236,13 +229,12 @@ CREATE INDEX idx ON table_test (column1 ASC);
 
 ![](./images/index-1000000.webp)
 
-Now we've reached the image used earlier as an example. 
-It has 3 levels, 2,930 pages, and 1,000,000 cells. Since the data was incrementally inserted, for rowId = 1, column1 = 1. 
-The index stores data from column1 as specified.
+Now we’ve reached the image I used earlier as an example.
+This Index has 3 levels, 2,930 Pages, and 1,000,000 Cells. The data was added in order, so for rowId = 1, column1 = 1.
 
 ## Comparing ASC and DESC Indexes
 
-Adding two indexes with different sort directions.
+Now, let's add two Indexes with different sort directions.
 ```sql
 CREATE TABLE table_test (column1 INT NOT NULL);
 INSERT INTO table_test (column1) VALUES (1),(2),(3),...,(999998),(999999),(1000000);
@@ -252,15 +244,15 @@ CREATE INDEX idx_desc ON table_test (column1 DESC);
 
 ![](./images/index-order-asc.webp)
 
-The ASC index is the same as above, as ASC sorting is used by default. 
-In the first cell of the leftmost page, it contains the table's first entry: rowId=1, column1=1, payload=1. 
-In the last cell on the rightmost page, we see rowId=1,000,000, column1=1,000,000, payload=1,000,000.
+The ASC Index is the same as above, as ASC sorting is used by default. 
+The table's first entry, rowId=1,000,000, column1=1,000,000, payload=1,000,000, is in the last Cell of the rightmost Page.
+The table's last entry, rowId=1, column1=1, payload=1, is in the first Cell of the leftmost Page.
 
 ![](./images/index-order-desc.webp)
 
-The DESC index is reversed.
-In the first cell of the leftmost page, it contains the table's last entry: rowId=1,000,000, column1=1,000,000, payload=1,000,000.
-In the last cell on the rightmost page, we see rowId=1, column1=1, payload=1.
+The DESC Index is reversed.
+The table's first entry, rowId=1, column1=1, payload=1, is in the last Cell of the rightmost Page.
+The table's last entry, rowId=1,000,000, column1=1,000,000, payload=1,000,000, is in the first Cell of the leftmost Page.
 
 ## Index with expression-based data
 
@@ -272,11 +264,11 @@ CREATE INDEX idx ON table_test (strftime('%Y-%m-%d %H:%M:%S', json_extract(colum
 
 ![](./images/index-expression.webp)
 
-The index now holds a string generated by the expression. You can use complex expressions, and the index will store the result for quick searches.
+The Index now stores a string generated by the expression.
+You can use more complex expressions, and the Index will save the only result.
 
-## Unique index with NULL values
+## Unique Index with NULL values
 
-SQLite supports unique indexes with NULL values:
 ```sql
 CREATE TABLE table_test (column1 INT)
 INSERT INTO table_test (column1) VALUES (1),(NULL),(NULL),...,(NULL),(NULL),(1000000);
@@ -285,11 +277,11 @@ CREATE UNIQUE INDEX idx ON table_test (column1 ASC);
 
 ![](./images/index-unique.webp)
 
-This index behaves the same as if we were storing only non-NULL values, with no change in the number of pages or cells.
+SQLite supports unique Indexes with NULL values.
+This index looks like we are storing only non-NULL values.
 
 ## Filtering NULL Values with Partial Indexes 
 
-An index containing only non-NULL values:
 ```sql
 CREATE TABLE table_test (column1 INT)
 INSERT INTO table_test (column1) VALUES (1),(NULL),(NULL),...,(NULL),(NULL),(1000000);
@@ -298,11 +290,10 @@ CREATE INDEX idx ON table_test (column1 ASC) WHERE column1 IS NOT NULL;
 
 ![](./images/index-partial.webp)
 
-The index now contains just one page, leading to faster searches than the previous example.
+The Index now contains just one Page, leading to faster searches than the previous example.
 
 ## Multi-Column Index
 
-Данные по всем полям в ячейке хранятся следом друг за другом.
 ```sql
 CREATE TABLE table_test (column1 INT NOT NULL, column2 INT NOT NULL);
 INSERT INTO table_test (column1, column2) VALUES (1,1),(2,2),(3,3),...,(999998,999998),(999999,999999),(1000000,1000000);
@@ -311,11 +302,11 @@ CREATE INDEX idx ON table_test (column1 ASC, column2 ASC);
 
 ![](./images/index-complex.webp)
 
+As you can see, the data for all fields in a cell are stored one after another.
 The fields are separated visually with a colon `:`.
 
 ## Comparing Indexes Created Before and After Data Population
 
-When adding data, the tree must rebalance itself, potentially less efficiently than creating it with pre-existing data.
 ```sql
 CREATE TABLE table_test (column1 INT NOT NULL);
 CREATE INDEX idx_before ON table_test (column1 ASC);
@@ -331,21 +322,22 @@ CREATE INDEX idx_after ON table_test (column1 ASC);
 
 ![](./images/index-time-after.webp)
 
-While the indexes look similar, the page count differs. With fewer pages, the second index must be faster:
+The tree must rebalance itself when new data is added. Creating an Index on existing data should be much more efficient.
+Both Indexes look similar, but the second Index, with fewer Pages, should be faster.
 ```bash
 +--------+-------------+-------------+
-|        | Total pages | Total cells |
+|        | Total Pages | Total Cells |
 +--------+-------------+-------------+
 | Before | 3342        | 1000000     |
 | After  | 2930        | 1000000     |
 +--------+-------------+-------------+
 ```
 
-## VACUUM and REINDEX for Existing Index Optimization
+## VACUUM and REINDEX
 
-To achieve similar optimization, you can rebuild an existing index with these commands:
+To achieve similar optimization, you can rebuild an existing Index with these commands:
 
-[VACUUM](https://www.sqlite.org/lang_vacuum.html) recreates indexes and tables with data:
+[VACUUM](https://www.sqlite.org/lang_vacuum.html) recreates Indexes and tables with data:
 ```sql
 CREATE TABLE table_test (column1 INT NOT NULL);
 CREATE INDEX idx ON table_test (column1 ASC);
@@ -355,7 +347,7 @@ VACUUM;
 
 ```bash
 +--------+-------------+-------------+
-|        | Total pages | Total cells |
+|        | Total Pages | Total Cells |
 +--------+-------------+-------------+
 | Before | 3342        | 1000000     |
 | After  | 2930        | 1000000     |
@@ -363,7 +355,7 @@ VACUUM;
 ```
 
 
-[REINDEX](https://www.sqlite.org/lang_reindex.html) -  recreates indexes only:
+[REINDEX](https://www.sqlite.org/lang_reindex.html) -  recreates Indexes only:
 ```sql
 CREATE TABLE table_test (column1 INT NOT NULL);
 CREATE INDEX idx ON table_test (column1 ASC);
@@ -373,18 +365,17 @@ REINDEX idx;
 
 ```bash
 +--------+-------------+-------------+
-|        | Total pages | Total cells |
+|        | Total Pages | Total Cells |
 +--------+-------------+-------------+
 | Before | 3342        | 1000000     |
 | After  | 2930        | 1000000     |
 +--------+-------------+-------------+
 ```
-After performing VACUUM/REINDEX, the number of pages in the index significantly decreased. 
+After running VACUUM/REINDEX, the number of Pages in the Index decreased a lot. 
 
 ## Text Data in Indexes
 
-Let's see how text is stored.
-In fact, short strings are stored directly in the index cells. Longer text must be stored separately.
+Let's look at how text is stored. Short strings are saved directly in the Index Cells, but longer text must be stored separately.
 
 ```sql
 CREATE TABLE table_test (column1 text NOT NULL);
@@ -394,8 +385,7 @@ CREATE INDEX idx ON table_test (column1 ASC);
 
 ![](./images/index-text.webp)
 
-You can clearly see the actual string stored directly in the index.
-
+You can easily see the actual string stored directly in the Index.
 
 ## Float-point Data in Indexes
 ```sql
@@ -406,7 +396,7 @@ CREATE INDEX idx ON table_test (column1 ASC);
 
 ![](./images/index-real.webp)
 
-## Combining integer and text in a single index:
+## Combining integer and text in a single Index:
 ```sql
 CREATE TABLE table_test (column1 INT NOT NULL, column2 TEXT NOT NULL);
 INSERT INTO table_test (column1, column2) VALUES (1,'text-1'),(2,'text-2'),(3,'text-3'),...,(999998,'text-999998'),(999999,'text-999999'),(1000000,'text-1000000');
@@ -415,22 +405,20 @@ CREATE INDEX idx ON table_test (column1 ASC, column2 ASC);
 
 ![](./images/index-integer-text.webp)
 
-The integer and string are stored together in the cell, just as we specified when creating the index.
+The integer and string are stored together in the Cell, just as we specified when creating the Index.
 
-To recreate all of these examples, you can run the following:
+## Conclusion
+
+Based on the work done, we saw how Indexes in SQLite are structured. 
+We looked at how record data is stored in memory and how the B-Tree organizes and accesses this data. 
+The visualization helped analyze and compare different Indexes.
+
+To reproduce all of these examples, you can run the following:
 ```bash
 docker run -it --rm -v "$PWD":/app/data --platform linux/x86_64 mrsuh/sqlite-index bash
 sh bin/test-index.sh
 ```
 
-Code and examples are available [here](https://github.com/mrsuh/sqlite-index) 
+Code and examples are available [here](https://github.com/mrsuh/sqlite-index)
 
-## Conclusion
-
-Based on the work performed, it was possible to visualize the internal structure of indexes in SQLite, 
-examining how record data is stored in persistent and operational memory, and how the B-Tree organizes storage and access to data. 
-Using custom tools for analyzing and visualizing the structure of index trees, along with creating detailed images across various data volumes, 
-we can clearly observe differences in page sizes, page arrangement, the number of cells at each level, and the effect of sort order or expressions on index content. 
-The visualization has helped demonstrate how the structure changes with the addition of new records and how using VACUUM and REINDEX can optimize and reduce the number of pages needed to store the same data.
-
-In the next part, I'll try to visualize index-based searches and look into some interesting SQL queries.
+Next, I'll focus on visualizing Index-based searches and explore some interesting SQL queries.
