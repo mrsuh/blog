@@ -142,6 +142,29 @@ class Article
     }
 }
 
+class SiteMapEntity
+{
+    public string $url;
+    public string $date;
+
+    public static function create(
+        string $url,
+        string $date
+    ): self
+    {
+        $self = new self();
+        $self->url = $url;
+        $self->date = $date;
+
+        return $self;
+    }
+}
+
+$sitemap = [
+    SiteMapEntity::create('https://mrsuh.com', '2024-11-01'),
+    SiteMapEntity::create('https://mrsuh.com/articles/', '2024-11-01'),
+];
+
 $new = [
     2024 => [
         Article::create("SQLite Index Visualization: Search", "/articles/2024/sqlite-index-visualization-search/", "Nov 15"),
@@ -253,7 +276,7 @@ foreach (scandir($directory) as $yearDirectory) {
     foreach (scandir($yearDirectoryPath) as $articleDirectory) {
         $articleDirectoryPath = $yearDirectoryPath . '/' . $articleDirectory;
         
-        $urlPath = '/articles/' . $yearDirectory . '/' . $articleDirectory;
+        $urlPath = '/articles/' . $yearDirectory . '/' . $articleDirectory . '/';
 
         $articleFilePath = $articleDirectoryPath . '/index.md';
         if (!is_file($articleFilePath)) {
@@ -287,5 +310,27 @@ foreach (scandir($directory) as $yearDirectory) {
                 $template
             )
         );
+        
+            $sitemap[] = SiteMapEntity::create(
+                'https://mrsuh.com' . $urlPath, 
+                date('Y-m-d', filemtime($articleFilePath))
+            );
     }
 }
+
+
+$sitemapContent = '
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+
+foreach($sitemap as $entity) {
+    $sitemapContent .= '  <url>' . PHP_EOL;
+    $sitemapContent .= '    <loc>' . $entity->url . '</loc>' . PHP_EOL;
+    $sitemapContent .= '    <lastmod>' . $entity->date . '</lastmod>' . PHP_EOL;
+    $sitemapContent .= '    <changefreq>weekly</changefreq>' . PHP_EOL;
+    $sitemapContent .= '    <priority>1</priority>' . PHP_EOL;
+    $sitemapContent .= '  </url>' . PHP_EOL;
+}
+$sitemapContent .= '</urlset>';
+
+file_put_contents(__DIR__ . '/../docs/sitemap.xml', trim($sitemapContent));
