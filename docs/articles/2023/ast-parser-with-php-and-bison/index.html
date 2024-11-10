@@ -83,8 +83,8 @@
 <blockquote>
 <p>Read this <a href="/articles/2023/php-skeleton-for-bison/">post</a> if you don't know what Bison is.</p>
 </blockquote>
-<p>I already have the <a href="https://github.com/mrsuh/php-ast">Bison AST parser</a>, but this time I will do it without PHP FFI.</p>
-<p>First, we need to install the <a href="https://github.com/mrsuh/php-bison-skeleton">PHP skeleton package</a> to build the parser and <a href="https://github.com/mrsuh/tree-printer">tree printer package</a> to print <code>AST</code>.</p>
+<p>I already have the <a href="https://github.com/mrsuh/php-ast" target="_blank">Bison AST parser</a>, but this time I will do it without PHP FFI.</p>
+<p>First, we need to install the <a href="https://github.com/mrsuh/php-bison-skeleton" target="_blank">PHP skeleton package</a> to build the parser and <a href="https://github.com/mrsuh/tree-printer" target="_blank">tree printer package</a> to print <code>AST</code>.</p>
 <pre><code class="language-bash rounded">composer require --dev mrsuh/php-bison-skeleton
 composer require mrsuh/tree-printer</code></pre>
 <p>It will more readable if we separate code from <code>printer.php</code> to individual files.</p>
@@ -330,12 +330,12 @@ $printer-&gt;print($parser-&gt;getAst());</code></pre>
     │   └── NUMBER '9'
     └── NUMBER '10'</code></pre>
 <p>Great!</p>
-<p>You can get the parser source code <a href="https://github.com/mrsuh/php-bison-skeleton/tree/master/examples/calc-ast">here</a> and test it by yourself.</p>
+<p>You can get the parser source code <a href="https://github.com/mrsuh/php-bison-skeleton/tree/master/examples/calc-ast" target="_blank">here</a> and test it by yourself.</p>
 <p>Some useful links:</p>
 <ul>
-<li><a href="https://github.com/mrsuh/php-bison-skeleton/tree/master/examples">PHP skeleton library</a></li>
-<li>more <a href="https://github.com/mrsuh/php-bison-skeleton/tree/master/examples">examples</a></li>
-<li><a href="https://github.com/mrsuh/docker-bison">Bison docker image</a></li>
+<li><a href="https://github.com/mrsuh/php-bison-skeleton/tree/master/examples" target="_blank">PHP skeleton library</a></li>
+<li>more <a href="https://github.com/mrsuh/php-bison-skeleton/tree/master/examples" target="_blank">examples</a></li>
+<li><a href="https://github.com/mrsuh/docker-bison" target="_blank">Bison docker image</a></li>
 <li><a href="/articles/2022/parsing-with-php-bison-and-re2c/">Parsing with PHP, Bison, and re2c</a></li>
 </ul>
 </div>

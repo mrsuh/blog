@@ -32,13 +32,13 @@ Index data is stored on disk in this structure:
 ![](./images/b-tree-store.svg)
 
 Each Page has a fixed size, ranging from 512 to 65,536 bytes. Page and Cell headers use 4 bytes to store child links. 
-If you want to know child Page number - you need to read the header separately with this function:
+If we want to know child Page number - we need to read the header separately with this function:
 
 ```c
 get4byte(...)
 ```
 
-For other Page and Cell data, you can use these C structures:
+For other Page and Cell data, we can use these C structures:
 
 ### Page
 sqlite/src/btreeInt.h
@@ -61,7 +61,7 @@ struct CellInfo {
 };
 ```
 
-To view index data, you can use [sqlite3 analyzer](https://www.sqlite.org/sqlanalyze.html):
+To view index data, we can use [sqlite3 analyzer](https://www.sqlite.org/sqlanalyze.html):
 ```bash
 sqlite3_analyzer database.sqlite
 ...
@@ -77,7 +77,7 @@ This tool provides only general information about index.
 
 ## Analyzing SQLite Source Code
 
-After a few weeks of experimenting, I wrote my first version of function for index analysis.
+After a few weeks of experimenting, I wrote my functions for index analysis.
 
 You can view the code [here](https://github.com/mrsuh/sqlite-index/blob/main/sqlite.patch):
 ```c
@@ -175,7 +175,7 @@ Example:
 ```
 
 Not bad, but I could go further.
-PHP's [ImageMagick](https://www.php.net/manual/en/intro.imagick.php) extension lets you create images with more control over design and spacing than text alone. After about a dozen tries, here's the final version I came up with:
+PHP's [ImageMagick](https://www.php.net/manual/en/intro.imagick.php) extension lets us create images with more control over design and spacing than text alone. After about a dozen tries, here's the final version I came up with:
 
 ![](./images/test-tree-php.webp)
 
@@ -302,7 +302,7 @@ CREATE INDEX idx ON table_test (column1 ASC, column2 ASC);
 
 ![](./images/index-complex.webp)
 
-As you can see, the data for all fields in a cell are stored one after another.
+As we can see, the data for all fields in a cell are stored one after another.
 The fields are separated visually with a colon `:`.
 
 ## Comparing Indexes Created Before and After Data Population
@@ -335,7 +335,7 @@ Both Indexes look similar, but the second Index, with fewer Pages, should be fas
 
 ## VACUUM and REINDEX
 
-To achieve similar optimization, you can rebuild an existing Index with these commands:
+To achieve similar optimization, we can rebuild an existing Index with these commands:
 
 [VACUUM](https://www.sqlite.org/lang_vacuum.html) recreates Indexes and tables with data:
 ```sql

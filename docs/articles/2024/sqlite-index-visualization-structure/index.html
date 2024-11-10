@@ -92,7 +92,7 @@ I chose SQLite for my experiments:</p>
 <li>it’s open-source.</li>
 </ul>
 <a href="#h2-node-and-page-structure" id="h2-node-and-page-structure" class="text-decoration-none text-reset"><h2>Node and Page Structure</h2></a>
-<p>According to SQLite <a href="https://sqlite.org/fileformat2.html">documentation</a>, Indexes are stored in a B-Tree structure, which is a balanced tree where each node has multiple children.<br />
+<p>According to SQLite <a href="https://sqlite.org/fileformat2.html" target="_blank">documentation</a>, Indexes are stored in a B-Tree structure, which is a balanced tree where each node has multiple children.<br />
 It typically looks like this:</p>
 <p><a href="./images/b-tree.svg"><img src="./images/b-tree.svg" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
 <p>To understand how SQLite stores Nodes, let’s look at the Page and Cell structures.<br />
@@ -104,9 +104,9 @@ By default, each SQLite table row has a unique rowId, which works like a primary
 <p>Index data is stored on disk in this structure:</p>
 <p><a href="./images/b-tree-store.svg"><img src="./images/b-tree-store.svg" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
 <p>Each Page has a fixed size, ranging from 512 to 65,536 bytes. Page and Cell headers use 4 bytes to store child links.<br />
-If you want to know child Page number - you need to read the header separately with this function:</p>
+If we want to know child Page number - we need to read the header separately with this function:</p>
 <pre><code class="language-c rounded">get4byte(...)</code></pre>
-<p>For other Page and Cell data, you can use these C structures:</p>
+<p>For other Page and Cell data, we can use these C structures:</p>
 <a href="#h3-page" id="h3-page" class="text-decoration-none text-reset"><h3>Page</h3></a>
 <p>sqlite/src/btreeInt.h</p>
 <pre><code class="language-c rounded">struct MemPage {
@@ -122,7 +122,7 @@ If you want to know child Page number - you need to read the header separately w
   u8 *pPayload;  /* Pointer to the start of payload */
   ...
 };</code></pre>
-<p>To view index data, you can use <a href="https://www.sqlite.org/sqlanalyze.html">sqlite3 analyzer</a>:</p>
+<p>To view index data, we can use <a href="https://www.sqlite.org/sqlanalyze.html" target="_blank">sqlite3 analyzer</a>:</p>
 <pre><code class="language-bash rounded">sqlite3_analyzer database.sqlite
 ...
 Page size in bytes................................ 4096      
@@ -134,8 +134,8 @@ Total pages used.................................. 4
 ..</code></pre>
 <p>This tool provides only general information about index.</p>
 <a href="#h2-analyzing-sqlite-source-code" id="h2-analyzing-sqlite-source-code" class="text-decoration-none text-reset"><h2>Analyzing SQLite Source Code</h2></a>
-<p>After a few weeks of experimenting, I wrote my first version of function for index analysis.</p>
-<p>You can view the code <a href="https://github.com/mrsuh/sqlite-index/blob/main/sqlite.patch">here</a>:</p>
+<p>After a few weeks of experimenting, I wrote my functions for index analysis.</p>
+<p>You can view the code <a href="https://github.com/mrsuh/sqlite-index/blob/main/sqlite.patch" target="_blank">here</a>:</p>
 <pre><code class="language-c rounded">char *sqlite3DebugGetMemoryPayload(Mem *mem);
 
 char **sqlite3DebugGetCellPayloadAndRowId(BtCursor *pCur, MemPage *pPage, int cellIndex);
@@ -167,7 +167,7 @@ sqlite3BtreeIndexDump: cell, number=1, leftChildPageNumber=-1, payload=2, rowId=
 ...</code></pre>
 <p>Great!<br />
 The next step was to display everything visually — an easy part of the process.</p>
-<p>I found a library called <a href="https://github.com/benyasin/d3-org-tree">d3-org-tree</a> for visualizing index structures.<br />
+<p>I found a library called <a href="https://github.com/benyasin/d3-org-tree" target="_blank">d3-org-tree</a> for visualizing index structures.<br />
 Here’s how it looked in the early stages:</p>
 <p><a href="./images/test-tree-d3.png"><img src="./images/test-tree-d3.png" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
 <p>However, there was a problem: I couldn’t adjust the spacing between Pages, so as the tree became deeper and more Pages were added at each level, the image became too large and hard to read.</p>
@@ -204,7 +204,7 @@ After a few tries with d3-org-tree, I decided that using text to display the str
                |============================================| |============================================|
 ------------------------------------------------------------------------------------------------------------------------</code></pre>
 <p>Not bad, but I could go further.<br />
-PHP's <a href="https://www.php.net/manual/en/intro.imagick.php">ImageMagick</a> extension lets you create images with more control over design and spacing than text alone. After about a dozen tries, here's the final version I came up with:</p>
+PHP's <a href="https://www.php.net/manual/en/intro.imagick.php" target="_blank">ImageMagick</a> extension lets us create images with more control over design and spacing than text alone. After about a dozen tries, here's the final version I came up with:</p>
 <p><a href="./images/test-tree-php.webp"><img src="./images/test-tree-php.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
 <p>The image now includes all the needed data and is easy to read.</p>
 <p>In the top-left corner, there’s general information about the Index.<br />
@@ -275,7 +275,7 @@ CREATE INDEX idx ON table_test (column1 ASC) WHERE column1 IS NOT NULL;</code></
 INSERT INTO table_test (column1, column2) VALUES (1,1),(2,2),(3,3),...,(999998,999998),(999999,999999),(1000000,1000000);
 CREATE INDEX idx ON table_test (column1 ASC, column2 ASC);</code></pre>
 <p><a href="./images/index-complex.webp"><img src="./images/index-complex.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
-<p>As you can see, the data for all fields in a cell are stored one after another.<br />
+<p>As we can see, the data for all fields in a cell are stored one after another.<br />
 The fields are separated visually with a colon <code>:</code>.</p>
 <a href="#h2-comparing-indexes-created-before-and-after-data-population" id="h2-comparing-indexes-created-before-and-after-data-population" class="text-decoration-none text-reset"><h2>Comparing Indexes Created Before and After Data Population</h2></a>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 INT NOT NULL);
@@ -295,8 +295,8 @@ Both Indexes look similar, but the second Index, with fewer Pages, should be fas
 | After  | 2930        | 1000000     |
 +--------+-------------+-------------+</code></pre>
 <a href="#h2-vacuum-and-reindex" id="h2-vacuum-and-reindex" class="text-decoration-none text-reset"><h2>VACUUM and REINDEX</h2></a>
-<p>To achieve similar optimization, you can rebuild an existing Index with these commands:</p>
-<p><a href="https://www.sqlite.org/lang_vacuum.html">VACUUM</a> recreates Indexes and tables with data:</p>
+<p>To achieve similar optimization, we can rebuild an existing Index with these commands:</p>
+<p><a href="https://www.sqlite.org/lang_vacuum.html" target="_blank">VACUUM</a> recreates Indexes and tables with data:</p>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 INT NOT NULL);
 CREATE INDEX idx ON table_test (column1 ASC);
 INSERT INTO table_test (column1) VALUES (1),(2),(3),...,(999998),(999999),(1000000);
@@ -307,7 +307,7 @@ VACUUM;</code></pre>
 | Before | 3342        | 1000000     |
 | After  | 2930        | 1000000     |
 +--------+-------------+-------------+</code></pre>
-<p><a href="https://www.sqlite.org/lang_reindex.html">REINDEX</a> -  recreates Indexes only:</p>
+<p><a href="https://www.sqlite.org/lang_reindex.html" target="_blank">REINDEX</a> -  recreates Indexes only:</p>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 INT NOT NULL);
 CREATE INDEX idx ON table_test (column1 ASC);
 INSERT INTO table_test (column1) VALUES (1),(2),(3),...,(999998),(999999),(1000000);
@@ -344,7 +344,7 @@ The visualization helped analyze and compare different Indexes.</p>
 <p>To reproduce all of these examples, you can run the following:</p>
 <pre><code class="language-bash rounded">docker run -it --rm -v "$PWD":/app/data --platform linux/x86_64 mrsuh/sqlite-index bash
 sh bin/test-index.sh</code></pre>
-<p>Code and examples are available <a href="https://github.com/mrsuh/sqlite-index">here</a></p>
+<p>Code and examples are available <a href="https://github.com/mrsuh/sqlite-index" target="_blank">here</a></p>
 <p>Next, I'll focus on visualizing Index-based searches and explore some interesting SQL queries.</p>
 </div>
 

@@ -156,7 +156,7 @@ This approach has a small performance/memory effect and some generics types rest
 </tbody>
 </table>
 <p>no* - generics types of some languages like <code>Java</code>/<code>Hack</code> may be reflected and not used by VM at <code>runtime</code>.</p>
-<p>I can assume the PHP <a href="https://psalm.dev/docs/annotating_code/templated_annotations">Psalm annotations</a> are a kind of <code>type erasure generics</code>, but there is no such thing in PHP as generic types at <code>compile/run time</code>.<br />
+<p>I can assume the PHP <a href="https://psalm.dev/docs/annotating_code/templated_annotations" target="_blank">Psalm annotations</a> are a kind of <code>type erasure generics</code>, but there is no such thing in PHP as generic types at <code>compile/run time</code>.<br />
 PHP Psalm annotations visibility table:</p>
 <table class="table table-bordered">
 <thead class="table-secondary">
@@ -251,7 +251,7 @@ Let's look inside the <code>$stringContainer</code> variable by <code>var_dump()
 I think <code>kind =&gt; 4</code> is a constant for type <code>string</code>.<br />
 It means you can get the generics type at <code>runtime</code>.</p>
 <p>This approach has a small performance/memory effect.<br />
-Nikita Popov already had an <a href="https://github.com/PHPGenerics/php-generics-rfc/issues/45">attempt</a> to implement this type of generics in <code>PHP</code>.</p>
+Nikita Popov already had an <a href="https://github.com/PHPGenerics/php-generics-rfc/issues/45" target="_blank">attempt</a> to implement this type of generics in <code>PHP</code>.</p>
 <p><code>Reified</code> generics visibility table:</p>
 <table class="table table-bordered">
 <thead class="table-secondary">
@@ -306,7 +306,7 @@ class ContainerForInt {
 
 $intContainer = new ContainerForInt(1);</code></pre>
 <p>This approach has a big memory effect.<br />
-PHP doesn't support native generics, but you can test <code>monomorphic</code> generics with my <a href="https://github.com/mrsuh/php-generics">library</a>.</p>
+PHP doesn't support native generics, but you can test <code>monomorphic</code> generics with my <a href="https://github.com/mrsuh/php-generics" target="_blank">library</a>.</p>
 <p><code>Monomorphic</code> generics visibility table:</p>
 <table class="table table-bordered">
 <thead class="table-secondary">
@@ -370,7 +370,7 @@ test.cpp:8:17: note:   initializing argument 1 of 'void MyContainer&lt;T&gt;::se
 <p>This approach increases <code>compile time</code>, but improves performance <code>runtime</code>.</p>
 <p>I hope it was helpful to you.<br />
 Play around with the examples above - it's a really interesting process!<br />
-If you want to go further, read this great <a href="https://thume.ca/2019/07/14/a-tour-of-metaprogramming-models-for-generics/">article</a> about generics.</p>
+If you want to go further, read this great <a href="https://thume.ca/2019/07/14/a-tour-of-metaprogramming-models-for-generics/" target="_blank">article</a> about generics.</p>
 <p>Have a nice day!</p>
 </div>
 

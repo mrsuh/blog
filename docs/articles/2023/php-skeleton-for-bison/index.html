@@ -81,8 +81,8 @@
 <div class="content">
     <h1>PHP Skeleton for Bison</h1>
 <a href="#h2-what-is-bison?" id="h2-what-is-bison?" class="text-decoration-none text-reset"><h2>What is Bison?</h2></a>
-<p><a href="https://www.gnu.org/software/bison">Bison</a> is a parser generator.<br />
-For example, it can help you to build a parser to parse your code into <a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree">AST</a>:</p>
+<p><a href="https://www.gnu.org/software/bison" target="_blank">Bison</a> is a parser generator.<br />
+For example, it can help you to build a parser to parse your code into <a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree" target="_blank">AST</a>:</p>
 <pre><code class="language-php rounded">&lt;?php
 
 namespace App;
@@ -148,11 +148,11 @@ class Test
     48, 0, 50, 0, 53, 54
 ];</code></pre>
 <p>Then, this data is passed to a template that is called <code>skeleton</code>.<br />
-This <code>skeleton</code> is a special file written in <a href="https://en.wikipedia.org/wiki/M4_(computer_language)">M4</a> language that renders your <code>parser.php</code> file.<br />
+This <code>skeleton</code> is a special file written in <a href="https://en.wikipedia.org/wiki/M4_(computer_language)" target="_blank">M4</a> language that renders your <code>parser.php</code> file.<br />
 By default, Bison supports C/C++/D/Java languages, but you can extend it with your own <code>skeleton</code> file.</p>
 <a href="#h2-simple-calculator" id="h2-simple-calculator" class="text-decoration-none text-reset"><h2>Simple calculator</h2></a>
 <p>Let's make a simple calculator with Bison and PHP. It will parse expression from <code>stdin</code> and print result.</p>
-<p>First, we must install <a href="https://github.com/mrsuh/php-bison-skeleton">PHP skeleton package</a>.</p>
+<p>First, we must install <a href="https://github.com/mrsuh/php-bison-skeleton" target="_blank">PHP skeleton package</a>.</p>
 <pre><code class="language-bash rounded">composer require --dev mrsuh/php-bison-skeleton</code></pre>
 <p>Then we define a simple grammar file.</p>
 <p><code>grammar.y</code></p>
@@ -350,10 +350,10 @@ if (!$parser-&gt;parse()) {
 <p>It works!</p>
 <p>Some useful links:</p>
 <ul>
-<li><a href="https://github.com/mrsuh/php-bison-skeleton/tree/master/examples">PHP skeleton library</a></li>
-<li><code>parser.php</code> <a href="https://github.com/mrsuh/php-bison-skeleton/tree/master/examples/calc-pull">source code</a></li>
-<li>more <a href="https://github.com/mrsuh/php-bison-skeleton/tree/master/examples">examples</a></li>
-<li><a href="https://github.com/mrsuh/docker-bison">Bison docker image</a></li>
+<li><a href="https://github.com/mrsuh/php-bison-skeleton/tree/master/examples" target="_blank">PHP skeleton library</a></li>
+<li><code>parser.php</code> <a href="https://github.com/mrsuh/php-bison-skeleton/tree/master/examples/calc-pull" target="_blank">source code</a></li>
+<li>more <a href="https://github.com/mrsuh/php-bison-skeleton/tree/master/examples" target="_blank">examples</a></li>
+<li><a href="https://github.com/mrsuh/docker-bison" target="_blank">Bison docker image</a></li>
 <li><a href="/articles/2022/parsing-with-php-bison-and-re2c/">Parsing with PHP, Bison, and re2c</a></li>
 </ul>
 </div>

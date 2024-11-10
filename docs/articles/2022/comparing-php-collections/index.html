@@ -97,10 +97,10 @@ class Item {
 </ul>
 <p>I want to compare:</p>
 <ul>
-<li><a href="https://www.php.net/manual/en/language.types.array.php">array</a></li>
-<li><a href="https://psalm.dev/docs/annotating_code/templated_annotations">Psalm annotation templates</a></li>
-<li><a href="https://github.com/mrsuh/php-generics#monomorphization">Monomorphic generics</a></li>
-<li><a href="https://github.com/mrsuh/php-generics#type-erasure">Type-erased generics</a></li>
+<li><a href="https://www.php.net/manual/en/language.types.array.php" target="_blank">array</a></li>
+<li><a href="https://psalm.dev/docs/annotating_code/templated_annotations" target="_blank">Psalm annotation templates</a></li>
+<li><a href="https://github.com/mrsuh/php-generics#monomorphization" target="_blank">Monomorphic generics</a></li>
+<li><a href="https://github.com/mrsuh/php-generics#type-erasure" target="_blank">Type-erased generics</a></li>
 </ul>
 <a href="#h2-usage" id="h2-usage" class="text-decoration-none text-reset"><h2>Usage</h2></a>
 <p>Let's first compare usage.</p>
@@ -248,7 +248,7 @@ function test(Collection&lt;Item&gt; $data): Collection&lt;Item&gt; {}</code></p
 <a href="#h2-memory" id="h2-memory" class="text-decoration-none text-reset"><h2>Memory</h2></a>
 <p>Memory test is very simple.<br />
 It creates <code>$collection</code> and puts <code>Item</code> objects into it <code>count</code> times.<br />
-For measurement I use <a href="https://github.com/mrsuh/php-var-sizeof">var_sizeof()</a> and <code>memory_get_usage()</code>.</p>
+For measurement I use <a href="https://github.com/mrsuh/php-var-sizeof" target="_blank">var_sizeof()</a> and <code>memory_get_usage()</code>.</p>
 <p><em>Items in collection: 0</em></p>
 <table class="table table-bordered">
 <thead class="table-secondary">
@@ -400,7 +400,7 @@ For measurement I use <a href="https://github.com/mrsuh/php-var-sizeof">var_size
 <p>It's not surprising an <code>array</code> requires the least amount of memory.<br />
 Other approaches have roughly the same internal structure and require the same amount of memory.</p>
 <a href="#h2-performance" id="h2-performance" class="text-decoration-none text-reset"><h2>Performance</h2></a>
-<p>I used <a href="https://github.com/phpbench/phpbench">phpbench</a> to measure performance.<br />
+<p>I used <a href="https://github.com/phpbench/phpbench" target="_blank">phpbench</a> to measure performance.<br />
 I think one of the big differences between all the solutions is the type checking. So I decided to try measure it.<br />
 How much faster will code with/without type checking?</p>
 <pre><code class="language-bash rounded">PHPBench (1.2.3) running benchmarks...
@@ -430,9 +430,9 @@ Subjects: 4, Assertions: 0, Failures: 0, Errors: 0
 <p><a href="./images/memory.png"><img src="./images/memory.png" alt="PHP memory usage" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
 <p>If you are only using simple collections you can use <code>array</code> - it is very fast and requires little memory.<br />
 PHP doesn't support generic syntax and IDE can't make hints about the type of objects in a collection (yet),<br />
-but if you want PHP to do type checks at runtime you can test the <a href="https://github.com/mrsuh/php-generics">php-generics</a> library.</p>
-<p>I think for now the best solution is a combination of <code>array</code> with annotations for simple collections and <a href="https://psalm.dev/docs/annotating_code/templated_annotations">Psalm annotation templates</a> for complex objects.</p>
-<p>If you want to reproduce the tests result you can find the source code and instructions <a href="https://github.com/mrsuh/php-collections-comparison">here</a>.</p>
+but if you want PHP to do type checks at runtime you can test the <a href="https://github.com/mrsuh/php-generics" target="_blank">php-generics</a> library.</p>
+<p>I think for now the best solution is a combination of <code>array</code> with annotations for simple collections and <a href="https://psalm.dev/docs/annotating_code/templated_annotations" target="_blank">Psalm annotation templates</a> for complex objects.</p>
+<p>If you want to reproduce the tests result you can find the source code and instructions <a href="https://github.com/mrsuh/php-collections-comparison" target="_blank">here</a>.</p>
 </div>
 
 <div class="footer" style="height: 40px"></div>

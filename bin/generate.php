@@ -94,6 +94,21 @@ class MyParserdown extends \Parsedown
 
         return $Inline;
     }
+
+    protected function inlineLink($Excerpt) {
+        $data = parent::inlineLink($Excerpt);
+        if (!is_array($data)) {
+            return;
+        }
+        
+        $link = $data['element']['attributes']['href'];
+        
+        if(strpos($link, 'http') !== false) {
+            $data['element']['attributes']['target'] = '_blank';
+        }
+        
+        return $data;
+    }
 }
 
 $parser = new MyParserdown();

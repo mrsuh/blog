@@ -109,9 +109,9 @@ To test our parser I will use this JSON file:</p>
 composer require mrsuh/tree-printer
 composer require doctrine/lexer</code></pre>
 <ul>
-<li><a href="https://github.com/mrsuh/php-bison-skeleton">mrsuh/php-bison-skeleton</a> - to build PHP parser with Bison</li>
-<li><a href="https://www.doctrine-project.org/projects/doctrine-lexer/en/1.2/index.html">mrsuh/tree-printer</a> - to print <code>AST</code></li>
-<li><a href="https://www.doctrine-project.org/projects/doctrine-lexer/en/1.2/index.html">doctrine/lexer</a> - to parse text into tokens</li>
+<li><a href="https://github.com/mrsuh/php-bison-skeleton" target="_blank">mrsuh/php-bison-skeleton</a> - to build PHP parser with Bison</li>
+<li><a href="https://www.doctrine-project.org/projects/doctrine-lexer/en/1.2/index.html" target="_blank">mrsuh/tree-printer</a> - to print <code>AST</code></li>
+<li><a href="https://www.doctrine-project.org/projects/doctrine-lexer/en/1.2/index.html" target="_blank">doctrine/lexer</a> - to parse text into tokens</li>
 </ul>
 <p>We will store our files like this:</p>
 <pre><code class="language-bash rounded">.
@@ -308,8 +308,8 @@ class Lexer extends AbstractLexer implements LexerInterface
 </table>
 <p>Time to create <code>grammar.y</code> file and build <code>lib/parser.php</code></p>
 <p>PHP already has the native function <code>json_decode()</code> and it uses Bison to generate a C parser.<br />
-I think we can get ready <a href="https://github.com/php/php-src/blob/master/ext/json/json_parser.y">Bison grammar file</a> from the php-src repository and modify it.<br />
-The grammar file is very small because <a href="https://www.json.org/json-en.html">JSON standard</a> is very simple.</p>
+I think we can get ready <a href="https://github.com/php/php-src/blob/master/ext/json/json_parser.y" target="_blank">Bison grammar file</a> from the php-src repository and modify it.<br />
+The grammar file is very small because <a href="https://www.json.org/json-en.html" target="_blank">JSON standard</a> is very simple.</p>
 <p>We will use block <code>%code parser</code> to define variables and methods to store <code>AST</code> into the <code>Parser</code> class.</p>
 <p><code>grammar.y</code></p>
 <pre><code class="language-php rounded">%define api.parser.class {Parser}
@@ -480,11 +480,11 @@ value:
 <p>PHP Bison parser shows the best result with PHP 8.2.<br />
 It is ~56 times slower than the native <code>json_decode()</code> function.</p>
 <p>I hope it was interesting for you!</p>
-<p>You can get the parser source code <a href="https://github.com/mrsuh/php-bison-skeleton/tree/master/examples/json-ast">here</a> and test it by yourself.</p>
+<p>You can get the parser source code <a href="https://github.com/mrsuh/php-bison-skeleton/tree/master/examples/json-ast" target="_blank">here</a> and test it by yourself.</p>
 <p>Some useful links:</p>
 <ul>
-<li><a href="https://github.com/mrsuh/php-bison-skeleton">PHP skeleton library</a></li>
-<li><a href="https://github.com/mrsuh/docker-bison">Bison docker image</a></li>
+<li><a href="https://github.com/mrsuh/php-bison-skeleton" target="_blank">PHP skeleton library</a></li>
+<li><a href="https://github.com/mrsuh/docker-bison" target="_blank">Bison docker image</a></li>
 <li><a href="/articles/2023/php-skeleton-for-bison/">PHP Skeleton for Bison</a></li>
 <li><a href="/articles/2023/ast-parser-with-php-and-bison/">AST parser with PHP and Bison</a></li>
 <li><a href="/articles/2023/nginx-parser-with-php-and-bison/">Nginx parser with PHP and Bison</a></li>

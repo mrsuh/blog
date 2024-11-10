@@ -80,7 +80,7 @@
 
 <div class="content">
     <h1>Few steps to make your docker image smaller</h1>
-<p>I have some projects where I need <a href="https://www.gnu.org/software/bison/">bison</a>. I decided to build my image when I didn't find official or fresh unofficial docker images.</p>
+<p>I have some projects where I need <a href="https://www.gnu.org/software/bison/" target="_blank">bison</a>. I decided to build my image when I didn't find official or fresh unofficial docker images.</p>
 <p>To compile bison you need to install some apt dependencies and compile the last version of <code>autoconf</code> from the source code.<br />
 I decided to make it from <code>debian:bullseye-slim</code> image. It is the latest Debian light image which size is 80.5MB (without compression).</p>
 <pre><code class="language-bash rounded">docker images --format="table {{.Repository}}\t{{.Tag}}\t{{ .Size }}"  | grep "REPOSITORY\|debian"
@@ -288,7 +288,7 @@ bison-test    4.0             91.8MB</code></pre>
 <li>reduce the number of layers</li>
 <li>remove unnecessary files/dependencies inside the layer where you created it</li>
 </ul>
-<p>You can see the original bison Dockerfile <a href="https://github.com/mrsuh/docker-bison">here</a>.</p>
+<p>You can see the original bison Dockerfile <a href="https://github.com/mrsuh/docker-bison" target="_blank">here</a>.</p>
 </div>
 
 <div class="footer" style="height: 40px"></div>
