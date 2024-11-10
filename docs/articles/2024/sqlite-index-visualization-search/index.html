@@ -9,14 +9,14 @@
     <link rel="manifest" href="/site.webmanifest">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 
-    <meta name="description" content="In the previous post, I explained how I learned to pull data from SQLite Indexes and make it visual...."/>
+    <meta name="description" content="In the previous post, I explained how I learned to extract data from SQLite Indexes and make it visu..."/>
     <meta name="keywords" content="anton sukhachev, mrsuh"/>
 
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="mrsuh.com">
     <meta property="og:url" content="https://mrsuh.com/articles/2024/sqlite-index-visualization-search/">
     <meta property="og:title" content="SQLite Index Visualization: Search">
-    <meta property="og:description" content="In the previous post, I explained how I learned to pull data from SQLite Indexes and make it visual....">
+    <meta property="og:description" content="In the previous post, I explained how I learned to extract data from SQLite Indexes and make it visu...">
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:alt" content="Anton Sukhachev">
     
@@ -25,7 +25,7 @@
     <meta name="twitter:url" content="https://mrsuh.com/articles/2024/sqlite-index-visualization-search/">
     <meta name="twitter:title" content="SQLite Index Visualization: Search">
     <meta name="twitter:creator" content="@mrsuh6">
-    <meta name="twitter:description" content="In the previous post, I explained how I learned to pull data from SQLite Indexes and make it visual....">
+    <meta name="twitter:description" content="In the previous post, I explained how I learned to extract data from SQLite Indexes and make it visu...">
     <meta name="twitter:image:alt" content="Anton Sukhachev">
     
     <link href="/bootstrap.min.css" rel="stylesheet">
@@ -80,14 +80,14 @@
 
 <div class="content">
     <h1>SQLite Index Visualization: Search</h1>
-<p>In the previous <a href="/articles/2024/sqlite-index-visualization-structure/">post</a>, I explained how I learned to pull data from SQLite Indexes and make it visual.<br />
+<p>In the previous <a href="/articles/2024/sqlite-index-visualization-structure/">post</a>, I explained how I learned to extract data from SQLite Indexes and make it visual.<br />
 This time, I'll try to show what a search inside an Index looks like.</p>
 <a href="#h2-how-does-sqlite-search-within-an-index?" id="h2-how-does-sqlite-search-within-an-index?" class="text-decoration-none text-reset"><h2>How does SQLite search within an Index?</h2></a>
 <p><a href="./images/b-tree-sqlite-search.svg"><img src="./images/b-tree-sqlite-search.svg" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
 <p>Inside each Page, SQLite performs a binary search among Cell values. After finding the closest match, it picks the left child of that Cell.<br />
 If all Cell values on the Page are smaller than the target, it selects the Page’s right child.</p>
 <p>If we compile SQLite with <a href="https://www.sqlite.org/debugging.html" target="_blank">debugging</a> enabled and turn it on for queries, we can get detailed information about how the query work internally.<br />
-First, we should know that SQLite has a virtual machine, probably to support a wide range of devices. Even using a simple EXPLAIN command, we can view the virtual machine’s OPCODEs, its registers (p1, p2...), and comments.<br />
+First, we should know that SQLite has a virtual machine. Even using a simple EXPLAIN command, we can view the virtual machine’s OPCODEs, its registers (p1, p2...), and comments.<br />
 You can learn more about its internals <a href="https://www.sqlite.org/opcode.html" target="_blank">here</a>.</p>
 <pre><code class="language-sql rounded">EXPLAIN SELECT rowId, column1 FROM table_test INDEXED BY idx WHERE column1 = 1;
 addr  opcode         p1    p2    p3    p4             p5  comment      
@@ -106,7 +106,7 @@ addr  opcode         p1    p2    p3    p4             p5  comment
 11    Transaction    0     0     3     0              1   usesStmtJournal=0
 12    TableLock      0     2     0     table_test     0   iDb=0 root=2 write=0
 13    Goto           0     1     0                    0</code></pre>
-<p>The EXPLAIN output shows the root Page number of the Index, the opcodes used to search within the Index, and the related values for each step:</p>
+<p>The EXPLAIN output shows the root Page number of the Index, the OPCODEs used to search within the Index, and the related values for each step:</p>
 <pre><code class="language-bash rounded">1     OpenRead       1     2694  0     k(2,,)         2   root=2694 iDb=0; idx
 ...
 3     Integer        1     1     0                    0   r[1]=1
@@ -115,8 +115,8 @@ addr  opcode         p1    p2    p3    p4             p5  comment
 <pre><code class="language-sql rounded">SELECT rowId, column1 FROM table_test INDEXED BY idx WHERE column1 = 1;
 .testctrl seek_count
 1</code></pre>
-<p>More detailed information about the Pages involved and the Cells compared cannot be obtained easily.<br />
-I dug into the code and <a href="https://github.com/mrsuh/sqlite-index/blob/main/sqlite.patch" target="_blank">added</a> output to track all the Pages and Cells read during the search.<br />
+<p>We can't get more detailed information about pages and cells from the EXPLAIN output.<br />
+I dug into the code and <a href="https://github.com/mrsuh/sqlite-index/blob/main/sqlite.patch" target="_blank">added</a> functions to track all the Pages and Cells read during the search.<br />
 Example of code:</p>
 <pre><code class="language-c rounded">if (sqlite3DebugIsBtreeIndexSeekEnabled()) {
   char **payload = sqlite3DebugGetCellPayloadAndRowId(pCur, pPage, idx);
@@ -150,19 +150,20 @@ Then, I updated the Index visualization code, and here’s the result:</p>
 <li>number of Cells checked during the search;</li>
 <li>count of Index searches for the data;</li>
 <li>count of Cell comparisons;</li>
-<li>number of Cells filtered out,</li>
+<li>number of filtered Cells.</li>
 </ul>
 <p>The searched Cell and its linked Cells are highlighted in bright colors.</p>
+<p>Information about the number of filtered Cells:</p>
 <pre><code class="language-sql rounded">SELECT * FROM table WHERE column = 10;</code></pre>
-<p>SQLite first finds the first Cell with the value 10, then it checks the following Cells because they might also contain 10.<br />
-So, instead of searching, it reads the next Cells to filter them. This means that for simple queries, there’s usually at least one filtering operation.</p>
+<p>In this query, SQLite first finds the cell with the value 10, then checks the following cells since they could also have the value 10.<br />
+So, instead of performing more searching, it reads the next cells to filter them. This means that for simple queries, there’s usually at least one filtering step.</p>
 <p>To create this image, we’ll need dumps of both the Index and the search.<br />
 We can get these with the following commands:</p>
 <pre><code class="language-bash rounded">docker run -it --rm -v "$PWD":/app/data --platform linux/x86_64 mrsuh/sqlite-index bash
 sh bin/dump-index.sh database.sqlite "SELECT column1 FROM table_test INDEXED BY idx WHERE column1 = 1;" dump-index.txt
 sh bin/dump-search.sh database.sqlite "SELECT column1 FROM table_test INDEXED BY idx WHERE column1 = 1;" dump-search.txt
 php bin/console app:render-search --dumpIndexPath=dump-index.txt --dumpSearchPath=dump-search.txt --outputImagePath=image.webp</code></pre>
-<p>The search dump file holds a lot of useful details about the query. If we want to compare different queries or understand how a query works internally, just open this file:</p>
+<p>The search dump file contain a lot of useful details about the query:</p>
 <pre><code class="language-bash rounded">### QUERY
 SELECT rowId, column1 FROM table_test INDEXED BY idx WHERE column1 = 1;
 
@@ -194,7 +195,7 @@ rowid  column1
 <p><a href="./images/search-equal.webp"><img src="./images/search-equal.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
 <p>We read 3 Pages, compared 19 Cells, and filtered out one Cell. In this example, the actual number of comparisons is 19, which is lower than the theoretical worst-case for binary search: </p>
 <pre><code class="language-bash rounded">O(log2(n)) -&gt; O(log2(1.000.000)) -&gt; 19.93</code></pre>
-<a href="#h2-testing-queries-with-multiple-values-in-in()" id="h2-testing-queries-with-multiple-values-in-in()" class="text-decoration-none text-reset"><h2>Testing queries with multiple values in IN()</h2></a>
+<a href="#h2-query-with-multiple-values-in-in()" id="h2-query-with-multiple-values-in-in()" class="text-decoration-none text-reset"><h2>Query with multiple values in IN()</h2></a>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 INT NOT NULL);
 INSERT INTO table_test (column1) VALUES (1),(2),(3),...,(999998),(999999),(1000000);
 CREATE INDEX idx ON table_test (column1 ASC);</code></pre>
@@ -204,8 +205,7 @@ rowid    column1
 1        1      
 1000000  1000000</code></pre>
 <p><a href="./images/search-range-1000000.webp"><img src="./images/search-range-1000000.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
-<p>The total search information is shown in the top left corner. Cells involved in search are highlighted.<br />
-For each value in the <code>IN()</code> list, SQLite performs a separate search in the Index. Sometimes, optimizations can reduce the number of searches, but generally, the database will go through the Index from the root to the target value for each item in the <code>IN()</code> list.</p>
+<p>For each value in the <code>IN()</code> list, SQLite performs a separate search in the Index. Sometimes, optimizations can reduce the number of searches, but generally, the database will go through the Index from the root to the target value for each item in the <code>IN()</code> list.</p>
 <a href="#h2-comparing-searches-in-asc/desc-indexes" id="h2-comparing-searches-in-asc/desc-indexes" class="text-decoration-none text-reset"><h2>Comparing searches in ASC/DESC Indexes</h2></a>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 INT NOT NULL);
 INSERT INTO table_test (column1) VALUES (1),(2),(3),...,(999998),(999999),(1000000);
@@ -228,7 +228,7 @@ rowid    column1
 1        1</code></pre>
 <p><a href="./images/search-order-desc.webp"><img src="./images/search-order-desc.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
 <p>As shown, searching in a DESC Index works the same as searching in an ASC Index in general cases.</p>
-<a href="#h2-testing-range-searches" id="h2-testing-range-searches" class="text-decoration-none text-reset"><h2>Testing range searches</h2></a>
+<a href="#h2-range-searches" id="h2-range-searches" class="text-decoration-none text-reset"><h2>Range searches</h2></a>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 INT NOT NULL);
 INSERT INTO table_test (column1) VALUES (1),(2),(3),...,(999998),(999999),(1000000);
 CREATE INDEX idx ON table_test (column1 ASC);</code></pre>
@@ -377,7 +377,7 @@ rowid   column1  column2
 </tr>
 </tbody>
 </table>
-<p>It only took 21 comparisons to find the first row, but there’s no guarantee that SQLite can quickly filter the remaining rows. In the case below, SQLite has to scan the rest of the Index to ensure there are no more rows that match the query.</p>
+<p>It took only 21 comparisons to find the first row, but there’s no guarantee that SQLite can quickly filter the remaining rows. In the case below, SQLite has to scan the rest of the Index to ensure there are no more rows that match the query.</p>
 <table class="table table-bordered">
 <thead class="table-secondary">
 <tr>

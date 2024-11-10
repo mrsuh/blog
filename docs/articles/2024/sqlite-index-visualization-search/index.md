@@ -1,6 +1,6 @@
 # SQLite Index Visualization: Search 
 
-In the previous [post](/articles/2024/sqlite-index-visualization-structure/), I explained how I learned to pull data from SQLite Indexes and make it visual. 
+In the previous [post](/articles/2024/sqlite-index-visualization-structure/), I explained how I learned to extract data from SQLite Indexes and make it visual. 
 This time, I'll try to show what a search inside an Index looks like.
 
 ## How does SQLite search within an Index?
@@ -11,7 +11,7 @@ Inside each Page, SQLite performs a binary search among Cell values. After findi
 If all Cell values on the Page are smaller than the target, it selects the Page’s right child.
 
 If we compile SQLite with [debugging](https://www.sqlite.org/debugging.html) enabled and turn it on for queries, we can get detailed information about how the query work internally.
-First, we should know that SQLite has a virtual machine, probably to support a wide range of devices. Even using a simple EXPLAIN command, we can view the virtual machine’s OPCODEs, its registers (p1, p2...), and comments. 
+First, we should know that SQLite has a virtual machine. Even using a simple EXPLAIN command, we can view the virtual machine’s OPCODEs, its registers (p1, p2...), and comments. 
 You can learn more about its internals [here](https://www.sqlite.org/opcode.html).
 ```sql
 EXPLAIN SELECT rowId, column1 FROM table_test INDEXED BY idx WHERE column1 = 1;
@@ -33,7 +33,7 @@ addr  opcode         p1    p2    p3    p4             p5  comment
 13    Goto           0     1     0                    0
 ```
 
-The EXPLAIN output shows the root Page number of the Index, the opcodes used to search within the Index, and the related values for each step:
+The EXPLAIN output shows the root Page number of the Index, the OPCODEs used to search within the Index, and the related values for each step:
 ```bash
 1     OpenRead       1     2694  0     k(2,,)         2   root=2694 iDb=0; idx
 ...
@@ -48,8 +48,8 @@ SELECT rowId, column1 FROM table_test INDEXED BY idx WHERE column1 = 1;
 1
 ```
 
-More detailed information about the Pages involved and the Cells compared cannot be obtained easily. 
-I dug into the code and [added](https://github.com/mrsuh/sqlite-index/blob/main/sqlite.patch) output to track all the Pages and Cells read during the search.
+We can't get more detailed information about pages and cells from the EXPLAIN output.
+I dug into the code and [added](https://github.com/mrsuh/sqlite-index/blob/main/sqlite.patch) functions to track all the Pages and Cells read during the search.
 Example of code:
 ```c
 if (sqlite3DebugIsBtreeIndexSeekEnabled()) {
@@ -90,14 +90,17 @@ In the top-left corner, we can see general information about the Index and speci
 * number of Cells checked during the search;
 * count of Index searches for the data;
 * count of Cell comparisons;
-* number of Cells filtered out,
+* number of filtered Cells.
 
 The searched Cell and its linked Cells are highlighted in bright colors.
+
+
+Information about the number of filtered Cells:
 ```sql
 SELECT * FROM table WHERE column = 10;
 ```
-SQLite first finds the first Cell with the value 10, then it checks the following Cells because they might also contain 10. 
-So, instead of searching, it reads the next Cells to filter them. This means that for simple queries, there’s usually at least one filtering operation.
+In this query, SQLite first finds the cell with the value 10, then checks the following cells since they could also have the value 10. 
+So, instead of performing more searching, it reads the next cells to filter them. This means that for simple queries, there’s usually at least one filtering step.
 
 To create this image, we’ll need dumps of both the Index and the search. 
 We can get these with the following commands:
@@ -108,7 +111,7 @@ sh bin/dump-search.sh database.sqlite "SELECT column1 FROM table_test INDEXED BY
 php bin/console app:render-search --dumpIndexPath=dump-index.txt --dumpSearchPath=dump-search.txt --outputImagePath=image.webp
 ```
 
-The search dump file holds a lot of useful details about the query. If we want to compare different queries or understand how a query works internally, just open this file:
+The search dump file contain a lot of useful details about the query:
 ```bash
 ### QUERY
 SELECT rowId, column1 FROM table_test INDEXED BY idx WHERE column1 = 1;
@@ -154,7 +157,7 @@ We read 3 Pages, compared 19 Cells, and filtered out one Cell. In this example, 
 O(log2(n)) -> O(log2(1.000.000)) -> 19.93
 ```
 
-## Testing queries with multiple values in IN()
+## Query with multiple values in IN()
 
 ```sql
 CREATE TABLE table_test (column1 INT NOT NULL);
@@ -170,7 +173,6 @@ rowid    column1
 ```
 ![](./images/search-range-1000000.webp)
 
-The total search information is shown in the top left corner. Cells involved in search are highlighted. 
 For each value in the `IN()` list, SQLite performs a separate search in the Index. Sometimes, optimizations can reduce the number of searches, but generally, the database will go through the Index from the root to the target value for each item in the `IN()` list.
 
 ## Comparing searches in ASC/DESC Indexes
@@ -208,7 +210,7 @@ rowid    column1
 
 As shown, searching in a DESC Index works the same as searching in an ASC Index in general cases.
 
-## Testing range searches
+## Range searches
 
 ```sql
 CREATE TABLE table_test (column1 INT NOT NULL);
@@ -363,7 +365,7 @@ Query details:
 | 500008            | 2            | filter: 1 comparison on column2              |
 | ...               | ...          |                                              |
 
-It only took 21 comparisons to find the first row, but there’s no guarantee that SQLite can quickly filter the remaining rows. In the case below, SQLite has to scan the rest of the Index to ensure there are no more rows that match the query.
+It took only 21 comparisons to find the first row, but there’s no guarantee that SQLite can quickly filter the remaining rows. In the case below, SQLite has to scan the rest of the Index to ensure there are no more rows that match the query.
 
 | column1 (>= 500000) | column2 (=2) | comments                                          |
 |---------------------|--------------|---------------------------------------------------|
