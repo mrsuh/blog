@@ -1,7 +1,6 @@
 # SQLite Index Visualization: Structure
 
-After reading about Indexes, I understood their general structure. 
-But I wanted to look inside — to see the data structure, understand the algorithm, and know how Index data is stored on disk. 
+After learning about indexes, I understood their basic structure, but I wanted to dig deeper — to explore the data structure, understand the algorithm, and learn how the index data is stored on disk. 
 The theory and actual implementation can differ, so I decided to explore this topic further.
 
 I wanted to see how a database management system (DBMS) stores an index in both disk and memory, and how it searches through an Index.
