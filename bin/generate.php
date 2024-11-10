@@ -109,6 +109,34 @@ class MyParserdown extends \Parsedown
         
         return $data;
     }
+
+    protected function blockQuote($Line) {
+        $data = parent::blockQuote($Line);
+        if (!is_array($data)) {
+            return;
+        }
+        
+        $data['element']['attributes'] = [
+            'class' => 'text-muted link-secondary'
+        ];
+        
+//        var_dump($data);exit;
+        
+        return $data;
+    }
+
+    protected function blockQuoteContinue($Line, array $Block)
+    {
+        $data = parent::blockQuoteContinue($Line, $Block);
+        if (!is_array($data)) {
+            return;
+        }
+
+        var_dump($data);
+        exit;
+
+        return $data;
+    }
 }
 
 $parser = new MyParserdown();
@@ -188,7 +216,7 @@ $articles = [
         Article::create("SQLite Index Visualization: Structure", "/articles/2024/sqlite-index-visualization-structure/", "Nov 5"),
     ],
     2023 => [
-        Article::create("How I Wrote PHP Skeleton For Bison", "https://devm.io/php/php-skeleton-bison-generics", "Sep 15"),
+        Article::create("How I Wrote PHP Skeleton For Bison", "/articles/2023/how-i-wrote-php-skeleton-for-bison/", "Sep 15"),
         Article::create("JSON parser with PHP and Bison", "/articles/2023/json-parser-with-php-and-bison/", "Apr 3"),
         Article::create("Nginx parser with PHP and Bison", "/articles/2023/nginx-parser-with-php-and-bison/", "Mar 27"),
         Article::create("AST parser with PHP and Bison", "/articles/2023/ast-parser-with-php-and-bison/", "Mar 19"),

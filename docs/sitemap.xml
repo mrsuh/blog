@@ -48,6 +48,12 @@
     <priority>1</priority>
   </url>
   <url>
+    <loc>https://mrsuh.com/articles/2023/how-i-wrote-php-skeleton-for-bison/</loc>
+    <lastmod>2024-11-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1</priority>
+  </url>
+  <url>
     <loc>https://mrsuh.com/articles/2023/json-parser-with-php-and-bison/</loc>
     <lastmod>2024-11-07</lastmod>
     <changefreq>weekly</changefreq>

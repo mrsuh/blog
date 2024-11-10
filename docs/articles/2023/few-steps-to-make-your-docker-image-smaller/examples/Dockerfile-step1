@@ -1,0 +1,41 @@
+FROM debian:bullseye-slim
+
+ENV BISON_VERSION v3.8.2
+ENV AUTOCONF_VERSION 2.71
+
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y \
+        automake \
+        autopoint \
+        ca-certificates \
+        flex \
+        gettext \
+        gcc \
+        git \
+        gperf \
+        graphviz \
+        help2man \
+        libc6-dev \
+        m4 \
+        make \
+        texinfo \
+        wget \
+        xsltproc
+
+RUN wget ftp://ftp.gnu.org/gnu/autoconf/autoconf-$AUTOCONF_VERSION.tar.gz
+RUN tar -xvzf autoconf-$AUTOCONF_VERSION.tar.gz
+WORKDIR /autoconf-$AUTOCONF_VERSION
+RUN ./configure
+RUN make
+RUN make install
+WORKDIR /
+
+RUN git clone --branch=$BISON_VERSION --depth=1 https://github.com/akimd/bison.git /bison
+WORKDIR /bison
+RUN git submodule update --init --recursive
+RUN ./bootstrap
+RUN ./configure
+RUN make
+RUN make install
+WORKDIR /
