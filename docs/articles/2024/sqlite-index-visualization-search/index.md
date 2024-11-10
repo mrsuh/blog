@@ -1,6 +1,6 @@
 # SQLite Index Visualization: Search 
 
-In the previous [post](/articles/2024/sqlite-index-visualization-structure/), I explained how I learned to extract data from SQLite Indexes and make it visual. 
+In the previous [post](/articles/2024/sqlite-index-visualization-structure/), I explained how to extract data from SQLite Indexes and make it visual. 
 This time, I'll try to show what a search inside an Index looks like.
 
 ## How does SQLite search within an Index?

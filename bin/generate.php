@@ -125,12 +125,14 @@ file_put_contents(
             '{{ title }}',
             '{{ description }}',
             '{{ path }}',
+            '{{ scripts }}',
         ],
         [
             $parser->text(file_get_contents(__DIR__ . '/../src/index.md')),
             'Anton Sukhachev',
             'Personal page',
-            ''
+            '',
+            '',
         ],
         $template
     )
@@ -180,15 +182,11 @@ $sitemap = [
     SiteMapEntity::create('https://mrsuh.com/articles/', '2024-11-01'),
 ];
 
-$new = [
+$articles = [
     2024 => [
         Article::create("SQLite Index Visualization: Search", "/articles/2024/sqlite-index-visualization-search/", "Nov 15"),
         Article::create("SQLite Index Visualization: Structure", "/articles/2024/sqlite-index-visualization-structure/", "Nov 5"),
     ],
-];
-
-$articles = [
-   
     2023 => [
         Article::create("How I Wrote PHP Skeleton For Bison", "https://devm.io/php/php-skeleton-bison-generics", "Sep 15"),
         Article::create("JSON parser with PHP and Bison", "/articles/2023/json-parser-with-php-and-bison/", "Apr 3"),
@@ -265,12 +263,14 @@ file_put_contents(
             '{{ title }}',
             '{{ description }}',
             '{{ path }}',
+            '{{ scripts }}',
         ],
         [
             $content,
             'Articles',
             '',
-            '/articles'
+            '/articles',
+            ''
         ],
         $template
     )
@@ -314,12 +314,17 @@ foreach (scandir($directory) as $yearDirectory) {
                     '{{ title }}',
                     '{{ description }}',
                     '{{ path }}',
+                    '{{ scripts }}',
                 ], 
                 [
                     $parser->text(file_get_contents($articleFilePath)),
                     $name,
                     $description,
-                    $urlPath
+                    $urlPath,
+                    '<link rel="stylesheet" href="/highlight.github-dark-dimmed.min.css">
+<script src="/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+'
                 ], 
                 $template
             )
