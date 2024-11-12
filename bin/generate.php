@@ -117,7 +117,7 @@ class MyParserdown extends \Parsedown
         }
         
         $data['element']['attributes'] = [
-            'class' => 'text-muted link-secondary'
+            'class' => 'text-muted link-secondary quote'
         ];
         
         return $data;
@@ -129,9 +129,6 @@ class MyParserdown extends \Parsedown
         if (!is_array($data)) {
             return;
         }
-
-        var_dump($data);
-        exit;
 
         return $data;
     }
@@ -230,7 +227,7 @@ $articles = [
         Article::create("PHP generics", "https://phprussia.ru/moscow/2022/abstracts/9165", "Nov 25"),
     ],
     2021 => [
-        Article::create("PHP Generics . Right here . Right now", "https://habr.com/ru/articles/577750", "Sep 14"),
+        Article::create("PHP Generics . Right here . Right now", "/articles/2021/php-generics-right-here-right-now/", "Sep 14"),
     ],
     2020 => [
         Article::create("How I migrated my hobby project to k8s", "https://habr.com/ru/articles/484528", "Jan 21"),
@@ -307,7 +304,7 @@ foreach (scandir($directory) as $yearDirectory) {
         continue;
     }
 
-    if (!in_array($yearDirectory, ['2024', '2023', '2022'])) {
+    if (!in_array($yearDirectory, ['2024', '2023', '2022', '2021'])) {
         continue;
     }
 

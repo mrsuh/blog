@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="author" content="Anton Sukhachev">
+    <title>PHP Generics. Right here. Right now.</title>
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+
+    <meta name="description" content="Many PHP developers, including me, would like to see support for generics in PHP. An RFC for adding ..."/>
+    <meta name="keywords" content="anton sukhachev, mrsuh"/>
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="mrsuh.com">
+    <meta property="og:url" content="https://mrsuh.com/articles/2021/php-generics-right-here-right-now/">
+    <meta property="og:title" content="PHP Generics. Right here. Right now.">
+    <meta property="og:description" content="Many PHP developers, including me, would like to see support for generics in PHP. An RFC for adding ...">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:alt" content="Anton Sukhachev">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="mrsuh.com">
+    <meta name="twitter:url" content="https://mrsuh.com/articles/2021/php-generics-right-here-right-now/">
+    <meta name="twitter:title" content="PHP Generics. Right here. Right now.">
+    <meta name="twitter:creator" content="@mrsuh6">
+    <meta name="twitter:description" content="Many PHP developers, including me, would like to see support for generics in PHP. An RFC for adding ...">
+    <meta name="twitter:image:alt" content="Anton Sukhachev">
+    
+    <link href="/bootstrap.min.css" rel="stylesheet">
+    <link href="/style.css?v=1" rel="stylesheet">
+</head>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GMXWT1YP3F"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-GMXWT1YP3F');
+</script>
+
+<body class="container fs-5" style="max-width: 1000px">
+
+<div class="header" style="padding-top: 20px; padding-bottom: 10px">
+    <div class="row">
+        <div class="col">
+            <a href="/">Anton Sukhachev</a>
+        </div>
+        <div class="col text-end">
+            <a href="/articles/">Articles</a>
+        </div>
+    </div>
+    <hr/>
+</div>
+
+<div class="content">
+    <h1>PHP Generics. Right here. Right now.</h1>
+<p>Many PHP developers, including me, would like to see support for <a href="https://en.wikipedia.org/wiki/Generic_programming" target="_blank">generics</a> in PHP. An <a href="https://github.com/PHPGenerics/php-generics-rfc" target="_blank">RFC</a> for adding generics was created in 2016, but it hasn’t been finished yet.<br />
+I looked into different ways to add generics to PHP but couldn’t find a solution that works well for regular developers. So, I decided to create my own solution in PHP. If you want to try it, you can use this library <a href="https://github.com/mrsuh/php-generics" target="_blank">mrsuh/php-generics</a> and check out the <a href="https://github.com/mrsuh/php-generics-example" target="_blank">repo</a> to experiment with it.</p>
+<p><a href="https://www.reddit.com/r/PHP/comments/j65968/ama_with_the_phpstorm_team_from_jetbrains_on/g83skiz/?context=3" target="_blank">Quote</a></p>
+<blockquote class="text-muted link-secondary quote">
+<p>For those not overly familiar, there's three broad ways in which generics can be implemented:</p>
+<p>Type-erasure: Generic arguments are simply dropped, Foo<T> becomes Foo. It's not possible to reflect generic arguments at runtime, and type-erasure is typically applied under the assumption that type compatibility has been proven during compilation already.<br />
+Reification: Generic arguments are retained at runtime and can be reflected (and, in PHP's case, can be verified at runtime).<br />
+Monomorphization: For the user this is quite similar to reification, but implies that a new class is generated for each generic argument combination. Foo<T> will not store that class Foo has been instantiated with parameter T, it will instead create a new class Foo_T that is specialized for the given type parameter.</p>
+</blockquote>
+<a href="#h2-how-it-works?" id="h2-how-it-works?" class="text-decoration-none text-reset"><h2>How it works?</h2></a>
+<p>In a nutshell:</p>
+<ul>
+<li>parse generics classes;</li>
+<li>generate concrete classes based on them;</li>
+<li>say to <code>composer autoload</code> to load files from directory with generated classes first and then load classes from main directory.</li>
+</ul>
+<p>Detailed algorithm.</p>
+<p>Install library with composer (PHP &gt;= 7.4)</p>
+<pre><code class="language-bash rounded">composer require mrsuh/php-generics</code></pre>
+<p>Add one more directory(&quot;cache/&quot;) to composer autoload PSR-4 for generated classes.<br />
+It should be placed before the main directory.<br />
+composer.json</p>
+<pre><code class="language-json rounded">{
+   "autoload": {
+       "psr-4": {
+           "App\\": ["cache/","src/"]
+       }
+   }
+}</code></pre>
+<p>For example, you need add several PHP files:</p>
+<ul>
+<li>generic class <code>Box</code></li>
+<li>class <code>Usage</code> for use generic class</li>
+<li>script with composer autoload and <code>Usage</code> class</li>
+</ul>
+<p>src/Box.php</p>
+<pre><code class="language-php rounded">&lt;?php
+
+namespace App;
+
+class Box&lt;T&gt; {
+
+   private ?T $data = null;
+
+   public function set(T $data): void {
+       $this-&gt;data = $data;
+   }
+
+   public function get(): ?T {
+       return $this-&gt;data;
+   }
+}</code></pre>
+<p>src/Usage.php</p>
+<pre><code class="language-php rounded">&lt;?php
+
+namespace App;
+
+class Usage {
+
+   public function run(): void
+   {
+       $stringBox = new Box&lt;string&gt;();
+       $stringBox-&gt;set('cat');
+       var_dump($stringBox-&gt;get()); // string "cat"
+
+       $intBox = new Box&lt;int&gt;();
+       $intBox-&gt;set(1);
+       var_dump($intBox-&gt;get()); // integer 1
+   }
+}</code></pre>
+<p>bin/test.php</p>
+<pre><code class="language-php rounded">&lt;?php
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use App\Usage;
+
+$usage = new Usage();
+$usage-&gt;run();</code></pre>
+<p>Generate concrete classes from generic classes by <code>composer dump-generics</code></p>
+<pre><code class="language-bash rounded">composer dump-generics -v
+Generating concrete classes
+ - App\BoxForString
+ - App\BoxForInt
+ - App\Usage
+Generated 3 concrete classes in 0.062 seconds, 16.000 MB memory used</code></pre>
+<p>What the <code>composer dump-generics</code> command does?</p>
+<ul>
+<li>finds all generic uses in classes (<code>src/Usage.php</code> for example).</li>
+<li>generates concrete classes from generic classes with unique names based on name and arguments of generic class.</li>
+<li>replaces generic class names to concrete class names in places of use.</li>
+</ul>
+<p>In this case should be generated:</p>
+<ul>
+<li>2 concrete classes of generics <code>BoxForInt</code> и <code>BoxForString</code>;</li>
+<li>1 concrete class <code>Usage</code> with replaced generics class names to concrete class names.</li>
+</ul>
+<p>cache/BoxForInt.php</p>
+<pre><code class="language-php rounded">&lt;?php
+
+namespace App;
+
+class BoxForInt
+{
+   private ?int $data = null;
+
+   public function set(int $data) : void
+   {
+       $this-&gt;data = $data;
+   }
+
+   public function get() : ?int
+   {
+       return $this-&gt;data;
+   }
+}</code></pre>
+<p>cache/BoxForString.php</p>
+<pre><code class="language-php rounded">&lt;?php
+
+namespace App;
+
+class BoxForString
+{
+   private ?string $data = null;
+
+   public function set(string $data) : void
+   {
+       $this-&gt;data = $data;
+   }
+
+   public function get() : ?string
+   {
+       return $this-&gt;data;
+   }
+}</code></pre>
+<p>cache/Usage.php</p>
+<pre><code class="language-php rounded">&lt;?php
+
+namespace App;
+
+class Usage
+{
+   public function run() : void
+   {
+       $stringBox = new \App\BoxForString();
+       $stringBox-&gt;set('cat');
+       var_dump($stringBox-&gt;get());// string "cat"
+
+       $intBox = new \App\BoxForInt();
+       $intBox-&gt;set(1);
+       var_dump($intBox-&gt;get());// integer 1
+   }
+}</code></pre>
+<p>Generate vendor/autoload.php with <code>composer dump-autoload</code> command</p>
+<pre><code class="language-bash rounded">composer dump-autoload
+Generating autoload files
+Generated autoload files</code></pre>
+<p>Run script</p>
+<pre><code class="language-bash rounded">php bin/test.php</code></pre>
+<p>Composer autoload first checks the &quot;cache&quot; directory and then the &quot;src&quot; directory to load the classes.<br />
+You can find the code for this example <a href="https://github.com/mrsuh/php-generics-example" target="_blank">here</a><br />
+More examples [here]<a href="https://github.com/mrsuh/php-generics/tests">https://github.com/mrsuh/php-generics/tests</a></p>
+<a href="#h2-implementation-features" id="h2-implementation-features" class="text-decoration-none text-reset"><h2>Implementation features</h2></a>
+<a href="#h3-what-syntax-is-used?" id="h3-what-syntax-is-used?" class="text-decoration-none text-reset"><h3>What syntax is used?</h3></a>
+<p>The <a href="https://github.com/PHPGenerics/php-generics-rfc" target="_blank">RFC</a> does not define a specific syntax so i took <a href="https://github.com/PHPGenerics/php-generics-rfc/issues/45" target="_blank">this one</a> implemented by Nikita Popov</p>
+<p>Syntax example:</p>
+<pre><code class="language-php rounded">&lt;?php
+
+namespace App;
+
+class Generic&lt;in T: Iface = int, out V: Iface = string&gt; {
+
+   public function test(T $var): V {
+
+   }
+}</code></pre>
+<a href="#h3-syntax-problems" id="h3-syntax-problems" class="text-decoration-none text-reset"><h3>Syntax problems</h3></a>
+<p>I had to upgrade <a href="https://github.com/nikic/PHP-Parser" target="_blank">nikic/php-parser</a> for parse code with new syntax.<br />
+You can see <a href="https://github.com/mrsuh/PHP-Parser/pull/1/files#diff-14ec37995c001c0c9808ab73668d64db5d1acc1ab0f60a360dcb9c611ecd57ea" target="_blank">here</a> the grammar changes that had to be made for support generics.</p>
+<p>Parser use <a href="https://github.com/ircmaxell/PHP-Yacc" target="_blank">PHP implementation</a> of <a href="https://wikipedia.org/wiki/Yacc" target="_blank">YACC</a>.<br />
+The YACC(<a href="https://wikipedia.org/wiki/LALR(1)" target="_blank">LALR</a>) algorithm and current PHP syntax make it impossible to describe the full syntax of generics due to collisions.</p>
+<p>Collision example:</p>
+<pre><code class="language-php rounded">&lt;?php
+
+const FOO = 'FOO';
+const BAR = 'BAR';
+
+var_dump(new \DateTime&lt;FOO, BAR&gt;('now')); // кажется, что здесь есть дженерик
+var_dump( (new \DateTime &lt; FOO) , ( BAR &gt; 'now') ); // на самом деле нет</code></pre>
+<p><a href="https://github.com/PHPGenerics/php-generics-rfc/issues/35#issuecomment-571546650" target="_blank">Solution options</a></p>
+<p>Therefore, nested generics are not currently supported.</p>
+<pre><code class="language-php rounded">&lt;?php
+
+namespace App;
+
+class Usage {
+   public function run() {
+       $map = new Map&lt;Key&lt;int&gt;, Value&lt;string&gt;&gt;();//не поддерживается
+   }
+}</code></pre>
+<a href="#h3-parameter-names-have-not-special-restrictions" id="h3-parameter-names-have-not-special-restrictions" class="text-decoration-none text-reset"><h3>Parameter names have not special restrictions</h3></a>
+<pre><code class="language-php rounded">&lt;?php
+
+namespace App;
+
+class GenericClass&lt;T, varType, myCoolLongParaterName&gt; {
+   private T $var1;
+   private varType $var2;
+   private myCoolLongParaterName $var3;   
+}</code></pre>
+<a href="#h3-several-generic-parameters-support" id="h3-several-generic-parameters-support" class="text-decoration-none text-reset"><h3>Several generic parameters support</h3></a>
+<pre><code class="language-php rounded">&lt;?php
+
+namespace App;
+
+class Map&lt;keyType, valueType&gt; {
+
+   private array $map;
+
+   public function set(keyType $key, valueType $value): void {
+       $this-&gt;map[$key] = $value;
+   }
+
+   public function get(keyType $key): ?valueType {
+       return $this-&gt;map[$key] ?? null;
+   }
+}</code></pre>
+<a href="#h3-default-generic-parameter-support" id="h3-default-generic-parameter-support" class="text-decoration-none text-reset"><h3>Default generic parameter support</h3></a>
+<pre><code class="language-php rounded">&lt;?php
+
+namespace App;
+
+class Map&lt;keyType = string, valueType = int&gt; {
+
+   private array $map = [];
+
+   public function set(keyType $key, valueType $value): void {
+       $this-&gt;map[$key] = $value;
+   }
+
+   public function get(keyType $key): ?valueType {
+       return $this-&gt;map[$key] ?? null;
+   }
+}</code></pre>
+<pre><code class="language-php rounded">&lt;?php
+
+namespace App;
+
+class Usage {
+   public function run() {
+       $map = new Map&lt;&gt;();//обязательно нужно добавить знаки "&lt;&gt;"
+       $map-&gt;set('key', 1);
+       var_dump($map-&gt;get('key'));
+   }
+}</code></pre>
+<a href="#h3-where-in-class-can-generics-be-used?" id="h3-where-in-class-can-generics-be-used?" class="text-decoration-none text-reset"><h3>Where in class can generics be used?</h3></a>
+<ul>
+<li>extends</li>
+<li>implements</li>
+<li>trait use</li>
+<li>property type</li>
+<li>method argument type</li>
+<li>method return type</li>
+<li>instanceof</li>
+<li>new</li>
+<li>class constants</li>
+</ul>
+<p>An example of class that uses generics:</p>
+<pre><code class="language-php rounded">&lt;?php
+
+namespace App;
+
+use App\Entity\Cat;
+use App\Entity\Bird;
+use App\Entity\Dog;
+
+class Test extends GenericClass&lt;Cat&gt; implements GenericInterface&lt;Bird&gt; {
+
+  use GenericTrait&lt;Dog&gt;;
+
+  private GenericClass&lt;int&gt;|GenericClass&lt;Dog&gt; $var;
+
+  public function test(GenericInterface&lt;int&gt;|GenericInterface&lt;Dog&gt; $var): GenericClass&lt;string&gt;|GenericClass&lt;Bird&gt; {
+
+       var_dump($var instanceof GenericInterface&lt;int&gt;);
+
+       var_dump(GenericClass&lt;int&gt;::class);
+
+       var_dump(GenericClass&lt;array&gt;::CONSTANT);
+
+       return new GenericClass&lt;float&gt;();
+  }
+}</code></pre>
+<a href="#h3-where-in-generic-class-can-parameters-be-used?" id="h3-where-in-generic-class-can-parameters-be-used?" class="text-decoration-none text-reset"><h3>Where in generic class can parameters be used?</h3></a>
+<ul>
+<li>extends</li>
+<li>implements</li>
+<li>trait use</li>
+<li>property type</li>
+<li>method argument type</li>
+<li>method return type</li>
+<li>instanceof</li>
+<li>new</li>
+<li>class constants</li>
+</ul>
+<p>And example of generic class:</p>
+<pre><code class="language-php rounded">&lt;?php
+
+namespace App;
+
+class Test&lt;T,V&gt; extends GenericClass&lt;T&gt; implements GenericInterface&lt;V&gt; {
+
+  use GenericTrait&lt;T&gt;;
+  use T;
+
+  private T|GenericClass&lt;V&gt; $var;
+
+  public function test(T|GenericInterface&lt;V&gt; $var): T|GenericClass&lt;V&gt; {
+
+       var_dump($var instanceof GenericInterface&lt;V&gt;);
+
+       var_dump($var instanceof T);
+
+       var_dump(GenericClass&lt;T&gt;::class);
+
+       var_dump(T::class);
+
+       var_dump(GenericClass&lt;T&gt;::CONSTANT);
+
+       var_dump(T::CONSTANT);
+
+       $obj1 = new T();
+       $obj2 = new GenericClass&lt;V&gt;();
+
+       return $obj2;
+  }
+}</code></pre>
+<a href="#h3-how-fast-is-it?" id="h3-how-fast-is-it?" class="text-decoration-none text-reset"><h3>How fast is it?</h3></a>
+<p>All concrete classes are pre-generated and can be cached(should not affect performance).</p>
+<p>Generating many concrete classes should negatively impact performance when:</p>
+<ul>
+<li>resolves concrete classes;</li>
+<li>storing concrete classes in memory;</li>
+<li>type checking for each concrete class.</li>
+</ul>
+<p>I think it's all individual for a specific case.</p>
+<a href="#h3-doesn&#039;t-work-without-composer-autoload" id="h3-doesn&#039;t-work-without-composer-autoload" class="text-decoration-none text-reset"><h3>Doesn't work without composer autoload</h3></a>
+<p>Autoload magic of concrete classes works with composer autoload only.<br />
+Nothing will not work because of syntax error if you include file by &quot;require&quot;<br />
+PhpUnit include test files by &quot;require&quot; only because of <a href="https://github.com/sebastianbergmann/phpunit/issues/4039" target="_blank">its own reasons</a><br />
+Therefore you can't use generic classes with PhpUnit.</p>
+<a href="#h3-reflection" id="h3-reflection" class="text-decoration-none text-reset"><h3>Reflection</h3></a>
+<p>PHP does type checks in <a href="https://github.com/PHPGenerics/php-generics-rfc/issues/43" target="_blank">runtime</a>.<br />
+Therefore, all generics arguments <a href="https://github.com/PHPGenerics/php-generics-rfc/blob/cc7219792a5b35226129d09536789afe20eac029/generics.txt#L426-L430" target="_blank">must me available</a> through reflection in runtime.<br />
+It can't be, because information about generics arguments is erased after concrete classes are generated.</p>
+<a href="#h3-ide" id="h3-ide" class="text-decoration-none text-reset"><h3>IDE</h3></a>
+<ul>
+<li>
+<p>PhpStorm<br />
+Doesn't support generic syntax because of <a href="https://github.com/PHPGenerics/php-generics-rfc" target="_blank">RFC</a> is not complete yet.<br />
+Doesn't have working <a href="https://plugins.jetbrains.com/plugin/10209-lsp-support" target="_blank">LSP plugin</a>. <a href="https://en.wikipedia.org/wiki/Language_Server_Protocol" target="_blank">LSP</a> gives an opportunity to support different languages.<br />
+Support of <a href="https://hacklang.org" target="_blank">Hack</a>(which already support generics) <a href="https://blog.jetbrains.com/phpstorm/2015/06/hack-language-support-in-phpstorm-postponed/" target="_blank">dropped</a>.</p>
+</li>
+<li>
+<p>VSCode<br />
+Support generics syntax after installation <a href="https://marketplace.visualstudio.com/items?itemName=pranayagarwal.vscode-hack" target="_blank">Hack plugin</a><br />
+Doesn't have autocompletion</p>
+</li>
+</ul>
+<a href="#h3-reflection" id="h3-reflection" class="text-decoration-none text-reset"><h3>Reflection</h3></a>
+<p>PHP выполняет проверки типов в <a href="https://github.com/PHPGenerics/php-generics-rfc/issues/43" target="_blank">runtime</a>. Значит, все аргументы дженериков <a href="https://github.com/PHPGenerics/php-generics-rfc/blob/cc7219792a5b35226129d09536789afe20eac029/generics.txt#L426-L430" target="_blank">должны быть доступны</a> через reflection в runtime. А этого не может быть, потому что информация о аргументах дженериков после генерации конкретных классов стирается.</p>
+<a href="#h2-what-is-not-implemented-according-to-the-rfc" id="h2-what-is-not-implemented-according-to-the-rfc" class="text-decoration-none text-reset"><h2>What is Not Implemented According to the RFC</h2></a>
+<a href="#h3-generics-for-functions,-anonymous-functions,-and-methods" id="h3-generics-for-functions,-anonymous-functions,-and-methods" class="text-decoration-none text-reset"><h3>Generics for Functions, Anonymous Functions, and Methods</h3></a>
+<pre><code class="language-php rounded">&lt;?php
+
+namespace App;
+
+function foo&lt;T,V&gt;(T $arg): V {
+
+}</code></pre>
+<a href="#h3-type-checking-for-generic-parameters" id="h3-type-checking-for-generic-parameters" class="text-decoration-none text-reset"><h3>Type Checking for Generic Parameters</h3></a>
+<p>The type T must be a subclass of or implement the interface TInterface.</p>
+<pre><code class="language-php rounded">&lt;?php
+
+namespace App;
+
+class Generic&lt;T: TInterface&gt; {
+
+}</code></pre>
+<a href="#h3-variance-of-parameters" id="h3-variance-of-parameters" class="text-decoration-none text-reset"><h3>Variance of Parameters</h3></a>
+<pre><code class="language-php rounded">&lt;?php
+
+namespace App;
+
+class Generic&lt;in T, out V&gt; {
+
+}</code></pre>
+<p>Psalm Template Annotations<br />
+Features:</p>
+<ul>
+<li>does not change the language syntax;</li>
+<li>generics/templates are written using annotations;</li>
+<li>type checks are performed during static analysis using Psalm or supported IDEs.</li>
+</ul>
+<a href="#h2-existing-solutions-in-php" id="h2-existing-solutions-in-php" class="text-decoration-none text-reset"><h2>Existing Solutions in PHP</h2></a>
+<a href="#h3-[psalm-template-annotations](https://psalm.dev/docs/annotating_code/templated_annotations/)" id="h3-[psalm-template-annotations](https://psalm.dev/docs/annotating_code/templated_annotations/)" class="text-decoration-none text-reset"><h3><a href="https://psalm.dev/docs/annotating_code/templated_annotations/" target="_blank">Psalm Template Annotations</a></h3></a>
+<p>Features:</p>
+<ul>
+<li>does not change the language syntax;</li>
+<li>generics/templates are written using annotations;</li>
+<li>type checks are performed with static analysis using tools like <a href="https://psalm.dev" target="_blank">Psalm</a> or supported IDEs.</li>
+</ul>
+<pre><code class="language-php rounded">&lt;?php
+/**
+* @template T
+*/
+class MyContainer {
+ /** @var T */
+  private $value;
+
+/** @param T $value */
+public function __construct($value) {
+  $this-&gt;value = $value;
+}
+
+/** @return T */
+public function getValue() {
+  return $this-&gt;value;
+}
+}</code></pre>
+<a href="#h3-[spatie/typed](https://github.com/spatie/typed)" id="h3-[spatie/typed](https://github.com/spatie/typed)" class="text-decoration-none text-reset"><h3><a href="https://github.com/spatie/typed" target="_blank">spatie/typed</a></h3></a>
+<p>Features:</p>
+<ul>
+<li>does not change the language syntax;</li>
+<li>you can create a list with a specific type, but it cannot be used as a parameter type or return type of a function;</li>
+<li>type checks are performed at runtime.</li>
+</ul>
+<pre><code class="language-php rounded">&lt;?php
+
+$list = new Collection(T::bool());
+
+$list[] = new Post(); // TypeError</code></pre>
+<pre><code class="language-php rounded">&lt;?php
+
+$point = new Tuple(T::float(), T::float());
+
+$point[0] = 1.5;
+$point[1] = 3;
+
+$point[0] = 'a'; // TypeError
+$point['a'] = 1; // TypeError
+$point[10] = 1; // TypeError</code></pre>
+<a href="#h3-[timetoogo/php-generics](https://github.com/timetoogo/php-generics)" id="h3-[timetoogo/php-generics](https://github.com/timetoogo/php-generics)" class="text-decoration-none text-reset"><h3><a href="https://github.com/TimeToogo/PHP-Generics" target="_blank">TimeToogo/PHP-Generics</a></h3></a>
+<p>Features:</p>
+<ul>
+<li>does not change the language syntax;</li>
+<li>all instances of <strong>TYPE</strong> are replaced with actual types, and based on this, specific classes are generated and saved to the file system;</li>
+<li>class replacement occurs during autoloading, and you need to use the built-in autoloader for this;</li>
+<li>type checks are performed at runtime.</li>
+</ul>
+<pre><code class="language-php rounded">&lt;?php
+
+class Maybe {
+private $MaybeValue;
+
+public function __construct(__TYPE__ $Value = null) {
+$this-&gt;MaybeValue = $Value;
+}
+
+public function HasValue() {
+return $this-&gt;MaybeValue !== null;
+}
+
+public function GetValue() {
+return $this-&gt;MaybeValue;
+}
+
+public function SetValue(__TYPE__ $Value = null) {
+$this-&gt;MaybeValue = $Value;
+}
+}</code></pre>
+<pre><code class="language-php rounded">&lt;?php
+
+$Maybe = new Maybe\stdClass();
+$Maybe-&gt;HasValue(); //false
+$Maybe-&gt;SetValue(new stdClass());
+$Maybe-&gt;HasValue(); //true
+$Maybe-&gt;SetValue(new DateTime()); //ERROR</code></pre>
+<pre><code class="language-php rounded">&lt;?php
+
+$Configuration = new \Generics\Configuration();
+$Configuration-&gt;SetIsDevelopmentMode(true);
+$Configuration-&gt;SetRootPath(__DIR__);
+$Configuration-&gt;SetCachePath(__DIR__ . '/Cache');
+//Register the generic auto loader
+\Generics\Loader::Register($Configuration);</code></pre>
+<a href="#h3-[ircmaxell/phpgenerics](https://github.com/ircmaxell/phpgenerics)" id="h3-[ircmaxell/phpgenerics](https://github.com/ircmaxell/phpgenerics)" class="text-decoration-none text-reset"><h3><a href="https://github.com/ircmaxell/PhpGenerics" target="_blank">ircmaxell/PhpGenerics</a></h3></a>
+<p>Features:</p>
+<ul>
+<li>a new syntax has been added;</li>
+<li>all instances of T are replaced with actual types, and based on this, specific classes are generated and loaded using eval();</li>
+<li>class replacement occurs during autoloading, and the built-in autoloader must be used for this;</li>
+<li>type checks are performed at runtime.</li>
+</ul>
+<p>Test/Item.php</p>
+<pre><code class="language-php rounded">&lt;?php
+
+namespace test;
+
+class Item&lt;T&gt; {
+
+protected $item;
+
+public function __construct(T $item = null)
+{
+$this-&gt;item = $item;
+}
+
+public function getItem()
+{
+return $item;
+}
+
+public function setItem(T $item)
+{
+$this-&gt;item = $item;
+}
+}</code></pre>
+<p>Test/Test.php</p>
+<pre><code class="language-php rounded">&lt;?php
+
+namespace Test;
+
+class Test {
+   public function runTest()
+   {
+       $item = new Item&lt;StdClass&gt;;
+       var_dump($item instanceof Item); // true
+       $item-&gt;setItem(new StdClass); // works fine
+       // $item-&gt;setItem([]); // E_RECOVERABLE_ERROR
+   }
+}</code></pre>
+<p>test.php</p>
+<pre><code class="language-php rounded">&lt;?php
+
+require "vendor/autoload.php";
+
+$test = new Test\Test;
+$test-&gt;runTest();</code></pre>
+<p>Differences from <a href="https://github.com/mrsuh/php-generics" target="_blank">mrsuh/php-generics</a>:</p>
+<ul>
+<li>specific classes are generated during autoload;</li>
+<li>specific classes are loaded using <code>eval()</code>;</li>
+<li>the standard <code>composer autoload</code> is overridden;</li>
+<li>the code was written a while ago, so it doesn't support the latest versions of PHP.</li>
+</ul>
+<a href="#h2-conclusion" id="h2-conclusion" class="text-decoration-none text-reset"><h2>Conclusion</h2></a>
+<p>I think I have achieved what I wanted: the library is easy to install and can be used in real projects. What is frustrating, however, is that, for understandable reasons, popular IDEs don't fully support the new generics syntax, so it's currently difficult to use it.<br />
+If you have suggestions or questions, feel free to leave them <a href="https://github.com/mrsuh/php-generics/issues" target="_blank">here</a>.</p>
+</div>
+
+<div class="footer" style="height: 40px"></div>
+</body>
+<link rel="stylesheet" href="/highlight.github-dark-dimmed.min.css">
+<script src="/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+</html>
