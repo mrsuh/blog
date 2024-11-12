@@ -236,7 +236,7 @@ $articles = [
         Article::create("RC - boat with ESP8266 NodeMCU", "https://habr.com/ru/articles/513482", "Nov 3"),
     ],
     2019 => [
-        Article::create("Comparing PHP FPM, PHP PPM, Nginx Unit, ReactPHP, and RoadRunner", "https://habr.com/ru/articles/431818", "Jan 14"),
+        Article::create("Comparing PHP FPM, PHP PPM, Nginx Unit, ReactPHP, and RoadRunner", "/articles/2019/comparing-php-fpm-php-ppm-nginx-unit-react-php-and-road-runner/", "Jan 14"),
     ],
     2018 => [
         Article::create("Mafia with Go, Vanila JS and WebSockets", "https://habr.com/ru/articles/423821", "Oct 5"),
@@ -304,7 +304,7 @@ foreach (scandir($directory) as $yearDirectory) {
         continue;
     }
 
-    if (!in_array($yearDirectory, ['2024', '2023', '2022', '2021'])) {
+    if ($yearDirectory <= 2000) {
         continue;
     }
 
