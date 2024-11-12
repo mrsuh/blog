@@ -218,7 +218,7 @@ Generated autoload files</code></pre>
 <pre><code class="language-bash rounded">php bin/test.php</code></pre>
 <p>Composer autoload first checks the &quot;cache&quot; directory and then the &quot;src&quot; directory to load the classes.<br />
 You can find the code for this example <a href="https://github.com/mrsuh/php-generics-example" target="_blank">here</a><br />
-More examples [here]<a href="https://github.com/mrsuh/php-generics/tests">https://github.com/mrsuh/php-generics/tests</a></p>
+More examples <a href="https://github.com/mrsuh/php-generics/tests" target="_blank">here</a></p>
 <a href="#h2-implementation-features" id="h2-implementation-features" class="text-decoration-none text-reset"><h2>Implementation features</h2></a>
 <a href="#h3-what-syntax-is-used?" id="h3-what-syntax-is-used?" class="text-decoration-none text-reset"><h3>What syntax is used?</h3></a>
 <p>The <a href="https://github.com/PHPGenerics/php-generics-rfc" target="_blank">RFC</a> does not define a specific syntax so i took <a href="https://github.com/PHPGenerics/php-generics-rfc/issues/45" target="_blank">this one</a> implemented by Nikita Popov</p>
@@ -233,7 +233,7 @@ class Generic&lt;in T: Iface = int, out V: Iface = string&gt; {
 
    }
 }</code></pre>
-<a href="#h3-syntax-problems" id="h3-syntax-problems" class="text-decoration-none text-reset"><h3>Syntax problems</h3></a>
+<a href="#h2-syntax-problems" id="h2-syntax-problems" class="text-decoration-none text-reset"><h2>Syntax problems</h2></a>
 <p>I had to upgrade <a href="https://github.com/nikic/PHP-Parser" target="_blank">nikic/php-parser</a> for parse code with new syntax.<br />
 You can see <a href="https://github.com/mrsuh/PHP-Parser/pull/1/files#diff-14ec37995c001c0c9808ab73668d64db5d1acc1ab0f60a360dcb9c611ecd57ea" target="_blank">here</a> the grammar changes that had to be made for support generics.</p>
 <p>Parser use <a href="https://github.com/ircmaxell/PHP-Yacc" target="_blank">PHP implementation</a> of <a href="https://wikipedia.org/wiki/Yacc" target="_blank">YACC</a>.<br />

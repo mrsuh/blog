@@ -194,7 +194,7 @@ php bin/test.php
 
 Composer autoload first checks the "cache" directory and then the "src" directory to load the classes.
 You can find the code for this example [here](https://github.com/mrsuh/php-generics-example)
-More examples [here]https://github.com/mrsuh/php-generics/tests
+More examples [here](https://github.com/mrsuh/php-generics/tests)
 
 ## Implementation features
 
@@ -215,7 +215,8 @@ class Generic<in T: Iface = int, out V: Iface = string> {
 }
 ```
 
-### Syntax problems
+## Syntax problems
+
 I had to upgrade [nikic/php-parser](https://github.com/nikic/PHP-Parser) for parse code with new syntax.
 You can see [here](https://github.com/mrsuh/PHP-Parser/pull/1/files#diff-14ec37995c001c0c9808ab73668d64db5d1acc1ab0f60a360dcb9c611ecd57ea) the grammar changes that had to be made for support generics.
 
@@ -436,7 +437,6 @@ It can't be, because information about generics arguments is erased after concre
 
 ### Reflection
 PHP выполняет проверки типов в [runtime](https://github.com/PHPGenerics/php-generics-rfc/issues/43). Значит, все аргументы дженериков [должны быть доступны](https://github.com/PHPGenerics/php-generics-rfc/blob/cc7219792a5b35226129d09536789afe20eac029/generics.txt#L426-L430) через reflection в runtime. А этого не может быть, потому что информация о аргументах дженериков после генерации конкретных классов стирается.
-
 
 ## What is Not Implemented According to the RFC
 
