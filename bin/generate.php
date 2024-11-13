@@ -205,10 +205,13 @@ $sitemap = [
     SiteMapEntity::create('https://mrsuh.com/articles/', '2024-11-01'),
 ];
 
+$new = [
+    Article::create("SQLite Index Visualization: Search", "/articles/2024/sqlite-index-visualization-search/", "Nov 15"),
+];
+
 $articles = [
     2024 => [
         Article::create("SQLite Index Visualization: Structure", "/articles/2024/sqlite-index-visualization-structure/", "Nov 5"),
-        Article::create("SQLite Index Visualization: Search", "/articles/2024/sqlite-index-visualization-search/", "Nov 15"),
     ],
     2023 => [
         Article::create("Few steps to make your docker image smaller", "/articles/2023/few-steps-to-make-your-docker-image-smaller/", "Feb 20"),
