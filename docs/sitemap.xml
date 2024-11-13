@@ -12,49 +12,13 @@
     <priority>1</priority>
   </url>
   <url>
-    <loc>https://mrsuh.com/articles/2017/continuous-delivery-with-travis-ci-and-ansible/</loc>
-    <lastmod>2024-11-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1</priority>
-  </url>
-  <url>
-    <loc>https://mrsuh.com/articles/2019/comparing-php-fpm-php-ppm-nginx-unit-react-php-and-road-runner/</loc>
+    <loc>https://mrsuh.com/articles/2024/sqlite-index-visualization-search/</loc>
     <lastmod>2024-11-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1</priority>
   </url>
   <url>
-    <loc>https://mrsuh.com/articles/2021/php-generics-right-here-right-now/</loc>
-    <lastmod>2024-11-12</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1</priority>
-  </url>
-  <url>
-    <loc>https://mrsuh.com/articles/2022/comparing-php-collections/</loc>
-    <lastmod>2024-11-12</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1</priority>
-  </url>
-  <url>
-    <loc>https://mrsuh.com/articles/2022/generics-implementation-approaches/</loc>
-    <lastmod>2024-11-06</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1</priority>
-  </url>
-  <url>
-    <loc>https://mrsuh.com/articles/2022/how-php-engine-builds-ast/</loc>
-    <lastmod>2024-11-12</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1</priority>
-  </url>
-  <url>
-    <loc>https://mrsuh.com/articles/2022/parsing-with-php-bison-and-re2c/</loc>
-    <lastmod>2024-11-07</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1</priority>
-  </url>
-  <url>
-    <loc>https://mrsuh.com/articles/2023/ast-parser-with-php-and-bison/</loc>
+    <loc>https://mrsuh.com/articles/2024/sqlite-index-visualization-structure/</loc>
     <lastmod>2024-11-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1</priority>
@@ -66,13 +30,13 @@
     <priority>1</priority>
   </url>
   <url>
-    <loc>https://mrsuh.com/articles/2023/how-i-wrote-php-skeleton-for-bison/</loc>
+    <loc>https://mrsuh.com/articles/2023/php-skeleton-for-bison/</loc>
     <lastmod>2024-11-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1</priority>
   </url>
   <url>
-    <loc>https://mrsuh.com/articles/2023/json-parser-with-php-and-bison/</loc>
+    <loc>https://mrsuh.com/articles/2023/ast-parser-with-php-and-bison/</loc>
     <lastmod>2024-11-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1</priority>
@@ -84,20 +48,56 @@
     <priority>1</priority>
   </url>
   <url>
-    <loc>https://mrsuh.com/articles/2023/php-skeleton-for-bison/</loc>
+    <loc>https://mrsuh.com/articles/2023/json-parser-with-php-and-bison/</loc>
     <lastmod>2024-11-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1</priority>
   </url>
   <url>
-    <loc>https://mrsuh.com/articles/2024/sqlite-index-visualization-search/</loc>
+    <loc>https://mrsuh.com/articles/2023/how-i-wrote-php-skeleton-for-bison/</loc>
     <lastmod>2024-11-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1</priority>
   </url>
   <url>
-    <loc>https://mrsuh.com/articles/2024/sqlite-index-visualization-structure/</loc>
+    <loc>https://mrsuh.com/articles/2022/generics-implementation-approaches/</loc>
+    <lastmod>2024-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1</priority>
+  </url>
+  <url>
+    <loc>https://mrsuh.com/articles/2022/comparing-php-collections/</loc>
     <lastmod>2024-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1</priority>
+  </url>
+  <url>
+    <loc>https://mrsuh.com/articles/2022/parsing-with-php-bison-and-re2c/</loc>
+    <lastmod>2024-11-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1</priority>
+  </url>
+  <url>
+    <loc>https://mrsuh.com/articles/2022/how-php-engine-builds-ast/</loc>
+    <lastmod>2024-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1</priority>
+  </url>
+  <url>
+    <loc>https://mrsuh.com/articles/2021/php-generics-right-here-right-now/</loc>
+    <lastmod>2024-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1</priority>
+  </url>
+  <url>
+    <loc>https://mrsuh.com/articles/2019/comparing-php-fpm-php-ppm-nginx-unit-react-php-and-road-runner/</loc>
+    <lastmod>2024-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1</priority>
+  </url>
+  <url>
+    <loc>https://mrsuh.com/articles/2017/continuous-delivery-with-travis-ci-and-ansible/</loc>
+    <lastmod>2024-11-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1</priority>
   </url>

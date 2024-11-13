@@ -169,12 +169,14 @@ class Article
     public string $url;
     public string $date;
     public array $keywords;
+    public bool $active;
 
     public static function create(
         string $name,
         string $url,
         string $date,
         array $keywords = [],
+        bool $active = true,
     ): self
     {
         $self = new self();
@@ -182,6 +184,7 @@ class Article
         $self->url = $url;
         $self->date = $date;
         $self->keywords = $keywords;
+        $self->active = $active;
 
         return $self;
     }
@@ -210,54 +213,175 @@ $sitemap = [
     SiteMapEntity::create('https://mrsuh.com/articles/', '2024-11-01'),
 ];
 
-$new = [
-    Article::create("SQLite Index Visualization: Search", "/articles/2024/sqlite-index-visualization-search/", "Nov 15"),
-];
-
 $articles = [
     2024 => [
-        Article::create("SQLite Index Visualization: Structure", "/articles/2024/sqlite-index-visualization-structure/", "Nov 5"),
+        Article::create(
+            'SQLite Index Visualization: Search', 
+            '/articles/2024/sqlite-index-visualization-search/', 
+            '2024-11-15', 
+            ["sqlite", "chart"],
+            active: false
+        ),
+        Article::create(
+            'SQLite Index Visualization: Structure', 
+            '/articles/2024/sqlite-index-visualization-structure/', 
+            '2024-11-05',
+            ["sqlite", "chart"]
+        ),
     ],
     2023 => [
-        Article::create("Few steps to make your docker image smaller", "/articles/2023/few-steps-to-make-your-docker-image-smaller/", "Feb 20"),
-        Article::create("PHP Skeleton for Bison", "/articles/2023/php-skeleton-for-bison/", "Mar 13"),
-        Article::create("AST parser with PHP and Bison", "/articles/2023/ast-parser-with-php-and-bison/", "Mar 19"),
-        Article::create("Nginx parser with PHP and Bison", "/articles/2023/nginx-parser-with-php-and-bison/", "Mar 27"),
-        Article::create("JSON parser with PHP and Bison", "/articles/2023/json-parser-with-php-and-bison/", "Apr 3"),
-        Article::create("How I Wrote PHP Skeleton For Bison", "/articles/2023/how-i-wrote-php-skeleton-for-bison/", "Sep 15"),
+        Article::create(
+            'Few steps to make your docker image smaller', 
+            '/articles/2023/few-steps-to-make-your-docker-image-smaller/', 
+            '2023-02-20',
+            ["php", "docker"]
+        ),
+        Article::create(
+            'PHP Skeleton for Bison', 
+            '/articles/2023/php-skeleton-for-bison/', 
+            '2023-03-13',
+            ["php", "bison", "skeleton"]
+        ),
+        Article::create(
+            'AST parser with PHP and Bison', 
+            '/articles/2023/ast-parser-with-php-and-bison/', 
+            '2023-03-19',
+            ["php", "bison", "ast"]
+        ),
+        Article::create(
+            'Nginx parser with PHP and Bison', 
+            '/articles/2023/nginx-parser-with-php-and-bison/',
+            '2023-03-27',
+            ["php", "bison", "nginx"]
+        ),
+        Article::create(
+            'JSON parser with PHP and Bison', 
+            '/articles/2023/json-parser-with-php-and-bison/', 
+            '2023-04-03',
+            ["php", "bison", "json"]
+        ),
+        Article::create(
+            'How I Wrote PHP Skeleton For Bison', 
+            '/articles/2023/how-i-wrote-php-skeleton-for-bison/',
+            '2023-09-15',
+            ["php", "bison", "skeleton"]
+        ),
     ],
     2022 => [
-        Article::create("Generics implementation approaches", "/articles/2022/generics-implementation-approaches/", "Feb 8"),
-        Article::create("Comparing PHP Collections", "/articles/2022/comparing-php-collections/", "Mar 22"),
-        Article::create("Telegram bot that monitors currency availability in Tinkoff ATMs", "https://vc.ru/u/585016-anton-suhachev/393167-telegram-bot-kotoryi-sledit-za-valyutoi-v-bankomatah-tinkoff", "Apr 02"),
-        Article::create("Parsing with PHP, Bison and re2c", "/articles/2022/parsing-with-php-bison-and-re2c/", "Aug 26"),
-        Article::create("How PHP engine builds AST", "/articles/2022/how-php-engine-builds-ast/", "Sep 5"),
-        Article::create("PHP generics", "https://phprussia.ru/moscow/2022/abstracts/9165", "Nov 25"),
+        Article::create(
+            'Generics implementation approaches', 
+            '/articles/2022/generics-implementation-approaches/', 
+            '2022-02-08',
+            ["php", "generics", "type erasure", "reification", "monomorphization"]
+        ),
+        Article::create(
+            'Comparing PHP Collections', 
+            '/articles/2022/comparing-php-collections/', 
+            '2022-03-22',
+            ["php", "collections", "generics"]
+        ),
+        Article::create(
+            'Telegram bot that monitors currency availability in Tinkoff ATMs', 
+            'https://vc.ru/u/585016-anton-suhachev/393167-telegram-bot-kotoryi-sledit-za-valyutoi-v-bankomatah-tinkoff', 
+            '2022-04-02',
+        ),
+        Article::create(
+            'Parsing with PHP, Bison and re2c', 
+            '/articles/2022/parsing-with-php-bison-and-re2c/', 
+            '2022-08-26',
+            ["php", "bison", "re2c"]
+        ),
+        Article::create(
+            'How PHP engine builds AST', 
+            '/articles/2022/how-php-engine-builds-ast/', 
+            '2022-09-05',
+            ["php", "engine", "ast"]
+        ),
+        Article::create(
+            'PHP generics', 
+            'https://phprussia.ru/moscow/2022/abstracts/9165', 
+            '2022-11-25',
+        ),
     ],
     2021 => [
-        Article::create("PHP Generics . Right here . Right now", "/articles/2021/php-generics-right-here-right-now/", "Sep 14"),
+        Article::create(
+            'PHP Generics. Right here. Right now', 
+            '/articles/2021/php-generics-right-here-right-now/', 
+            '2021-09-14',
+            ["php", "generics", "php generics"]
+        ),
     ],
     2020 => [
-        Article::create("How I migrated my hobby project to k8s", "https://habr.com/ru/articles/484528", "Jan 21"),
-        Article::create("Looking for the most interesting articles on the site", "https://vc.ru/dev/159230-ishem-samye-interesnye-stati-v-razdelah-na-saitah-vcru-tjournalru-i-dtfru", "Sep 17"),
-        Article::create("RC - car with ESP8266 NodeMCU and LEGO", "https://vc.ru/dev/160142-rc-mashinka-iz-esp8266-nodemcu-i-lego", "Sep 21"),
-        Article::create("RC - boat with ESP8266 NodeMCU", "https://habr.com/ru/articles/513482", "Nov 3"),
+        Article::create(
+            'How I migrated my hobby project to k8s', 
+            'https://habr.com/ru/articles/484528', 
+            '2020-01-21',
+        ),
+        Article::create(
+            'Looking for the most interesting articles on the site', 
+            'https://vc.ru/dev/159230-ishem-samye-interesnye-stati-v-razdelah-na-saitah-vcru-tjournalru-i-dtfru',
+            '2020-09-17',
+        ),
+        Article::create(
+            'RC - car with ESP8266 NodeMCU and LEGO',
+            'https://vc.ru/dev/160142-rc-mashinka-iz-esp8266-nodemcu-i-lego', 
+            '2020-09-21',
+        ),
+        Article::create(
+            'RC - boat with ESP8266 NodeMCU', 
+            'https://habr.com/ru/articles/513482', 
+            '2020-11-03',
+        ),
     ],
     2019 => [
-        Article::create("Comparing PHP FPM, PHP PPM, Nginx Unit, ReactPHP, and RoadRunner", "/articles/2019/comparing-php-fpm-php-ppm-nginx-unit-react-php-and-road-runner/", "Jan 14"),
+        Article::create(
+            'Comparing PHP FPM, PHP PPM, Nginx Unit, ReactPHP, and RoadRunner', 
+            '/articles/2019/comparing-php-fpm-php-ppm-nginx-unit-react-php-and-road-runner/', 
+            '2019-01-14',
+            ["tutorial", "development", "php-fpm", "php-ppm", "nginx", "nginx-unit", "react-php", "road runner"]
+        ),
     ],
     2018 => [
-        Article::create("Mafia with Go, Vanila JS and WebSockets", "https://habr.com/ru/articles/423821", "Oct 5"),
+        Article::create(
+            'Mafia with Go, Vanila JS and WebSockets', 
+            'https://habr.com/ru/articles/423821', 
+            '2018-10-05',
+        ),
     ],
     2017 => [
-        Article::create("Continuous delivery with Travis CI and Ansible", "/articles/2017/continuous-delivery-with-travis-ci-and-ansible/", "Apr 3"),
-        Article::create("Classifying listings from social networks: In search of the best solution", "https://habr.com/ru/articles/328282", "May 14"),
-        Article::create("Architecture of a service for collecting and classifying housing listings", "https://habr.com/ru/articles/342220", "Dec 4"),
+        Article::create(
+            'Continuous delivery with Travis CI and Ansible',
+            '/articles/2017/continuous-delivery-with-travis-ci-and-ansible/', 
+            '2017-04-03',
+            ["tutorial", "development", "travis ci", "ansible", "continuous delivery"]
+        ),
+        Article::create(
+            'Classifying listings from social networks: In search of the best solution',
+            'https://habr.com/ru/articles/328282', 
+            '2017-05-14',
+        ),
+        Article::create(
+            'Architecture of a service for collecting and classifying housing listings', 
+            'https://habr.com/ru/articles/342220', 
+            '2017-12-04',
+        ),
     ],
     2015 => [
-        Article::create("Migration from Symfony 2.0 to 2.6", "https://habr.com/ru/articles/258403", "May 20"),
-        Article::create("SonarQube . Checking code quality", "https://habr.com/ru/articles/259149", "May 29"),
-        Article::create("Nginx + Lua + Redis . Efficiently processing sessions and delivering data", "https://habr.com/ru/articles/270463", "Nov 11"),
+        Article::create(
+            'Migration from Symfony 2.0 to 2.6', 
+            'https://habr.com/ru/articles/258403', 
+            '2015-05-20',
+        ),
+        Article::create(
+            'SonarQube . Checking code quality', 
+            'https://habr.com/ru/articles/259149', 
+            '2015-05-29',
+        ),
+        Article::create(
+            'Nginx + Lua + Redis . Efficiently processing sessions and delivering data', 
+            'https://habr.com/ru/articles/270463', 
+            '2015-11-11',
+        ),
     ]
 ];
 
@@ -267,6 +391,11 @@ foreach ($articles as $year => $list) {
     $content .= '<div class="row">' . PHP_EOL;
     /** @var Article $article */
     foreach ($list as $index => $article) {
+        
+        if(!$article->active) {
+            continue;
+        }
+        
         $isSamePage = strpos($article->url, 'http') === false;
         $content .= sprintf(
             '<div class="col-10"><a href="%s" %s>%s</a></div>', 
@@ -274,7 +403,7 @@ foreach ($articles as $year => $list) {
             $isSamePage ? '' : 'target="_blank"',
             $article->name
         );
-        $content .= sprintf('<div class="col-2 text-end list-date">%s</div>', $article->date);
+        $content .= sprintf('<div class="col-2 text-end list-date">%s</div>', \DateTime::createFromFormat('Y-m-d', $article->date)->format('M j'));
         if ($index < count($list) - 1) {
             $content .= '<hr class="list"/>' . PHP_EOL;
         }
@@ -307,49 +436,43 @@ file_put_contents(
     )
 );
 
-$directory = __DIR__ . '/../docs/articles';
-foreach (scandir($directory) as $yearDirectory) {
-    $yearDirectoryPath = $directory . '/' . $yearDirectory;
-    if (!is_dir($yearDirectoryPath)) {
-        continue;
-    }
 
-    if ($yearDirectory <= 2000) {
-        continue;
-    }
-
-    foreach (scandir($yearDirectoryPath) as $articleDirectory) {
-        $articleDirectoryPath = $yearDirectoryPath . '/' . $articleDirectory;
+$directory = __DIR__ . '/../docs';
+foreach($articles as $year => $list) {
+    foreach($list as $article) {
         
-        $urlPath = '/articles/' . $yearDirectory . '/' . $articleDirectory . '/';
+        if(strpos($article->url, 'https://') !== false) {
+            continue;
+        }
 
-        $articleFilePath = $articleDirectoryPath . '/index.md';
+        $articleFilePath = $directory . $article->url . 'index.md';
         if (!is_file($articleFilePath)) {
+            echo $articleFilePath . PHP_EOL;
             continue;
         }
 
         $file = fopen($articleFilePath, 'r');
-        $name = trim(str_replace('#', '', fgets($file)));
         $description = '';
-        while(strlen($description) < 100) {
+        fgets($file);
+        while (strlen($description) < 100) {
             $line = htmlspecialchars(trim(strip_tags($parser->text(fgets($file)))));
-            if(empty($line)) {
+            if (empty($line)) {
                 continue;
             }
-            
-            $description .= $line . ' '; 
+
+            $description .= $line . ' ';
         }
         $description = substr($description, 0, 100) . '...';
         fclose($file);
-        
+
         $keywords = ["development"];
-        $keywordsFilePath = $articleDirectoryPath . '/keywords.json';
+        $keywordsFilePath = $directory . $article->url . 'keywords.json';
         if(is_file($keywordsFilePath)) {
             $keywords = json_decode(file_get_contents($keywordsFilePath), true);
         }
 
         file_put_contents(
-            $articleDirectoryPath . '/index.html',
+            $directory . $article->url . 'index.html',
             str_replace(
                 [
                     '{{ content }}',
@@ -358,26 +481,27 @@ foreach (scandir($directory) as $yearDirectory) {
                     '{{ path }}',
                     '{{ scripts }}',
                     '{{ keywords }}',
-                ], 
+                ],
                 [
                     $parser->text(file_get_contents($articleFilePath)),
-                    $name,
+                    $article->name,
                     $description,
-                    $urlPath,
+                    $article->url,
                     '<link rel="stylesheet" href="/highlight.github-dark-dimmed.min.css">
 <script src="/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
 ',
-                    implode(', ', $keywords)
+                    implode(', ', $article->keywords)
                 ],
                 $template,
             )
         );
+
+        $sitemap[] = SiteMapEntity::create(
+            'https://mrsuh.com' . $article->url,
+            date('Y-m-d', filemtime($articleFilePath))
+        );
         
-            $sitemap[] = SiteMapEntity::create(
-                'https://mrsuh.com' . $urlPath, 
-                date('Y-m-d', filemtime($articleFilePath))
-            );
     }
 }
 
