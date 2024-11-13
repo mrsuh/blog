@@ -210,7 +210,7 @@ class SiteMapEntity
 
 $sitemap = [
     SiteMapEntity::create('https://mrsuh.com', '2024-11-01'),
-    SiteMapEntity::create('https://mrsuh.com/articles/', '2024-11-01'),
+    SiteMapEntity::create('https://mrsuh.com/articles/', '2024-11-13'),
 ];
 
 $articles = [
@@ -404,9 +404,7 @@ foreach ($articles as $year => $list) {
             $article->name
         );
         $content .= sprintf('<div class="col-2 text-end list-date">%s</div>', \DateTime::createFromFormat('Y-m-d', $article->date)->format('M j'));
-        if ($index < count($list) - 1) {
-            $content .= '<hr class="list"/>' . PHP_EOL;
-        }
+        $content .= '<hr class="list"/>' . PHP_EOL;
     }
 
     $content .= '</div>' . PHP_EOL;
