@@ -149,6 +149,7 @@ file_put_contents(
             '{{ description }}',
             '{{ path }}',
             '{{ scripts }}',
+            '{{ keywords }}',
         ],
         [
             $parser->text(file_get_contents(__DIR__ . '/../src/index.md')),
@@ -156,6 +157,7 @@ file_put_contents(
             'Personal page',
             '',
             '',
+            'anton sukhachev, mrsuh, blog'
         ],
         $template
     )
@@ -166,17 +168,20 @@ class Article
     public string $name;
     public string $url;
     public string $date;
+    public array $keywords;
 
     public static function create(
         string $name,
         string $url,
-        string $date
+        string $date,
+        array $keywords = [],
     ): self
     {
         $self = new self();
         $self->name = $name;
         $self->url = $url;
         $self->date = $date;
+        $self->keywords = $keywords;
 
         return $self;
     }
@@ -288,13 +293,15 @@ file_put_contents(
             '{{ description }}',
             '{{ path }}',
             '{{ scripts }}',
+            '{{ keywords }}',
         ],
         [
             $content,
             'Articles',
             '',
             '/articles',
-            ''
+            '',
+            'anton sukhachev, mrsuh, blog, articles, posts'
         ],
         $template
     )
@@ -325,10 +332,21 @@ foreach (scandir($directory) as $yearDirectory) {
         $name = trim(str_replace('#', '', fgets($file)));
         $description = '';
         while(strlen($description) < 100) {
-            $description .= htmlspecialchars(trim(strip_tags($parser->text(fgets($file)))));
+            $line = htmlspecialchars(trim(strip_tags($parser->text(fgets($file)))));
+            if(empty($line)) {
+                continue;
+            }
+            
+            $description .= $line . ' '; 
         }
         $description = substr($description, 0, 100) . '...';
         fclose($file);
+        
+        $keywords = ["development"];
+        $keywordsFilePath = $articleDirectoryPath . '/keywords.json';
+        if(is_file($keywordsFilePath)) {
+            $keywords = json_decode(file_get_contents($keywordsFilePath), true);
+        }
 
         file_put_contents(
             $articleDirectoryPath . '/index.html',
@@ -339,6 +357,7 @@ foreach (scandir($directory) as $yearDirectory) {
                     '{{ description }}',
                     '{{ path }}',
                     '{{ scripts }}',
+                    '{{ keywords }}',
                 ], 
                 [
                     $parser->text(file_get_contents($articleFilePath)),
@@ -348,9 +367,10 @@ foreach (scandir($directory) as $yearDirectory) {
                     '<link rel="stylesheet" href="/highlight.github-dark-dimmed.min.css">
 <script src="/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
-'
-                ], 
-                $template
+',
+                    implode(', ', $keywords)
+                ],
+                $template,
             )
         );
         

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="author" content="Anton Sukhachev">
+    <title>Continuous delivery with Travis CI and Ansible</title>
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+
+    <meta name="description" content="Setting up continuous delivery for your project with github.com Requirements: a repository on github..."/>
+    <meta name="keywords" content="tutorial, development, travis ci, ansible, continuous delivery"/>
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="mrsuh.com">
+    <meta property="og:url" content="https://mrsuh.com/articles/2017/continuous-delivery-with-travis-ci-and-ansible/">
+    <meta property="og:title" content="Continuous delivery with Travis CI and Ansible">
+    <meta property="og:description" content="Setting up continuous delivery for your project with github.com Requirements: a repository on github...">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:alt" content="Anton Sukhachev">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="mrsuh.com">
+    <meta name="twitter:url" content="https://mrsuh.com/articles/2017/continuous-delivery-with-travis-ci-and-ansible/">
+    <meta name="twitter:title" content="Continuous delivery with Travis CI and Ansible">
+    <meta name="twitter:creator" content="@mrsuh6">
+    <meta name="twitter:description" content="Setting up continuous delivery for your project with github.com Requirements: a repository on github...">
+    <meta name="twitter:image:alt" content="Anton Sukhachev">
+    
+    <link href="/bootstrap.min.css" rel="stylesheet">
+    <link href="/style.css?v=1" rel="stylesheet">
+</head>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GMXWT1YP3F"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-GMXWT1YP3F');
+</script>
+
+<body class="container fs-5" style="max-width: 1000px">
+
+<div class="header" style="padding-top: 20px; padding-bottom: 10px">
+    <div class="row">
+        <div class="col">
+            <a href="/">Anton Sukhachev</a>
+        </div>
+        <div class="col text-end">
+            <a href="/articles/">Articles</a>
+        </div>
+    </div>
+    <hr/>
+</div>
+
+<div class="content">
+    <h1>Continuous delivery with Travis CI and Ansible</h1>
+<p>Setting up <a href="https://en.wikipedia.org/wiki/Continuous_delivery" target="_blank">continuous delivery</a> for your project with github.com</p>
+<p>Requirements:</p>
+<ul>
+<li>a repository on <a href="https://github.com" target="_blank">github.com</a></li>
+<li>an Ansible server (example IP: 1.1.1.1)</li>
+<li>a deployment server for your project (example IP: 2.2.2.2)</li>
+<li>a local machine with your project configured</li>
+<li>basic knowledge of command-line tools, <a href="https://travis-ci.org" target="_blank">Travis CI</a>, and <a href="https://www.ansible.com" target="_blank">Ansible</a></li>
+</ul>
+<a href="#h2-setting-up-the-server-for-project-deployment" id="h2-setting-up-the-server-for-project-deployment" class="text-decoration-none text-reset"><h2>Setting Up the Server for Project Deployment</h2></a>
+<pre><code class="language-bash rounded">[ root@2.2.2.2 ] adduser ansible # add a user under which Ansible will connect to the server and in whose directory the project will be deployed.
+[ root@2.2.2.2 ] su - ansible
+[ ansible@2.2.2.2 ] ssh-keygen -t rsa -b 4096 -C 'github' -f ~/.ssh/github_key # generate a key without a passphrase for deploying the repository.
+[ ansible@2.2.2.2 ] eval "$(ssh-agent -s)"
+[ ansible@2.2.2.2 ] ssh-add ~/.ssh/github_key
+[ ansible@2.2.2.2 ] cat ~/.ssh/github_key.pub # display and copy the public key github_key.pub</code></pre>
+<p>Add the public key <code>github_key.pub</code> to the deploy keys for the repository on github.com<br />
+(In the repository settings on github.com, go to the &quot;Deploy keys&quot; tab)</p>
+<a href="#h2-settings-up-ansible-server" id="h2-settings-up-ansible-server" class="text-decoration-none text-reset"><h2>Settings up Ansible server</h2></a>
+<pre><code class="language-bash rounded">[ root@1.1.1.1 ] yum install ansible
+[ root@1.1.1.1 ] adduser ansible # add a user under which Travis will access this server.
+[ root@1.1.1.1 ] su - ansible
+[ ansible@1.1.1.1 ] ssh-keygen -t rsa -b 4096 -C 'ansible' -f ~/.ssh/ansible_key # generate a key without a passphrase for connecting to the server with the project
+[ ansible@1.1.1.1 ] eval "$(ssh-agent -s)"
+[ ansible@1.1.1.1 ] ssh-add ~/.ssh/ansible_key
+[ ansible@1.1.1.1 ] cat ~/.ssh/ansible_key.pub # display and copy the public key ansible_key.pub</code></pre>
+<p>Add the public key <code>ansible_key.pub</code> to the server of our project.</p>
+<pre><code class="language-bash rounded">[ ansible@2.2.2.2 ] mcedit .ssh/authorized_keys
+[ ansible@2.2.2.2 ] chmod 600 .ssh/authorized_keys</code></pre>
+<p>Add the IP address of our project server to the <code>hosts.yml</code> file.</p>
+<pre><code class="language-bash rounded">[ ansible@1.1.1.1 ] mcedit /path/to/ansible/hosts.yml</code></pre>
+<p><code>hosts.yml</code></p>
+<pre><code class="language-yaml rounded">[ansible]
+2.2.2.2</code></pre>
+<p>Write a small <code>playbook</code> that will deploy the latest version of the <code>master</code> branch</p>
+<pre><code class="language-bash rounded">[ ansible@1.1.1.1 ] mcedit /path/to/ansible/playbook.yml</code></pre>
+<p><code>playbook.yml</code></p>
+<pre><code class="language-yaml rounded">- hosts: all
+   user: ansible
+   tasks:
+       - name: Clone git repo
+         git:
+             repo: ssh://git@github.com/{github_username}/{github_repo}.git
+             dest: /home/ansible/var/www/{github_repo}
+             version: master
+             accept_hostkey: yes
+             force: yes</code></pre>
+<a href="#h2-setting-up-travis" id="h2-setting-up-travis" class="text-decoration-none text-reset"><h2>Setting up Travis</h2></a>
+<p>Register on the site <a href="https://travis-ci.org" target="_blank">travis-ci.org</a> using your <a href="https://github.com" target="_blank">github.com</a> account. Enable integration for the desired repository.<br />
+In the Travis repository settings, enable:</p>
+<ul>
+<li>Build only if .travis.yml is present</li>
+<li>Build branch updates</li>
+</ul>
+<p>On your local machine, where your project is deployed, install the <code>travis</code> utility and authenticate:</p>
+<pre><code class="language-bash rounded">[ user@local ] gem install travis
+[ user@local ] travis login --auto</code></pre>
+<p>Generate a key without a passphrase to connect <code>Travis</code> to the server with <code>Ansible</code>.</p>
+<pre><code class="language-bash rounded">[ user@local ] ssh-keygen -t rsa -b 4096 -C 'travis' -f travis_key # generate a key without a passphrase to connect Travis to the server with Ansible
+[ user@local ] cat travis_key.pub # display and copy the public key travis_key.pub</code></pre>
+<p>Add the public key <code>travis_key.pub</code> to the server <code>Ansible</code> in the file <code>/home/ansible/.ssh/authorized_keys</code>.</p>
+<pre><code class="language-bash rounded">[ ansible@1.1.1.1 ] mcedit /home/ansible/.ssh/authorized_keys
+[ ansible@1.1.1.1 ] chmod 600 /home/ansible/.ssh/authorized_keys</code></pre>
+<p>Encrypt the private key using the <code>travis</code> utility:</p>
+<pre><code class="language-bash rounded">[ user@local ] travis encrypt-file travis_key --add</code></pre>
+<p>The output should be a file <code>travis_key.enc</code> and <code>.travis.yml</code>. The <code>.travis.yml</code> file will contain a line for decrypting our key like this:</p>
+<pre><code class="language-bash rounded">openssl aes-256-cbc -K $encrypted_412afa050e5f_key -iv $encrypted_412afa050e5f_iv -in travis_key.enc -out /tmp/travis_key -d</code></pre>
+<p>Add both files to <code>git</code>:</p>
+<pre><code class="language-bash rounded">[ user@local ] git add travis_key.enc .travis.yml </code></pre>
+<p>Edit the file <code>.travis.yml</code>:</p>
+<pre><code class="language-bash rounded">[ user@local ] mcedit /path/to/repo/.travis.yml</code></pre>
+<p><code>.travis.yml</code></p>
+<pre><code class="language-yaml rounded">language: node_js # node_js project
+install: true # do not install additional dependencies
+sudo: false
+branches: # the deployment of the project will only occur when there are changes in the master branch
+  only:
+      - master
+script:
+    - openssl aes-256-cbc -K $encrypted_412afa050e5f_key -iv $encrypted_412afa050e5f_iv -in travis_key.enc -out /tmp/travis_key -d #дешифруем ключ
+    - eval "$(ssh-agent -s)"
+    - chmod 600 /tmp/travis_key
+    - ssh-add /tmp/travis_key
+    - ssh -o "StrictHostKeyChecking no" ansible@1.1.1.1 'ansible-playbook playbook.yml' #подключаемся к серверу Ansible и запускаем playbook</code></pre>
+<p>Push the changes to <code>git</code>:</p>
+<pre><code class="language-bash rounded">[ user@local ] git push origin master</code></pre>
+<p>After this, a <code>Build</code> should appear on the repository page in <code>Travis</code> similar to the following:</p>
+<pre><code class="language-bash rounded">The command "openssl aes-256-cbc -K $encrypted_412afa050e5f_key -iv $encrypted_412afa050e5f_iv -in travis_key.enc -out /tmp/travis_key -d" exited with 0.
+
+0.01s$ eval "$(ssh-agent -s)"
+Agent pid 1842
+The command "eval "$(ssh-agent -s)"" exited with 0.
+
+0.01s$ chmod 600 /tmp/travis_key
+The command "chmod 600 /tmp/travis_key" exited with 0.
+
+0.01s$ ssh-add /tmp/travis_key
+Identity added: /tmp/travis_key (/tmp/travis_key)
+The command "ssh-add /tmp/travis_key" exited with 0.
+
+16.68s$ ssh -o "StrictHostKeyChecking no" ansible@2.2.2.2 'ansible-playbook playbook.yml'
+Warning: Permanently added '2.2.2.2' (ECDSA) to the list of known hosts.
+
+PLAY [all] *********************************************************************
+TASK [setup] *******************************************************************
+ok: [2.2.2.2]
+TASK [Clone git repo] **********************************************************
+changed: [2.2.2.2]
+PLAY RECAP *********************************************************************
+2.2.2.2               : ok=1   changed=1    unreachable=0    failed=0   
+The command "ssh -o "StrictHostKeyChecking no" ansible@2.2.2.2 'ansible-playbook playbook.yml" exited with 0.
+Done. Your build exited with 0.</code></pre>
+<p>Now, whenever changes are made to the master branch, <code>Travis</code> will trigger <code>Ansible</code>, which will deploy the latest version of your code to the project server.</p>
+<p>I hope this guide will be useful to someone.</p>
+</div>
+
+<div class="footer" style="height: 40px"></div>
+</body>
+<link rel="stylesheet" href="/highlight.github-dark-dimmed.min.css">
+<script src="/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+</html>
