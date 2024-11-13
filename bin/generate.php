@@ -250,7 +250,7 @@ $articles = [
         Article::create("Mafia with Go, Vanila JS and WebSockets", "https://habr.com/ru/articles/423821", "Oct 5"),
     ],
     2017 => [
-        Article::create("Continuous delivery with Travis CI and Ansible", "https://habr.com/ru/articles/325438", "Apr 3"),
+        Article::create("Continuous delivery with Travis CI and Ansible", "/articles/2017/continuous-delivery-with-travis-ci-and-ansible/", "Apr 3"),
         Article::create("Classifying listings from social networks: In search of the best solution", "https://habr.com/ru/articles/328282", "May 14"),
         Article::create("Architecture of a service for collecting and classifying housing listings", "https://habr.com/ru/articles/342220", "Dec 4"),
     ],
