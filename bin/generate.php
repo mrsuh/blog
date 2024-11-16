@@ -11,7 +11,7 @@ class MyParserdown extends \Parsedown
             return;
         }
 
-        $data['element']['attributes']['class'] = 'img-fluid mx-auto d-block rounded img-max-height';
+        $data['element']['attributes']['class'] = 'img-fluid mx-auto d-block rounded img-size';
 
         $Inline = array(
             'extent' => $data['extent'],
@@ -194,15 +194,18 @@ class SiteMapEntity
 {
     public string $url;
     public string $date;
+    public string $changefreq;
 
     public static function create(
         string $url,
-        string $date
+        string $date,
+        string $changefreq = 'weekly',
     ): self
     {
         $self = new self();
         $self->url = $url;
         $self->date = $date;
+        $self->changefreq = $changefreq;
 
         return $self;
     }
@@ -210,7 +213,7 @@ class SiteMapEntity
 
 $sitemap = [
     SiteMapEntity::create('https://mrsuh.com', '2024-11-01'),
-    SiteMapEntity::create('https://mrsuh.com/articles/', '2024-11-13'),
+    SiteMapEntity::create('https://mrsuh.com/articles/', '2024-11-13', 'daily'),
 ];
 
 $articles = [
@@ -323,14 +326,15 @@ $articles = [
             '2020-09-17',
         ),
         Article::create(
-            'RC - car with ESP8266 NodeMCU and LEGO',
+            'RC car with ESP8266 NodeMCU and LEGO',
             'https://vc.ru/dev/160142-rc-mashinka-iz-esp8266-nodemcu-i-lego', 
             '2020-09-21',
         ),
         Article::create(
-            'RC - boat with ESP8266 NodeMCU', 
-            'https://habr.com/ru/articles/513482', 
+            'RC boat with ESP8266 NodeMCU', 
+            '/articles/2020/rc-boat-with-esp8266-nodemcu/', 
             '2020-11-03',
+            ["esp8266", "DIY", "RC boat"]
         ),
     ],
     2019 => [
@@ -512,7 +516,7 @@ foreach($sitemap as $entity) {
     $sitemapContent .= '  <url>' . PHP_EOL;
     $sitemapContent .= '    <loc>' . $entity->url . '</loc>' . PHP_EOL;
     $sitemapContent .= '    <lastmod>' . $entity->date . '</lastmod>' . PHP_EOL;
-    $sitemapContent .= '    <changefreq>weekly</changefreq>' . PHP_EOL;
+    $sitemapContent .= '    <changefreq>' . $entity->changefreq . '</changefreq>' . PHP_EOL;
     $sitemapContent .= '    <priority>1</priority>' . PHP_EOL;
     $sitemapContent .= '  </url>' . PHP_EOL;
 }

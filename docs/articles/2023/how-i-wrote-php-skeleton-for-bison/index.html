@@ -29,7 +29,7 @@
     <meta name="twitter:image:alt" content="Anton Sukhachev">
     
     <link href="/bootstrap.min.css" rel="stylesheet">
-    <link href="/style.css?v=1" rel="stylesheet">
+    <link href="/style.css?v=3" rel="stylesheet">
 </head>
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-GMXWT1YP3F"></script>
@@ -99,7 +99,7 @@ class Test
                     └── ZEND_AST_PARAM
                         └── ZEND_AST_ZVAL 'foo'</code></pre>
 <p>Every AST parser has a lexical analyzer, syntax analyzer, and AST builder. Usually, it grouped into Lexer and Parser.</p>
-<p><a href="./images/ast-builder.png"><img src="./images/ast-builder.png" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/ast-builder.png"><img src="./images/ast-builder.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>You don't need to write Lexer and Parser from scratch.<br><br />
 To build Lexer you can use tools:</p>
 <ul>
@@ -108,7 +108,7 @@ To build Lexer you can use tools:</p>
 <li><a href="https://github.com/doctrine/lexer" target="_blank">doctrine lexer</a> - doctrine uses it to parse annotations</li>
 </ul>
 <p>How do Lexers work?</p>
-<p><a href="./images/lexer.png"><img src="./images/lexer.png" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/lexer.png"><img src="./images/lexer.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>Lexers help you to parse text into tokens.<br><br />
 For example PHP engine's Lexer use <a href="https://re2c.org" target="_blank">re2c</a>.</p>
 <p><a href="https://github.com/php/php-src/blob/master/Zend/zend_language_scanner.l" target="_blank">php-src Lexer example</a></p>
@@ -140,7 +140,7 @@ After the Lexer we have tokens, and we need a Parser to build AST.</p>
 <li><a href="https://www.antlr.org" target="_blank">ANTLR</a> - Twitter search uses ANTLR for query parsing</li>
 </ul>
 <p>How do parser generators work?</p>
-<p><a href="./images/parser-generator.png"><img src="./images/parser-generator.png" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/parser-generator.png"><img src="./images/parser-generator.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>A generator takes your <code>grammar.y</code> <a href="https://en.wikipedia.org/wiki/Backus–Naur_form" target="_blank">BNF</a> file, parses it, extracts all definitions, and then constructs a bunch of tables like this:</p>
 <pre><code class="language-php rounded">$yytable = [
     6, 3, 7, 20, 8, 51, 28, 1, 52, 4,
@@ -165,7 +165,7 @@ By default, Bison Skeletons supports C/C++/D/Java languages.</p>
     |   T_CONTINUE optional_expr semi { $$ = Stmt\Continue_[$2]; }
     |   T_RETURN optional_expr semi   { $$ = Stmt\Return_[$2]; }</code></pre>
 <p>After all this information about parsers, we can summarize it on the scheme:</p>
-<p><a href="./images/bison-kmyacc.png"><img src="./images/bison-kmyacc.png" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/bison-kmyacc.png"><img src="./images/bison-kmyacc.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>I had thought about replacing <code>KmYacc</code> with <code>Bison</code> in php-parser.<br><br />
 It is great for PHP engine and php-parser to use the same tools to make the same job.<br><br />
 Even the fact, that Bison doesn't have PHP Skeleton didn't stop me.<br><br />
@@ -221,11 +221,11 @@ php bin/replace-dollar-sign.php out lib/parser-tmp.php lib/parser.php</code></pr
 <p>Time to compare PHP parser generated with <code>Bison</code> and <code>KmYacc</code>.<br><br />
 I had run tests with 3 different files sizes and different PHP versions (smaller is better):</p>
 <h4><a href="https://github.com/mrsuh/php-bison-skeleton/blob/master/examples/php/bin/parse-bison.php" target="_blank">PHP file 684 bytes</a></h4>
-<p><a href="./images/chart-little.png"><img src="./images/chart-little.png" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/chart-little.png"><img src="./images/chart-little.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <h4><a href="https://github.com/nikic/PHP-Parser/blob/4.x/lib/PhpParser/Lexer/Emulative.php" target="_blank">PHP file 8.8 kilobytes</a></h4>
-<p><a href="./images/chart-mid.png"><img src="./images/chart-mid.png" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/chart-mid.png"><img src="./images/chart-mid.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <h4><a href="https://github.com/mrsuh/php-bison-skeleton/blob/master/examples/php/lib/parser.php" target="_blank">PHP file 329 kilobytes</a></h4>
-<p><a href="./images/chart-big.png"><img src="./images/chart-big.png" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/chart-big.png"><img src="./images/chart-big.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>As you can see performance of the parser generated with <code>Bison</code> is slower than the parser generated with <code>KmYacc</code>.<br><br />
 I tried to optimize generated parser code, but it gave maximum  ~15 percent improvement. Not such much.<br></p>
 <p>In the end, I replaced <code>KmYacc</code> with <code>Bison</code> in php-parser, but it works not such well as I imagined.<br><br />

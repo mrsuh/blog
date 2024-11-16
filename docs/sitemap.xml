@@ -8,7 +8,7 @@
   <url>
     <loc>https://mrsuh.com/articles/</loc>
     <lastmod>2024-11-13</lastmod>
-    <changefreq>weekly</changefreq>
+    <changefreq>daily</changefreq>
     <priority>1</priority>
   </url>
   <url>
@@ -90,8 +90,14 @@
     <priority>1</priority>
   </url>
   <url>
+    <loc>https://mrsuh.com/articles/2020/rc-boat-with-esp8266-nodemcu/</loc>
+    <lastmod>2024-11-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1</priority>
+  </url>
+  <url>
     <loc>https://mrsuh.com/articles/2019/comparing-php-fpm-php-ppm-nginx-unit-react-php-and-road-runner/</loc>
-    <lastmod>2024-11-12</lastmod>
+    <lastmod>2024-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1</priority>
   </url>

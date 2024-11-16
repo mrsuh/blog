@@ -29,7 +29,7 @@
     <meta name="twitter:image:alt" content="Anton Sukhachev">
     
     <link href="/bootstrap.min.css" rel="stylesheet">
-    <link href="/style.css?v=1" rel="stylesheet">
+    <link href="/style.css?v=3" rel="stylesheet">
 </head>
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-GMXWT1YP3F"></script>
@@ -70,15 +70,15 @@ I chose SQLite for my experiments:</p>
 <a href="#h2-node-and-page-structure" id="h2-node-and-page-structure" class="text-decoration-none text-reset"><h2>Node and Page Structure</h2></a>
 <p>According to SQLite <a href="https://sqlite.org/fileformat2.html" target="_blank">documentation</a>, Indexes are stored in a B-Tree structure, which is a balanced tree where each node has multiple children.<br />
 It typically looks like this:</p>
-<p><a href="./images/b-tree.svg"><img src="./images/b-tree.svg" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/b-tree.svg"><img src="./images/b-tree.svg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>To understand how SQLite stores Nodes, let’s look at the Page and Cell structures.<br />
 A Page (analog of a Node on SQLite) stores Cells data and has a link to its right child Page.<br />
 A Cell contains Index data, a rowId, and a link to its left child Page.<br />
 By default, each SQLite table row has a unique rowId, which works like a primary key if one isn’t explicitly defined.</p>
 <p>Here’s a visual example of a B-Tree Index in SQLite:</p>
-<p><a href="./images/b-tree-sqlite.svg"><img src="./images/b-tree-sqlite.svg" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/b-tree-sqlite.svg"><img src="./images/b-tree-sqlite.svg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>Index data is stored on disk in this structure:</p>
-<p><a href="./images/b-tree-store.svg"><img src="./images/b-tree-store.svg" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/b-tree-store.svg"><img src="./images/b-tree-store.svg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>Each Page has a fixed size, ranging from 512 to 65,536 bytes. Page and Cell headers use 4 bytes to store child links.<br />
 If we want to know child Page number - we need to read the header separately with this function:</p>
 <pre><code class="language-c rounded">get4byte(...)</code></pre>
@@ -145,9 +145,9 @@ sqlite3BtreeIndexDump: cell, number=1, leftChildPageNumber=-1, payload=2, rowId=
 The next step was to display everything visually — an easy part of the process.</p>
 <p>I found a library called <a href="https://github.com/benyasin/d3-org-tree" target="_blank">d3-org-tree</a> for visualizing index structures.<br />
 Here’s how it looked in the early stages:</p>
-<p><a href="./images/test-tree-d3.png"><img src="./images/test-tree-d3.png" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/test-tree-d3.png"><img src="./images/test-tree-d3.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>However, there was a problem: I couldn’t adjust the spacing between Pages, so as the tree became deeper and more Pages were added at each level, the image became too large and hard to read.</p>
-<p><a href="./images/test-tree-d3-wide.png"><img src="./images/test-tree-d3-wide.png" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/test-tree-d3-wide.png"><img src="./images/test-tree-d3-wide.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>I tried adjusting it with JavaScript and CSS, but it didn’t work well.<br />
 After a few tries with d3-org-tree, I decided that using text to display the structure would be simpler.</p>
 <p>Example:</p>
@@ -181,7 +181,7 @@ After a few tries with d3-org-tree, I decided that using text to display the str
 ------------------------------------------------------------------------------------------------------------------------</code></pre>
 <p>Not bad, but I could go further.<br />
 PHP's <a href="https://www.php.net/manual/en/intro.imagick.php" target="_blank">ImageMagick</a> extension lets us create images with more control over design and spacing than text alone. After about a dozen tries, here's the final version I came up with:</p>
-<p><a href="./images/test-tree-php.webp"><img src="./images/test-tree-php.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/test-tree-php.webp"><img src="./images/test-tree-php.webp" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>The image now includes all the needed data and is easy to read.</p>
 <p>In the top-left corner, there’s general information about the Index.<br />
 Each level shows the total number of Pages and Cells.<br />
@@ -198,18 +198,18 @@ Before each Index image, I'll show the table's data structure, the way the Index
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 INT NOT NULL);
 INSERT INTO table_test (column1) VALUES (1);
 CREATE INDEX idx ON table_test (column1 ASC);</code></pre>
-<p><a href="./images/index-1.webp"><img src="./images/index-1.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/index-1.webp"><img src="./images/index-1.webp" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>One level, one Page, one Cell. Simple!</p>
 <a href="#h2-index-with-1000-records" id="h2-index-with-1000-records" class="text-decoration-none text-reset"><h2>Index with 1000 records</h2></a>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 INT NOT NULL);
 INSERT INTO table_test (column1) VALUES (1),(2),(3),...,(998),(999),(1000);
 CREATE INDEX idx ON table_test (column1 ASC);</code></pre>
-<p><a href="./images/index-1000.webp"><img src="./images/index-1000.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/index-1000.webp"><img src="./images/index-1000.webp" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <a href="#h2-index-with-1.000.000-records" id="h2-index-with-1.000.000-records" class="text-decoration-none text-reset"><h2>Index with 1.000.000 records</h2></a>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 INT NOT NULL);
 INSERT INTO table_test (column1) VALUES (1),(2),(3),...,(999998),(999999),(1000000);
 CREATE INDEX idx ON table_test (column1 ASC);</code></pre>
-<p><a href="./images/index-1000000.webp"><img src="./images/index-1000000.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/index-1000000.webp"><img src="./images/index-1000000.webp" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>Now we’ve reached the image I used earlier as an example.<br />
 This Index has 3 levels, 2,930 Pages, and 1,000,000 Cells. The data was added in order, so for rowId = 1, column1 = 1.</p>
 <a href="#h2-comparing-asc-and-desc-indexes" id="h2-comparing-asc-and-desc-indexes" class="text-decoration-none text-reset"><h2>Comparing ASC and DESC Indexes</h2></a>
@@ -218,11 +218,11 @@ This Index has 3 levels, 2,930 Pages, and 1,000,000 Cells. The data was added in
 INSERT INTO table_test (column1) VALUES (1),(2),(3),...,(999998),(999999),(1000000);
 CREATE INDEX idx_asc ON table_test (column1 ASC);
 CREATE INDEX idx_desc ON table_test (column1 DESC);</code></pre>
-<p><a href="./images/index-order-asc.webp"><img src="./images/index-order-asc.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/index-order-asc.webp"><img src="./images/index-order-asc.webp" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>The ASC Index is the same as above, as ASC sorting is used by default.<br />
 The table's first entry, rowId=1,000,000, column1=1,000,000, payload=1,000,000, is in the last Cell of the rightmost Page.<br />
 The table's last entry, rowId=1, column1=1, payload=1, is in the first Cell of the leftmost Page.</p>
-<p><a href="./images/index-order-desc.webp"><img src="./images/index-order-desc.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/index-order-desc.webp"><img src="./images/index-order-desc.webp" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>The DESC Index is reversed.<br />
 The table's first entry, rowId=1, column1=1, payload=1, is in the last Cell of the rightmost Page.<br />
 The table's last entry, rowId=1,000,000, column1=1,000,000, payload=1,000,000, is in the first Cell of the leftmost Page.</p>
@@ -230,27 +230,27 @@ The table's last entry, rowId=1,000,000, column1=1,000,000, payload=1,000,000, i
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 TEXT NOT NULL);
 INSERT INTO table_test (column1) VALUES ('{"timestamp":1}'),('{"timestamp":2}'),('{"timestamp":3}'),...,('{"timestamp":999998}'),('{"timestamp":999999}'),('{"timestamp":1000000}');
 CREATE INDEX idx ON table_test (strftime('%Y-%m-%d %H:%M:%S', json_extract(column1, '$.timestamp'), 'unixepoch') ASC);</code></pre>
-<p><a href="./images/index-expression.webp"><img src="./images/index-expression.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/index-expression.webp"><img src="./images/index-expression.webp" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>The Index now stores a string generated by the expression.<br />
 You can use more complex expressions, and the Index will save the only result.</p>
 <a href="#h2-unique-index-with-null-values" id="h2-unique-index-with-null-values" class="text-decoration-none text-reset"><h2>Unique Index with NULL values</h2></a>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 INT)
 INSERT INTO table_test (column1) VALUES (1),(NULL),(NULL),...,(NULL),(NULL),(1000000);
 CREATE UNIQUE INDEX idx ON table_test (column1 ASC);</code></pre>
-<p><a href="./images/index-unique.webp"><img src="./images/index-unique.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/index-unique.webp"><img src="./images/index-unique.webp" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>SQLite supports unique Indexes with NULL values.<br />
 This index looks like we are storing only non-NULL values.</p>
 <a href="#h2-filtering-null-values-with-partial-indexes" id="h2-filtering-null-values-with-partial-indexes" class="text-decoration-none text-reset"><h2>Filtering NULL Values with Partial Indexes</h2></a>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 INT)
 INSERT INTO table_test (column1) VALUES (1),(NULL),(NULL),...,(NULL),(NULL),(1000000);
 CREATE INDEX idx ON table_test (column1 ASC) WHERE column1 IS NOT NULL;</code></pre>
-<p><a href="./images/index-partial.webp"><img src="./images/index-partial.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/index-partial.webp"><img src="./images/index-partial.webp" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>The Index now contains just one Page, leading to faster searches than the previous example.</p>
 <a href="#h2-multi-column-index" id="h2-multi-column-index" class="text-decoration-none text-reset"><h2>Multi-Column Index</h2></a>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 INT NOT NULL, column2 INT NOT NULL);
 INSERT INTO table_test (column1, column2) VALUES (1,1),(2,2),(3,3),...,(999998,999998),(999999,999999),(1000000,1000000);
 CREATE INDEX idx ON table_test (column1 ASC, column2 ASC);</code></pre>
-<p><a href="./images/index-complex.webp"><img src="./images/index-complex.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/index-complex.webp"><img src="./images/index-complex.webp" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>As we can see, the data for all fields in a cell are stored one after another.<br />
 The fields are separated visually with a colon <code>:</code>.</p>
 <a href="#h2-comparing-indexes-created-before-and-after-data-population" id="h2-comparing-indexes-created-before-and-after-data-population" class="text-decoration-none text-reset"><h2>Comparing Indexes Created Before and After Data Population</h2></a>
@@ -259,9 +259,9 @@ CREATE INDEX idx_before ON table_test (column1 ASC);
 INSERT INTO table_test (column1) VALUES (1),(2),(3),...,(999998),(999999),(1000000);
 CREATE INDEX idx_after ON table_test (column1 ASC);</code></pre>
 <a href="#h3-before" id="h3-before" class="text-decoration-none text-reset"><h3>Before</h3></a>
-<p><a href="./images/index-time-before.webp"><img src="./images/index-time-before.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/index-time-before.webp"><img src="./images/index-time-before.webp" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <a href="#h3-after" id="h3-after" class="text-decoration-none text-reset"><h3>After</h3></a>
-<p><a href="./images/index-time-after.webp"><img src="./images/index-time-after.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/index-time-after.webp"><img src="./images/index-time-after.webp" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>The tree must rebalance itself when new data is added. Creating an Index on existing data should be much more efficient.<br />
 Both Indexes look similar, but the second Index, with fewer Pages, should be faster.</p>
 <pre><code class="language-bash rounded">+--------+-------------+-------------+
@@ -300,18 +300,18 @@ REINDEX idx;</code></pre>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 text NOT NULL);
 INSERT INTO table_test (column1) VALUES ('text-1'),('text-2'),('text-3'),...,('text-999998'),('text-999999'),('text-1000000');
 CREATE INDEX idx ON table_test (column1 ASC);</code></pre>
-<p><a href="./images/index-text.webp"><img src="./images/index-text.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/index-text.webp"><img src="./images/index-text.webp" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>You can easily see the actual string stored directly in the Index.</p>
 <a href="#h2-float-point-data-in-indexes" id="h2-float-point-data-in-indexes" class="text-decoration-none text-reset"><h2>Float-point Data in Indexes</h2></a>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 REAL NOT NULL);
 INSERT INTO table_test (column1) VALUES ('1.14'),('2.14'),('3.14'),...,('999998.14'),('999999.14'),('1000000.14');
 CREATE INDEX idx ON table_test (column1 ASC);</code></pre>
-<p><a href="./images/index-real.webp"><img src="./images/index-real.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/index-real.webp"><img src="./images/index-real.webp" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <a href="#h2-combining-integer-and-text-in-a-single-index:" id="h2-combining-integer-and-text-in-a-single-index:" class="text-decoration-none text-reset"><h2>Combining integer and text in a single Index:</h2></a>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 INT NOT NULL, column2 TEXT NOT NULL);
 INSERT INTO table_test (column1, column2) VALUES (1,'text-1'),(2,'text-2'),(3,'text-3'),...,(999998,'text-999998'),(999999,'text-999999'),(1000000,'text-1000000');
 CREATE INDEX idx ON table_test (column1 ASC, column2 ASC);</code></pre>
-<p><a href="./images/index-integer-text.webp"><img src="./images/index-integer-text.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/index-integer-text.webp"><img src="./images/index-integer-text.webp" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>The integer and string are stored together in the Cell, just as we specified when creating the Index.</p>
 <a href="#h2-conclusion" id="h2-conclusion" class="text-decoration-none text-reset"><h2>Conclusion</h2></a>
 <p>Based on the work done, we saw how Indexes in SQLite are structured.<br />

@@ -29,7 +29,7 @@
     <meta name="twitter:image:alt" content="Anton Sukhachev">
     
     <link href="/bootstrap.min.css" rel="stylesheet">
-    <link href="/style.css?v=1" rel="stylesheet">
+    <link href="/style.css?v=3" rel="stylesheet">
 </head>
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-GMXWT1YP3F"></script>
@@ -60,7 +60,7 @@
 <p>In the previous <a href="/articles/2024/sqlite-index-visualization-structure/">post</a>, I explained how to extract data from SQLite Indexes and make it visual.<br />
 This time, I'll try to show what a search inside an Index looks like.</p>
 <a href="#h2-how-does-sqlite-search-within-an-index?" id="h2-how-does-sqlite-search-within-an-index?" class="text-decoration-none text-reset"><h2>How does SQLite search within an Index?</h2></a>
-<p><a href="./images/b-tree-sqlite-search.svg"><img src="./images/b-tree-sqlite-search.svg" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/b-tree-sqlite-search.svg"><img src="./images/b-tree-sqlite-search.svg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>Inside each Page, SQLite performs a binary search among Cell values. After finding the closest match, it picks the left child of that Cell.<br />
 If all Cell values on the Page are smaller than the target, it selects the Page’s right child.</p>
 <p>If we compile SQLite with <a href="https://www.sqlite.org/debugging.html" target="_blank">debugging</a> enabled and turn it on for queries, we can get detailed information about how the query work internally.<br />
@@ -119,7 +119,7 @@ sqlite3DebugResultRow:
 1|1</code></pre>
 <p>This provides a detailed trace of the Pages and Cells used in the search, letting us count the basic operations and compare them to the expected complexity of the algorithm.<br />
 Then, I updated the Index visualization code, and here’s the result:</p>
-<p><a href="./images/search-equal.webp"><img src="./images/search-equal.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/search-equal.webp"><img src="./images/search-equal.webp" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>In the top-left corner, we can see general information about the Index and specific search details:</p>
 <ul>
 <li>total Pages and Cells in the Index;</li>
@@ -169,7 +169,7 @@ CREATE INDEX idx ON table_test (column1 ASC);</code></pre>
 rowid  column1
 -----  -------
 1      1</code></pre>
-<p><a href="./images/search-equal.webp"><img src="./images/search-equal.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/search-equal.webp"><img src="./images/search-equal.webp" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>We read 3 Pages, compared 19 Cells, and filtered out one Cell. In this example, the actual number of comparisons is 19, which is lower than the theoretical worst-case for binary search: </p>
 <pre><code class="language-bash rounded">O(log2(n)) -&gt; O(log2(1.000.000)) -&gt; 19.93</code></pre>
 <a href="#h2-query-with-multiple-values-in-in()" id="h2-query-with-multiple-values-in-in()" class="text-decoration-none text-reset"><h2>Query with multiple values in IN()</h2></a>
@@ -181,7 +181,7 @@ rowid    column1
 -------  -------
 1        1      
 1000000  1000000</code></pre>
-<p><a href="./images/search-range-1000000.webp"><img src="./images/search-range-1000000.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/search-range-1000000.webp"><img src="./images/search-range-1000000.webp" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>For each value in the <code>IN()</code> list, SQLite performs a separate search in the Index. Sometimes, optimizations can reduce the number of searches, but generally, the database will go through the Index from the root to the target value for each item in the <code>IN()</code> list.</p>
 <a href="#h2-comparing-searches-in-asc/desc-indexes" id="h2-comparing-searches-in-asc/desc-indexes" class="text-decoration-none text-reset"><h2>Comparing searches in ASC/DESC Indexes</h2></a>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 INT NOT NULL);
@@ -194,7 +194,7 @@ rowid    column1
 1        1      
 500000   500000 
 1000000  1000000</code></pre>
-<p><a href="./images/search-order-asc.webp"><img src="./images/search-order-asc.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/search-order-asc.webp"><img src="./images/search-order-asc.webp" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>Here, three values are being searched, and each one requires an Index lookup. There are fewer filters than lookups because no filtering is needed after the last value.</p>
 <a href="#h2-descending-order-search" id="h2-descending-order-search" class="text-decoration-none text-reset"><h2>Descending order search</h2></a>
 <pre><code class="language-sql rounded">SELECT rowId, column1 FROM table_test INDEXED BY idx_desc WHERE column1 IN (1,500000,1000000);
@@ -203,7 +203,7 @@ rowid    column1
 1000000  1000000
 500000   500000 
 1        1</code></pre>
-<p><a href="./images/search-order-desc.webp"><img src="./images/search-order-desc.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/search-order-desc.webp"><img src="./images/search-order-desc.webp" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>As shown, searching in a DESC Index works the same as searching in an ASC Index in general cases.</p>
 <a href="#h2-range-searches" id="h2-range-searches" class="text-decoration-none text-reset"><h2>Range searches</h2></a>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 INT NOT NULL);
@@ -217,7 +217,7 @@ rowid   column1
 500002  500002 
 500003  500003 
 500004  500004</code></pre>
-<p><a href="./images/search-greater-than.webp"><img src="./images/search-greater-than.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/search-greater-than.webp"><img src="./images/search-greater-than.webp" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>In this query, the target value was found after 20 comparisons, with 0 filtering. This is because the search was done on an ascending (ASC) Index with a <code>&gt;=</code> comparison.<br />
 SQLite just read the next several values, and no further comparisons were needed since the data in the Index was already sorted in the required order.</p>
 <a href="#h2-expression-based-searches" id="h2-expression-based-searches" class="text-decoration-none text-reset"><h2>Expression-based searches</h2></a>
@@ -228,7 +228,7 @@ CREATE INDEX idx ON table_test (strftime('%Y-%m-%d %H:%M:%S', json_extract(colum
 rowid  date               
 -----  -------------------
 1      1970-01-01 00:00:01</code></pre>
-<p><a href="./images/search-expression.webp"><img src="./images/search-expression.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/search-expression.webp"><img src="./images/search-expression.webp" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>A search for an exact value created by an expression is just as fast as a simple number search in terms of the number of Cells compared.<br />
 No matter how complex the expression, the search using the Index will still be quick. The key is that the expression in the Index must exactly match the expression in the query.</p>
 <p>For example, if we have an Index like this:</p>
@@ -245,7 +245,7 @@ CREATE UNIQUE INDEX idx ON table_test (column1 ASC);</code></pre>
 rowid  column1
 -----  -------
 1      1</code></pre>
-<p><a href="./images/search-unique.webp"><img src="./images/search-unique.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/search-unique.webp"><img src="./images/search-unique.webp" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>This query does not differ from an Index without NULL values in terms of the number of Cells read.</p>
 <a href="#h2-searching-in-an-index-without-null-values" id="h2-searching-in-an-index-without-null-values" class="text-decoration-none text-reset"><h2>Searching in an Index without NULL values</h2></a>
 <p>We modified the Index slightly, and now it has no NULL values.</p>
@@ -256,7 +256,7 @@ CREATE INDEX idx ON table_test (column1 ASC) WHERE column1 IS NOT NULL;</code></
 rowid  column1
 -----  -------
 1      1</code></pre>
-<p><a href="./images/search-partial.webp"><img src="./images/search-partial.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/search-partial.webp"><img src="./images/search-partial.webp" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>Now, the Index has only the needed values, and the query runs very fast!</p>
 <a href="#h2-searching-in-a-two-column-index" id="h2-searching-in-a-two-column-index" class="text-decoration-none text-reset"><h2>Searching in a two-column Index</h2></a>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 INT NOT NULL, column2 INT NOT NULL);
@@ -266,7 +266,7 @@ CREATE INDEX idx ON table_test (column1 ASC, column2 ASC);</code></pre>
 rowid  column1  column2
 -----  -------  -------
 1      1        1</code></pre>
-<p><a href="./images/search-complex-equal.webp"><img src="./images/search-complex-equal.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/search-complex-equal.webp"><img src="./images/search-complex-equal.webp" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>The only difference from an Index with one column is the slightly more complex comparison process.<br />
 First, the first column is checked. If it matches the target value, then the second column is checked. If the first column doesn’t match, the second column is skipped.<br />
 In this case, 19 Cells were read, and 20 comparisons were made. The first 18 Cells were filtered out after the first comparison, and in the 19th Cell, two comparisons were made.</p>
@@ -286,7 +286,7 @@ rowid   column1  column2
 500004  500004   2      
 500006  500006   2      
 500008  500008   2</code></pre>
-<p><a href="./images/search-complex-cardinality-greater-than-column1.webp"><img src="./images/search-complex-cardinality-greater-than-column1.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/search-complex-cardinality-greater-than-column1.webp"><img src="./images/search-complex-cardinality-greater-than-column1.webp" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>Query details:</p>
 <table class="table table-bordered">
 <thead class="table-secondary">
@@ -435,7 +435,7 @@ rowid   column1  column2
 500004  500004   2      
 500006  500006   2      
 500008  500008   2</code></pre>
-<p><a href="./images/search-complex-cardinality-greater-than-column2.webp"><img src="./images/search-complex-cardinality-greater-than-column2.webp" alt="" class="img-fluid mx-auto d-block rounded img-max-height" /></a></p>
+<p><a href="./images/search-complex-cardinality-greater-than-column2.webp"><img src="./images/search-complex-cardinality-greater-than-column2.webp" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>Query details:</p>
 <table class="table table-bordered">
 <thead class="table-secondary">

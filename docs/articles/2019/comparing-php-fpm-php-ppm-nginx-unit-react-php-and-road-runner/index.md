@@ -90,7 +90,7 @@ Request handling is limited to two application instances (equal to the number of
 
 ### PHP FPM
 
-[PHP Process Manager](http://php.net/manual/ru/install.fpm.php). Written in C.
+[PHP Process Manager](https://www.php.net/manual/en/install.fpm.php). Written in C.
 
 Pros:
 * no need to monitor memory usage.

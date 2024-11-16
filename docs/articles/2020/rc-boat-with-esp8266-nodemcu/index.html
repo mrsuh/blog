@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="author" content="Anton Sukhachev">
+    <title>RC - boat with ESP8266 NodeMCU</title>
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+
+    <meta name="description" content="I’ll share the entire development process from the very beginning: starting with a boat made of ce..."/>
+    <meta name="keywords" content="esp8266, DIY, RC boat"/>
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="mrsuh.com">
+    <meta property="og:url" content="https://mrsuh.com/articles/2020/rc-boat-with-esp8266-nodemcu/">
+    <meta property="og:title" content="RC - boat with ESP8266 NodeMCU">
+    <meta property="og:description" content="I’ll share the entire development process from the very beginning: starting with a boat made of ce...">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:alt" content="Anton Sukhachev">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="mrsuh.com">
+    <meta name="twitter:url" content="https://mrsuh.com/articles/2020/rc-boat-with-esp8266-nodemcu/">
+    <meta name="twitter:title" content="RC - boat with ESP8266 NodeMCU">
+    <meta name="twitter:creator" content="@mrsuh6">
+    <meta name="twitter:description" content="I’ll share the entire development process from the very beginning: starting with a boat made of ce...">
+    <meta name="twitter:image:alt" content="Anton Sukhachev">
+    
+    <link href="/bootstrap.min.css" rel="stylesheet">
+    <link href="/style.css?v=3" rel="stylesheet">
+</head>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GMXWT1YP3F"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-GMXWT1YP3F');
+</script>
+
+<body class="container fs-5" style="max-width: 1000px">
+
+<div class="header" style="padding-top: 20px; padding-bottom: 10px">
+    <div class="row">
+        <div class="col">
+            <a href="/">Anton Sukhachev</a>
+        </div>
+        <div class="col text-end">
+            <a href="/articles/">Articles</a>
+        </div>
+    </div>
+    <hr/>
+</div>
+
+<div class="content">
+    <h1>RC Boat with ESP8266 NodeMCU</h1>
+<p><a href="./images/image-0.jpeg"><img src="./images/image-0.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>I’ll share the entire development process from the very beginning: starting with a boat made of ceiling tiles, a gel pen, and a tin can, to a plastic model that’s good enough to give as a gift.</p>
+<p>You can check out the final result here:</p>
+<iframe class="rounded" src="https://www.youtube.com/embed/2OwbVLAE5oU?si=AvKhG8UcZBwuWP8w" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<a href="#h2-why?" id="h2-why?" class="text-decoration-none text-reset"><h2>Why?</h2></a>
+<p>Since childhood, I’ve always wanted to build a remote-controlled model. It didn’t matter what kind—what mattered was building it myself.<br />
+After discovering Arduino, I started exploring other controllers and came across the ESP8266 NodeMCU. After reading about it, I realized it could help me make this dream a reality.<br />
+This started in March. My friend’s birthday was in the summer, so I thought I had plenty of time to build a boat and give it to him as a gift (spoiler: I was a month late).<br />
+He’s a fan of rivers and lakes, so choosing a water vehicle as the model was an easy decision.</p>
+<a href="#h2-what-should-the-boat-be-like?" id="h2-what-should-the-boat-be-like?" class="text-decoration-none text-reset"><h2>What should the boat be like?</h2></a>
+<p>How I imagined the final model:</p>
+<p>Electronic components:</p>
+<ul>
+<li>ESP8266 NodeMCU;</li>
+<li>SG90 servo motor for the rudder (simple and affordable);</li>
+<li>Brushless motor (fast and powerful);</li>
+<li>Power bank to power the motor and controller (easy to charge and usable for other purposes);</li>
+<li>3 LEDs for debugging:
+<ul>
+<li>Power supply to the controller</li>
+<li>Client connection to the WebSocket server</li>
+<li>Command received from the client</li>
+</ul></li>
+</ul>
+<p>Materials:</p>
+<ul>
+<li>Ceiling tiles as the main hull material (easy to work with, inexpensive, and available at any hardware store);</li>
+<li>Epoxy (or something similar) to reinforce the hull later;</li>
+<li>Rudder made from tin (easy to work with and sturdy enough);</li>
+<li>Propeller shaft made from a bicycle spoke, a few bearings, and some tubing (a simple and cheap solution);</li>
+<li>Hot glue gun to assemble everything (because everything is better with a hot glue gun).</li>
+</ul>
+<p>I wanted to control the boat from a smartphone, as it's convenient—always charged and readily available.</p>
+<a href="#h2-remote-control-prototype-1.0" id="h2-remote-control-prototype-1.0" class="text-decoration-none text-reset"><h2>Remote Control Prototype 1.0</h2></a>
+<p>To start, I built a simple prototype using LEGO, parts from other Arduino projects, and a power bank.</p>
+<p>On the ESP8266 NodeMCU, I set up:</p>
+<ul>
+<li>A Wi-Fi access point with a static IP address, allowing connection from a smartphone.</li>
+<li>An HTTP server:
+<ul>
+<li>Served an HTML page with 5 buttons to control the car.</li>
+<li>Provided an API for controlling the car via the buttons on the HTML page.</li>
+</ul></li>
+</ul>
+<p><em>Connection diagram</em><br />
+<a href="./images/image-1.png"><img src="./images/image-1.png" alt="Connection diagram" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>First prototype</em><br />
+<a href="./images/image-2.jpeg"><img src="./images/image-2.jpeg" alt="First prototype" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>Great, it works!</em></p>
+<iframe class="rounded" src="https://www.youtube.com/embed/W_7frOsF96s?si=Pztkd3u-Ed5LrUQ5" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<a href="#h2-remote-control-prototype-2.0" id="h2-remote-control-prototype-2.0" class="text-decoration-none text-reset"><h2>Remote Control Prototype 2.0</h2></a>
+<p>Controlling with buttons wasn’t very convenient, so I redesigned the interface to respond to touch in specific parts of the screen.<br />
+With this interface, frequent requests had to be sent to the server, so I added a WebSocket server on the ESP8266 NodeMCU to send commands over an established connection.</p>
+<p><em>Connection diagram</em><br />
+<a href="./images/image-3.png"><img src="./images/image-3.png" alt="Connection diagram" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>Second prototype</em><br />
+<a href="./images/image-4.jpeg"><img src="./images/image-4.jpeg" alt="Second prototype" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>Control example</em><br />
+<a href="./images/image-5.gif"><img src="./images/image-5.gif" alt="Control example" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<iframe class="rounded" src="https://www.youtube.com/embed/eQIDCTf4-K4?si=BHR7rdUEf01EsKzm" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>Detailed instructions on how to build such a car can be found <a href="https://vc.ru/dev/160142-rc-mashinka-iz-esp8266-nodemcu-i-lego" target="_blank">here</a>.</p>
+<a href="#h2-a-bit-of-theory-and-materials" id="h2-a-bit-of-theory-and-materials" class="text-decoration-none text-reset"><h2>A Bit of Theory and Materials</h2></a>
+<p>Before diving into the details of creating the boat, I should briefly explain its components.</p>
+<p><em>Image taken from <a href="http://sudomodeli.masteraero.ru/kater_model-8.php" target="_blank">here</a></em><br />
+<a href="./images/image-6.png"><img src="./images/image-6.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>The main parts that I will be discussing are highlighted in blue:<br />
+1 - rudder;<br />
+2 - propeller;<br />
+3 - drive shaft;<br />
+4 - there should be a coupling here;<br />
+5 - motor.</p>
+<p><strong>Main materials that inspired me and were used</strong></p>
+<p>Books:<br />
+The most useful material I found was in the book by John Finch, &quot;Advanced R/C Boat Modeling.&quot; I looked at other books, but this one was the best for me.</p>
+<p>Articles:</p>
+<ul>
+<li><a href="https://www.instructables.com/RC-Boat-2" target="_blank">www.instructables.com/RC-Boat-2</a></li>
+<li><a href="https://habr.com/en/post/367731" target="_blank">habr.com/en/post/367731</a></li>
+<li><a href="http://www.parkflyer.ru/ru/blogs/view_entry/600" target="_blank">www.parkflyer.ru/ru/blogs/view_entry/600</a></li>
+</ul>
+<p>Video course <a href="https://www.youtube.com/watch?v=dFc1KUHF7-s&amp;list=PLGL_lVjhxY8eKivkT19brQz_dBuW9ueWr" target="_blank">how to make a rocket boat</a></p>
+<a href="#h2-testing-reception-range" id="h2-testing-reception-range" class="text-decoration-none text-reset"><h2>Testing Reception Range</h2></a>
+<p>To test the range of the control system, I built this device:</p>
+<p><a href="./images/image-7.jpeg"><img src="./images/image-7.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><a href="./images/image-8.jpeg"><img src="./images/image-8.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>On the client side, you can run a <code>ping/pong</code> test to the WebSocket server with response time measurement.<br />
+The table displays the number of requests/responses and the response time percentiles.</p>
+<p>After walking around the park with direct line of sight, I found that the maximum distance I could maintain a reliable connection between the device and my smartphone was about 27 meters (I later checked the distance on the map).<br />
+27 meters: 95th percentile ~ 48 milliseconds, 99th percentile ~ 283 milliseconds.</p>
+<p><em>Client interface for testing reception range</em><br />
+<a href="./images/image-9.jpeg"><img src="./images/image-9.jpeg" alt="Client interface for testing reception range" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><a href="https://github.com/mrsuh/esp8266-distance-test" target="_blank">Here</a> is the link to get the code and run the experiment yourself.</p>
+<a href="#h2-version-1.0" id="h2-version-1.0" class="text-decoration-none text-reset"><h2>Version 1.0</h2></a>
+<p>Electronic components:</p>
+<ul>
+<li>ESP8266 NodeMCU;</li>
+<li>L298N;</li>
+<li>SG90 Servo;</li>
+<li>TT130 brushed motor;</li>
+<li>powerbank;</li>
+<li>three-color LED.</li>
+</ul>
+<p>Materials:</p>
+<ul>
+<li>Ceiling tile for the hull;</li>
+<li>Rudder made from a can;</li>
+<li>A drive shaft made from a gel pen and wooden skewer, glued with a hot glue gun;</li>
+<li>Propeller bought on AliExpress.</li>
+</ul>
+<p>Version features:</p>
+<ul>
+<li>The rudder is placed very close to the hull of the boat;</li>
+<li>The angle of the main shaft relative to the hull is quite large, and the drive shaft goes under the bottom of the boat;</li>
+<li>The drive shaft leaks badly.</li>
+</ul>
+<p>I already had a working remote control scheme, so I could start working on the hull.<br />
+To assemble the boat's hull, I used blueprints from an article by <a href="https://www.instructables.com/id/RC-Boat-2" target="_blank">Francisco Moliner</a>.<br />
+I printed them, glued them together, and cut them out of ceiling tile.</p>
+<p><a href="./images/image-10.jpeg"><img src="./images/image-10.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>While I was assembling the hull and thinking about what to make the drive shaft from, my brushless motor A2212 1000KV arrived.</p>
+<p>In my inexperience, I ordered a motor for drones:</p>
+<ul>
+<li>Not only the motor shaft spins, but the whole motor rotates relative to the base (how to mount it to the boat?);</li>
+<li>A specific motor controller.</li>
+</ul>
+<p>I struggled with this motor for a week.<br />
+I managed to start the motor, but when the voltage changed quickly (rapidly increasing or decreasing speed), the motor would turn off and the controller would restart.<br />
+I think this was due to the low power of the power supply (the powerbank).<br />
+In the end, I decided to switch to a more powerful brushed motor.</p>
+<p><em>Trying in vain to set up stable motor operation</em><br />
+<a href="./images/image-11.jpeg"><img src="./images/image-11.jpeg" alt="Trying in vain to set up stable motor operation" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>Assembly is in full swing</em><br />
+<a href="./images/image-12.jpeg"><img src="./images/image-12.jpeg" alt="Assembly is in full swing" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>First test launch</p>
+<iframe class="rounded" src="https://www.youtube.com/embed/MnyuY5TDpVY?si=29HsVZbohLljlNK9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>I realized that I could make a good prototype, but it wouldn't look presentable.<br />
+I decided it was time to order a 3D printer, which I had wanted to try for a while.</p>
+<a href="#h2-version-1.1" id="h2-version-1.1" class="text-decoration-none text-reset"><h2>Version 1.1</h2></a>
+<p>Version features:</p>
+<ul>
+<li>Added a roof to prevent water from getting into the boat from the top (still sealed the top with tape during tests);</li>
+<li>Moved the rudder a bit away from the hull to improve control;</li>
+<li>Reduced the tilt angle of the main shaft to increase the boat's power;</li>
+<li>The drive shaft is made from a gel pen, an umbrella rod, and technical oil (almost no leaks);</li>
+<li>Replaced the L298N with an L298N mini (smaller size, no significant difference in this version);</li>
+<li>The boat's speed is not adjustable;</li>
+<li>The new R280 motor (3-12v, 5000-15000 rpm) is much more powerful than the previous one.</li>
+</ul>
+<p>To control the motor speed, I used the L298N, but lost almost half of the power.<br />
+This is a feature of using PWM or the way the circuit is designed — I'm not exactly sure.<br />
+I decided to abandon speed control. In the end, I used the L298N, but without PWM control, which significantly increased the motor power.</p>
+<a href="#h2-first-launch" id="h2-first-launch" class="text-decoration-none text-reset"><h2>First Launch</h2></a>
+<p>Unfortunately, I chose the closest pond, which was very overgrown.<br />
+After swimming just one and a half meters, the boat tangled weeds around the propeller shaft and stopped responding to control.</p>
+<iframe class="rounded" src="https://www.youtube.com/embed/64bB_-jc_tM?si=sTP0RuQPT-TruFQu" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>After ten minutes, using a few branches taped together into one large one, we managed to retrieve the boat from the water.<br />
+Here are the first photos of the boat, but after that swim:</p>
+<p><em>Not the cleanest pond</em><br />
+<a href="./images/image-13.jpeg"><img src="./images/image-13.jpeg" alt="Not the cleanest pond" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>It's easy to see the positions of the rudder and the propeller</em><br />
+<a href="./images/image-14.jpeg"><img src="./images/image-14.jpeg" alt="It&#039;s easy to see the positions of the rudder and the propeller" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>You can see how the weeds tangled around the shaft</em><br />
+<a href="./images/image-15.jpeg"><img src="./images/image-15.jpeg" alt="You can see how the weeds tangled around the shaft" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>The boat still leaked a bit, so I had to search for the leak.</p>
+<p><em>The blue goo is clearly visible on the white background</em><br />
+<a href="./images/image-16.jpeg"><img src="./images/image-16.jpeg" alt="The blue goo is clearly visible on the white background" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<a href="#h2-version-1.2" id="h2-version-1.2" class="text-decoration-none text-reset"><h2>Version 1.2</h2></a>
+<p>Version features:</p>
+<ul>
+<li>Installed a protection for the propeller from weeds;</li>
+<li>Increased the surface area of the rudder;</li>
+<li>Changed the pond.</li>
+</ul>
+<p><em>The boat, cleaned of dirt, looks much better</em><br />
+<a href="./images/image-17.jpeg"><img src="./images/image-17.jpeg" alt="The boat, cleaned of dirt, looks much better" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>The rudder surface area is increased</em><br />
+<a href="./images/image-18.jpeg"><img src="./images/image-18.jpeg" alt="The rudder surface area is increased" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>Weed protection added</em><br />
+<a href="./images/image-19.jpeg"><img src="./images/image-19.jpeg" alt="Weed protection added" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>First successful launch:</p>
+<iframe class="rounded" src="https://www.youtube.com/embed/NQefcdBtruM?si=b5vxgf6OLzmIPpVA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<a href="#h2-version-1.3" id="h2-version-1.3" class="text-decoration-none text-reset"><h2>Version 1.3</h2></a>
+<p>Version features:</p>
+<ul>
+<li>The boat's length was reduced by half.</li>
+</ul>
+<p>Suddenly, I realized that the boat would require a lot of plastic, so I decided to make it a bit shorter.<br />
+To see how the shortened version would look, I redesigned the existing hull.</p>
+<iframe class="rounded" src="https://www.youtube.com/embed/H2KYk2DC7Jw?si=YFBjeMVJPuaJMr_z" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<a href="#h2-version-2.0" id="h2-version-2.0" class="text-decoration-none text-reset"><h2>Version 2.0</h2></a>
+<p>Electronic components:</p>
+<ul>
+<li>ESP8266 NodeMCU;</li>
+<li>L298N;</li>
+<li>Servo SG90;</li>
+<li>Brushed motor R370 3-12v 10000-41000 rpm;</li>
+<li>Powerbank;</li>
+<li>Three-color LED.</li>
+</ul>
+<p>Materials:</p>
+<ul>
+<li>Ceiling tile for the hull;</li>
+<li>Plastic rudder;</li>
+<li>Plastic shaft, umbrella rod, and bearings for the shaft.</li>
+</ul>
+<p>Version features:</p>
+<ul>
+<li>Designed and 3D printed the rudder, shaft, and coupling;</li>
+<li>Used a new motor R370 3-12v 10000-41000 rpm;</li>
+<li>Moved the propeller and rudder further from the boat;</li>
+<li>Assembled the hull with new dimensions;</li>
+<li>Removed the propeller algae guard.</li>
+</ul>
+<p>The 3D printer arrived!</p>
+<p><em>The package from China arrived in perfect condition</em><br />
+<a href="./images/image-20.jpeg"><img src="./images/image-20.jpeg" alt="The package from China arrived in perfect condition" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>The assembly process took about 6 hours</em><br />
+<a href="./images/image-21.jpeg"><img src="./images/image-21.jpeg" alt="The assembly process took about 6 hours" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>Test print</em><br />
+<a href="./images/image-22.jpeg"><img src="./images/image-22.jpeg" alt="Test print" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>Printing the shaft and coupling</em><br />
+<a href="./images/image-23.jpeg"><img src="./images/image-23.jpeg" alt="Printing the shaft and coupling" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><a href="./images/image-24.jpeg"><img src="./images/image-24.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>The new hull looked neat</em><br />
+<a href="./images/image-25.jpeg"><img src="./images/image-25.jpeg" alt="The new hull looked neat" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>It works great!</p>
+<iframe class="rounded" src="https://www.youtube.com/embed/awhC4guPnek?si=WvRaZom34xKZBmRd" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>It was unclear what to do with the hole where water was getting in:</p>
+<p><a href="./images/image-26.jpeg"><img src="./images/image-26.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><a href="./images/image-27.jpeg"><img src="./images/image-27.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<a href="#h2-version-3.0" id="h2-version-3.0" class="text-decoration-none text-reset"><h2>Version 3.0</h2></a>
+<p>Electronics components:</p>
+<ul>
+<li>ESP8266 NodeMCU;</li>
+<li>L298N;</li>
+<li>Servo SG90;</li>
+<li>Brushed motor R370 3-12v 10000-41000 rpm;</li>
+<li>Powerbank;</li>
+<li>3 LEDs.</li>
+</ul>
+<p>Materials:</p>
+<ul>
+<li>Plastic body;</li>
+<li>Plastic rudder;</li>
+<li>Plastic shaft, umbrella rod, and technical oil for the drive shaft.</li>
+</ul>
+<p>Version features:</p>
+<ul>
+<li>The entire body is made of plastic.</li>
+</ul>
+<p>Before this, I had only worked in Kompas 3D for modeling simple designs, but the principles in Fusion360 are quite similar. I had to spend a few weekends learning how to optimize modeling in this program. After a couple of weeks, the first usable version of the boat body model was ready!</p>
+<p><a href="./images/image-28.png"><img src="./images/image-28.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><a href="./images/image-29.png"><img src="./images/image-29.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><a href="./images/image-30.png"><img src="./images/image-30.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><a href="./images/image-31.png"><img src="./images/image-31.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>I divided the body into several parts and started printing.<br />
+I didn’t focus much on the printing settings, so the quality isn’t great.</p>
+<p><a href="./images/image-32.jpeg"><img src="./images/image-32.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>Bow of the boat</em><br />
+<a href="./images/image-33.jpeg"><img src="./images/image-33.jpeg" alt="Bow of the boat" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><a href="./images/image-34.jpeg"><img src="./images/image-34.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>Stern of the boat</em><br />
+<a href="./images/image-35.jpeg"><img src="./images/image-35.jpeg" alt="Stern of the boat" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><a href="./images/image-36.jpeg"><img src="./images/image-36.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>Top of the boat</em><br />
+<a href="./images/image-37.jpeg"><img src="./images/image-37.jpeg" alt="Top of the boat" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>Assembly process of the body</em><br />
+<a href="./images/image-38.jpeg"><img src="./images/image-38.jpeg" alt="Assembly process of the body" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><a href="./images/image-39.jpeg"><img src="./images/image-39.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>Completed body</em><br />
+<a href="./images/image-40.jpeg"><img src="./images/image-40.jpeg" alt="Completed body" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>Additionally, I modeled and printed the rudder. I solved the issue with the hole for controlling the rudder (visible in the photo). As a result, water almost stopped entering the boat through it.</p>
+<p><em>One of the final versions</em><br />
+<a href="./images/image-41.png"><img src="./images/image-41.png" alt="One of the final versions" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><a href="./images/image-42.jpeg"><img src="./images/image-42.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><a href="./images/image-43.jpeg"><img src="./images/image-43.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><a href="./images/image-44.jpeg"><img src="./images/image-44.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>Replaced one RGB LED with three different LEDs</em><br />
+<a href="./images/image-45.jpeg"><img src="./images/image-45.jpeg" alt="Replaced one RGB LED with three different LEDs" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>The new motor occasionally didn't start on the first try, which was really frustrating. I thought this might be due to the power supply (powerbank), so I experimented with regular AA batteries, which seemed to improve things.</p>
+<p><em>Experimenting with AA batteries</em><br />
+<a href="./images/image-46.jpeg"><img src="./images/image-46.jpeg" alt="Experimenting with AA batteries" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>Then I suddenly realized that the powerbank probably contains multiple batteries, and I might be able to connect them in the way I need. So, I opened up the powerbank... but it turned out there was only one battery inside.</p>
+<p><em>Only one battery inside the powerbank</em><br />
+<a href="./images/image-47.jpeg"><img src="./images/image-47.jpeg" alt="Only one battery inside the powerbank" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>So, I decided I needed to order some batteries.</p>
+<a href="#h2-version-3.1" id="h2-version-3.1" class="text-decoration-none text-reset"><h2>Version 3.1</h2></a>
+<p>Version features:</p>
+<ul>
+<li>Replaced the powerbank with 4 x 18650 batteries (2 for the controller and 2 for the motor).</li>
+<li>Designed and printed battery compartments.</li>
+<li>The motor now works reliably!</li>
+</ul>
+<p>Here are the new battery compartments:<br />
+<a href="./images/image-48.png"><img src="./images/image-48.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><a href="./images/image-49.jpeg"><img src="./images/image-49.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>The contacts are still made from tin cans</em><br />
+<a href="./images/image-50.jpeg"><img src="./images/image-50.jpeg" alt="The contacts are still made from tin cans" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><a href="./images/image-51.jpeg"><img src="./images/image-51.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>The compartments have been glued into the boat</em><br />
+<a href="./images/image-52.jpeg"><img src="./images/image-52.jpeg" alt="The compartments have been glued into the boat" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>Finally, everything is working smoothly!</p>
+<a href="#h2-version-3.2" id="h2-version-3.2" class="text-decoration-none text-reset"><h2>Version 3.2</h2></a>
+<p>Version features:</p>
+<ul>
+<li>The shaft in the drive leg was replaced with a bicycle spoke (larger diameter and length).</li>
+</ul>
+<p>Here are the updates:</p>
+<p><a href="./images/image-53.jpeg"><img src="./images/image-53.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><a href="./images/image-54.jpeg"><img src="./images/image-54.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>It wasn't easy to replace the already glued-in drive leg</em><br />
+<a href="./images/image-55.jpeg"><img src="./images/image-55.jpeg" alt="It wasn&#039;t easy to replace the already glued-in drive leg" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<a href="#h2-version-3.3" id="h2-version-3.3" class="text-decoration-none text-reset"><h2>Version 3.3</h2></a>
+<p>Version features:</p>
+<ul>
+<li>The coupling was redesigned into a more flexible version.</li>
+<li>The L298N was reinstalled, as it should handle higher currents.</li>
+</ul>
+<p><em>Part of the flexible coupling</em><br />
+<a href="./images/image-56.png"><img src="./images/image-56.png" alt="Part of the flexible coupling" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><a href="./images/image-57.jpeg"><img src="./images/image-57.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><a href="./images/image-58.jpeg"><img src="./images/image-58.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>Complete set of the new version</em><br />
+<a href="./images/image-59.jpeg"><img src="./images/image-59.jpeg" alt="Complete set of the new version" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><a href="./images/image-60.jpeg"><img src="./images/image-60.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>All parts of the boat and main components are made from plastic!</em><br />
+<a href="./images/image-61.jpeg"><img src="./images/image-61.jpeg" alt="All parts of the boat and main components are made from plastic!" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>First water test of version 3.x:</p>
+<iframe class="rounded" src="https://www.youtube.com/embed/Si9PfFbOyKs?si=y_APvv91P5eQX43t" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>During real-life tests, it became clear that the distance at which a stable connection between the smartphone and the boat could be maintained was about three times shorter than during tests (27 meters vs ~10 meters). The connection was often lost in the middle of the pond, and we had to wait for the wind to push the boat back to shore for reconnection. After these issues, an Emergency timeout parameter was added, which can be set on the client (default is 4 minutes). If no command was sent within this timeout, the boat would slowly move forward, helping avoid the boat drifting too far away. This strategy worked well on a small pond, but for larger bodies of water, this timeout should be removed.</p>
+<p>The brushless motor was reintroduced after trying it with 18650 batteries, and it worked as expected. However, since the brushless motor is designed for drones, it could not simply be mounted horizontally, as the motor rotates around its base. So, a custom mount was modeled and printed for it:</p>
+<p><a href="./images/image-62.jpeg"><img src="./images/image-62.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>First version of the base</em><br />
+<a href="./images/image-63.jpeg"><img src="./images/image-63.jpeg" alt="First version of the base" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>The base fits perfectly</em><br />
+<a href="./images/image-64.jpeg"><img src="./images/image-64.jpeg" alt="The base fits perfectly" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>The first version of the motor mount fit the motor perfectly but didn't fit well inside the boat, so further adjustments were needed. After 2-3 iterations of printing, the final mount was created that fit perfectly inside the boat and allowed the motor to work without interference:</p>
+<p><a href="./images/image-65.png"><img src="./images/image-65.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>The entire shaft assembly from motor to propeller</em><br />
+<a href="./images/image-66.jpeg"><img src="./images/image-66.jpeg" alt="The entire shaft assembly from motor to propeller" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<a href="#h2-version-3.4" id="h2-version-3.4" class="text-decoration-none text-reset"><h2>Version 3.4</h2></a>
+<p>Version features:</p>
+<ul>
+<li>Installed a brushless motor A2212 1000KV.</li>
+<li>Modeled and printed a custom mount for the motor.</li>
+</ul>
+<p><em>Glued the motor in and tested it separately</em><br />
+<a href="./images/image-67.jpeg"><img src="./images/image-67.jpeg" alt="Glued the motor in and tested it separately" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>Complete set of the new version</em><br />
+<a href="./images/image-68.jpeg"><img src="./images/image-68.jpeg" alt="Complete set of the new version" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><a href="./images/image-69.jpeg"><img src="./images/image-69.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>Assembled version</em><br />
+<a href="./images/image-70.jpeg"><img src="./images/image-70.jpeg" alt="Assembled version" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>Weighed the boat in full configuration:<br />
+<em>The boat's full weight with all components is 626 grams</em><br />
+<a href="./images/image-71.jpeg"><img src="./images/image-71.jpeg" alt="The boat&#039;s full weight with all components is 626 grams" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<a href="#h2-version-3.5" id="h2-version-3.5" class="text-decoration-none text-reset"><h2>Version 3.5</h2></a>
+<p>Version features:</p>
+<ul>
+<li>Glued the top with rubber bands to ensure the lid fits tightly.</li>
+<li>Added two more holes for screws in the lid, again to ensure a tight fit.</li>
+<li>Secured the motor and battery mounting areas with super glue.</li>
+</ul>
+<p><a href="./images/image-72.jpeg"><img src="./images/image-72.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>Glued the top with rubber bands</em><br />
+<a href="./images/image-73.jpeg"><img src="./images/image-73.jpeg" alt="Glued the top with rubber bands" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>Final version:</p>
+<p><a href="./images/image-74.jpeg"><img src="./images/image-74.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><a href="./images/image-75.jpeg"><img src="./images/image-75.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><a href="./images/image-76.jpeg"><img src="./images/image-76.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>Final video of version 3.5</p>
+<iframe class="rounded" src="https://www.youtube.com/embed/2OwbVLAE5oU?si=ojQu8Cci6axYGNkr" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe class="rounded" src="https://www.youtube.com/embed/JPhXwM6JG8E?si=C2vpp5isUWBNnxxg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<a href="#h2-client-ui" id="h2-client-ui" class="text-decoration-none text-reset"><h2>Client UI</h2></a>
+<p><a href="./images/image-77.jpeg"><img src="./images/image-77.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>When the settings menu is collapsed, nearly the entire screen area is available for control.</p>
+<p>Settings:</p>
+<ul>
+<li><strong>Auto move</strong> (on/off) — When enabled, the speed is fixed and set by the Speed parameter.</li>
+<li><strong>Speed</strong> (%) — Used in conjunction with the Auto move parameter.</li>
+<li><strong>Move interval</strong> (ms) — The interval at which commands will be sent from the client. We cannot send commands too infrequently, as this will cause a large delay in boat control. Conversely, too small of a delay may overwhelm the controller, so an optimal delay is necessary. Default: 50 milliseconds.</li>
+<li><strong>Move timeout</strong> (ms) — The interval after which the boat will assume no new commands are coming. Some commands arrive with a delay, meaning there are pauses longer than the Move interval between them. To keep movement smooth, the Move timeout parameter is used. The boat will continue the last command for Move timeout milliseconds. Default: 600 milliseconds.</li>
+<li><strong>Emergency timeout</strong> (ms) — If no commands are received within this timeout, the boat will begin moving slowly forward. Default: 4 minutes.</li>
+<li><strong>Debug</strong> (on/off) — Enables debugging, displaying detailed connection errors and all commands.</li>
+</ul>
+<p>All timeouts are sent to the server with each command, so they can be adjusted at any time.</p>
+<p><em>Direction control</em><br />
+<a href="./images/image-78.gif"><img src="./images/image-78.gif" alt="Direction control" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><em>Speed control</em><br />
+<a href="./images/image-79.gif"><img src="./images/image-79.gif" alt="Speed control" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<a href="#h2-conclusion" id="h2-conclusion" class="text-decoration-none text-reset"><h2>Conclusion</h2></a>
+<p>The entire process took about six months. The model could have been refined and improved even further, but I decided to stop at the current result.<br />
+My friend liked the gift, so I’m doubly satisfied!</p>
+<p><a href="./images/image-80.jpeg"><img src="./images/image-80.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><a href="./images/image-81.jpeg"><img src="./images/image-81.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>The source code for the 3D models and the boat code can be found <a href="https://github.com/mrsuh/boat-esp8266" target="_blank">here</a>.<br />
+The source code for the distance test is available <a href="https://github.com/mrsuh/esp8266-distance-test" target="_blank">here</a>.</p>
+<p>Thanks for your attention!</p>
+</div>
+
+<div class="footer" style="height: 40px"></div>
+</body>
+<link rel="stylesheet" href="/highlight.github-dark-dimmed.min.css">
+<script src="/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+</html>
