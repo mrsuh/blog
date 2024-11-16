@@ -377,14 +377,15 @@ $articles = [
             '2015-05-20',
         ),
         Article::create(
-            'SonarQube . Checking code quality', 
+            'SonarQube. Checking code quality', 
             'https://habr.com/ru/articles/259149', 
             '2015-05-29',
         ),
         Article::create(
-            'Nginx + Lua + Redis . Efficiently processing sessions and delivering data', 
-            'https://habr.com/ru/articles/270463', 
+            'Nginx + Lua + Redis. Efficiently processing sessions and delivering data', 
+            '/articles/2015/nginx-lua-redis-efficiently-processing-sessions-and-delivering-data/', 
             '2015-11-11',
+            ['nginx', 'lua', 'redis', 'php', 'session']
         ),
     ]
 ];
