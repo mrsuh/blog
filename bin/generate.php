@@ -317,8 +317,9 @@ $articles = [
     2020 => [
         Article::create(
             'How I migrated my hobby project to k8s', 
-            'https://habr.com/ru/articles/484528', 
+            '/articles/2020/how-i-migrated-my-hobby-project-to-k8s/', 
             '2020-01-21',
+            ['k8s']
         ),
         Article::create(
             'Looking for the most interesting articles on the site', 

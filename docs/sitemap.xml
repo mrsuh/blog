@@ -90,6 +90,12 @@
     <priority>1</priority>
   </url>
   <url>
+    <loc>https://mrsuh.com/articles/2020/how-i-migrated-my-hobby-project-to-k8s/</loc>
+    <lastmod>2024-11-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1</priority>
+  </url>
+  <url>
     <loc>https://mrsuh.com/articles/2020/rc-boat-with-esp8266-nodemcu/</loc>
     <lastmod>2024-11-16</lastmod>
     <changefreq>weekly</changefreq>

@@ -1,6 +1,12 @@
 <?php
 
-$content = file_get_contents(__DIR__ . '/../index.md');
+$directory = $argv[1];
+if(!is_dir($directory)) {
+    echo 'Invalid directory' . PHP_EOL;
+    exit(1);
+}
+
+$content = file_get_contents($directory . '/index.md');
 $index = 0;
 $data =[];
 foreach (explode(PHP_EOL, $content) as $line) {
@@ -11,27 +17,24 @@ foreach (explode(PHP_EOL, $content) as $line) {
     }
 
     $url = $matches[1];
-    
+
     $parts = explode('.', $url);
 
     $fileName = 'image-' . $index . '.' . end($parts);
     $index++;
-    
+
     file_put_contents(
-        __DIR__ . '/' . $fileName,
+        $directory . '/images/' . $fileName,
         file_get_contents($url)
     );
 
     $data[$url] = './images/' . $fileName;
-    
+
     echo $url . PHP_EOL;
 }
 
 
-//var_dump($data);
-
-
 file_put_contents(
-    __DIR__ . '/../index-tmp.md',
+    $directory . '/index-tmp.md',
     str_replace(array_keys($data), array_values($data), $content)
 );

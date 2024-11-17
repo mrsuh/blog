@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="author" content="Anton Sukhachev">
+    <title>How I migrated my hobby project to k8s</title>
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+
+    <meta name="description" content="In this article, I want to talk about my hobby project for searching and classifying apartment renta..."/>
+    <meta name="keywords" content="k8s"/>
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="mrsuh.com">
+    <meta property="og:url" content="https://mrsuh.com/articles/2020/how-i-migrated-my-hobby-project-to-k8s/">
+    <meta property="og:title" content="How I migrated my hobby project to k8s">
+    <meta property="og:description" content="In this article, I want to talk about my hobby project for searching and classifying apartment renta...">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:alt" content="Anton Sukhachev">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="mrsuh.com">
+    <meta name="twitter:url" content="https://mrsuh.com/articles/2020/how-i-migrated-my-hobby-project-to-k8s/">
+    <meta name="twitter:title" content="How I migrated my hobby project to k8s">
+    <meta name="twitter:creator" content="@mrsuh6">
+    <meta name="twitter:description" content="In this article, I want to talk about my hobby project for searching and classifying apartment renta...">
+    <meta name="twitter:image:alt" content="Anton Sukhachev">
+    
+    <link href="/bootstrap.min.css" rel="stylesheet">
+    <link href="/style.css?v=3" rel="stylesheet">
+    <script>
+        if (!window.location.host.includes('127.0.0.1') && !window.location.host.includes('localhost')) {
+            !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+            posthog.init('phc_D8fuOCgUvowJZQavoR29IHq7FQcZMWByA9mtvPq5PIg',{api_host:'https://eu.i.posthog.com', person_profiles: 'identified_only' // or 'always' to create profiles for anonymous users as well
+            })
+        }
+    </script>
+</head>
+
+<body class="container fs-5" style="max-width: 1000px">
+
+<div class="header" style="padding-top: 20px; padding-bottom: 10px">
+    <div class="row">
+        <div class="col">
+            <a href="/">Anton Sukhachev</a>
+        </div>
+        <div class="col text-end">
+            <a href="/articles/">Articles</a>
+        </div>
+    </div>
+    <hr/>
+</div>
+
+<div class="content">
+    <h1>How I migrated my hobby project to k8s</h1>
+<p>In this article, I want to talk about my hobby project for searching and classifying apartment rental ads from the social network vk.com and my experience moving it to k8s.</p>
+<a href="#h2-a-bit-about-the-project" id="h2-a-bit-about-the-project" class="text-decoration-none text-reset"><h2>A bit about the project</h2></a>
+<p><a href="./images/image-0.png"><img src="./images/image-0.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>In March 2017, I launched a service for parsing and classifying apartment rental ads from vk.com.</p>
+<p>You can read more <a href="(https://habr.com/en/post/342220)" target="_blank">here</a> about how I tried different ways to classify ads and eventually settled on the lexical parser Yandex Tomita Parser.</p>
+<p>You can also read <a href="https://habr.com/en/post/328282" target="_blank">here</a> about the project's architecture at the start and the technologies used and why.</p>
+<p>The development of the first version of the service took about a year. I wrote scripts in Ansible to deploy each service component. Occasionally, the service didn't work due to bugs in the overly complicated code or incorrect component settings.</p>
+<p>In June 2019, an error in the parser code was found that prevented new ads from being collected. Instead of fixing it, I decided to temporarily turn off the parser.</p>
+<p>The reason for restoring the service was learning k8s.</p>
+<a href="#h2-getting-to-know-k8s" id="h2-getting-to-know-k8s" class="text-decoration-none text-reset"><h2>Getting to know k8s</h2></a>
+<p><a href="https://ru.wikipedia.org/wiki/Kubernetes" target="_blank">k8s</a> is open-source software for automating the deployment, scaling, and management of containerized applications.</p>
+<p>The entire infrastructure of the service is described in configuration files, usually in yaml format.</p>
+<p>I won't go into the inner workings of k8s, but I'll give some information about some of its components.</p>
+<a href="#h3-k8s-components" id="h3-k8s-components" class="text-decoration-none text-reset"><h3>k8s components</h3></a>
+<ul>
+<li>Pod: The smallest unit in Kubernetes. It can have several containers running on the same node.<br />
+Containers inside a Pod:
+<ul>
+<li>Share the same network and can communicate via 127.0.0.1:$containerPort.</li>
+<li>Don't share a filesystem, so they can’t directly exchange files.</li>
+</ul></li>
+<li>Deployment: Manages Pods. It can: Maintain the desired number of Pod instances. Restart Pods if they crash. Deploy new Pods.</li>
+<li>PersistentVolumeClaim (PVC): Data storage. By default, it uses the node’s local filesystem.  For shared storage across Pods on different nodes, you need a network filesystem like Ceph.</li>
+<li>Service: Routes requests to and from Pods.<br />
+Service types:
+<ul>
+<li>LoadBalancer: Balances requests to multiple Pods and exposes them to the external network.</li>
+<li>NodePort: Exposes Pods to the external network on ports 30000-32767 without load balancing.</li>
+<li>ClusterIP: Enables communication within the cluster's local network.</li>
+<li>ExternalName: Connects Pods to external services.</li>
+</ul></li>
+<li>ConfigMap: Stores configuration data.  To ensure Kubernetes restarts Pods with updated configs, include a version in your ConfigMap’s name and update it when the ConfigMap changes. The same applies to Secrets.</li>
+</ul>
+<p><em>Example of a config with ConfigMap</em></p>
+<pre><code class="language-yaml rounded">containers:
+    -   name: collect-consumer
+        image: mrsuh/rent-collector:1.3.1
+        envFrom:
+            -   configMapRef:
+                    name: collector-configmap-1.1.0
+            -   secretRef:
+                    name: collector-secrets-1.0.0</code></pre>
+<ul>
+<li>Secret: A secure way to store sensitive configurations like passwords, keys, and tokens.</li>
+<li>Label: Key-value pairs assigned to Kubernetes components, like Pods. Labels help organize, group, or select components. They are very flexible and useful as you get more familiar with Kubernetes.8</li>
+</ul>
+<p><em>Example of a config with Labels</em></p>
+<pre><code class="language-yaml rounded">apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: deployment-name
+    labels:
+        app: deployment-label-app
+spec:
+    selector:
+        matchLabels:
+            app: pod-label-app
+    template:
+        metadata:
+            name: pod-name
+            labels:
+                app: pod-label-app
+        spec:
+            containers:
+                -   name: container-name
+                    image: mrsuh/rent-parser:1.0.0
+                    ports:
+                        -   containerPort: 9080
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+    name: service-name
+    labels:
+        app: service-label-app
+spec:
+    selector:
+        app: pod-label-app
+ports:
+    -   protocol: TCP
+        port: 9080
+        type: NodePort</code></pre>
+<a href="#h2-getting-ready-to-move" id="h2-getting-ready-to-move" class="text-decoration-none text-reset"><h2>Getting Ready to Move</h2></a>
+<a href="#h3-simplifying-features" id="h3-simplifying-features" class="text-decoration-none text-reset"><h3>Simplifying Features</h3></a>
+<p>To make the service more stable and predictable, I removed extra components that didn’t work well and rewrote some main parts.<br />
+I decided to stop using:</p>
+<ul>
+<li>code for parsing sites other than vk.com,</li>
+<li>the request proxying component,</li>
+<li>the notification component for new posts in vk.com and Telegram.</li>
+</ul>
+<a href="#h3-service-сomponents" id="h3-service-сomponents" class="text-decoration-none text-reset"><h3>Service сomponents</h3></a>
+<p>After all the changes, the service now looks like this:<br />
+<a href="./images/image-1.png"><img src="./images/image-1.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<ul>
+<li>view - searches and shows posts on the website (NodeJS).</li>
+<li>parser - classifies posts (Go).</li>
+<li>collector - gathers, processes, and deletes posts (PHP):</li>
+<li>cron-explore - a command-line tool that finds vk.com groups about renting apartments.</li>
+<li>cron-collect - a command-line tool that visits the groups found by cron-explore and collects the posts.</li>
+<li>cron-delete - a command-line tool that removes expired posts.</li>
+<li>consumer-parse - a queue processor that receives tasks from cron-collect and classifies posts using the parser component.</li>
+<li>consumer-collect - a queue processor that gets tasks from consumer-parse and filters out bad or duplicate posts.</li>
+</ul>
+<a href="#h3-building-docker-images" id="h3-building-docker-images" class="text-decoration-none text-reset"><h3>Building Docker Images</h3></a>
+<p>To manage and monitor components in a consistent way, I decided to:</p>
+<ul>
+<li>move component configurations to environment variables (env),</li>
+<li>log everything to stdout.</li>
+</ul>
+<p>The Docker images themselves don’t have anything special.</p>
+<a href="#h2-developing-k8s-configuration" id="h2-developing-k8s-configuration" class="text-decoration-none text-reset"><h2>Developing k8s Configuration</h2></a>
+<p>Now that I had the components in Docker images, I started creating the k8s configuration.</p>
+<p>All components that run as daemons were set up in Deployment.<br />
+Each daemon needs to be accessible inside the cluster, so all of them have a Service.<br />
+Tasks that need to run on a schedule were set up as CronJob.<br />
+Static files (like images, JavaScript, and CSS) are stored in the view container, but they need to be served by an Nginx container. Both containers are in the same Pod.</p>
+<p>The file system in a Pod isn’t shared by default, but you can copy all the static files to a shared folder (like emptyDir) when the Pod starts. This folder will be shared between containers but only inside the same Pod.       </p>
+<p><em>Example of a config with emptyDir</em></p>
+<pre><code class="language-yaml rounded">apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: view
+spec:
+    selector:
+        matchLabels:
+            app: view
+    replicas: 1
+    template:
+        metadata:
+            labels:
+                app: view
+        spec:
+            volumes:
+                -   name: view-static
+                    emptyDir: {}
+            containers:
+                -   name: nginx
+                    image: mrsuh/rent-nginx:1.0.0
+                -   name: view
+                    image: mrsuh/rent-view:1.1.0
+                    volumeMounts:
+                        -   name: view-static
+                            mountPath: /var/www/html
+                    lifecycle:
+                        postStart:
+                            exec:
+                                command: ["/bin/sh", "-c", "cp -r /app/web/. /var/www/html"]</code></pre>
+<p>The collector component is used in both Deployment and CronJob.</p>
+<p>All these components need to access the vk.com API and share the same access token. To handle this, I used a PersistentVolumeClaim. This storage is connected to each Pod and shared between them, but only on the same node.</p>
+<p><em>Example of a config with PersistentVolumeClaim</em></p>
+<pre><code class="language-yaml rounded">apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: collector
+spec:
+    selector:
+        matchLabels:
+            app: collector
+    replicas: 1
+    template:
+        metadata:
+            labels:
+                app: collector
+        spec:
+            volumes:
+                -   name: collector-persistent-storage
+                    persistentVolumeClaim:
+                        claimName: collector-pv-claim
+            containers:
+                -   name: collect-consumer
+                    image: mrsuh/rent-collector:1.3.1
+                    volumeMounts:
+                        -   name: collector-persistent-storage
+                            mountPath: /tokenStorage
+                    command: ["php"]
+                    args: ["bin/console", "app:consume", "--channel=collect"]
+
+                -   name: parse-consumer
+                    image: mrsuh/rent-collector:1.3.1
+                    volumeMounts:
+                        -   name: collector-persistent-storage
+                            mountPath: /tokenStorage
+                    command: ["php"]
+                    args: ["bin/console", "app:consume", "--channel=parse"]</code></pre>
+<p>A PersistentVolumeClaim is also used to store database data.<br />
+Here’s the final structure (each block groups the Pods of one component):</p>
+<p><a href="./images/image-2.png"><img src="./images/image-2.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a>                  </p>
+<a href="#h2-setting-up-the-k8s-cluster" id="h2-setting-up-the-k8s-cluster" class="text-decoration-none text-reset"><h2>Setting up the k8s Cluster</h2></a>
+<p>First, I set up the cluster locally using <a href="https://minikube.sigs.k8s.io/docs/" target="_blank">Minikube</a>.<br />
+Of course, there were some errors, so the following commands helped me a lot:</p>
+<pre><code class="language-bash rounded">kubectl logs -f pod-name
+kubectl describe pod pod-name </code></pre>
+<p>After I learned how to set up a cluster in Minikube, it was easy for me to set it up in DigitalOcean.<br />
+In conclusion, I can say that the service has been working steadily for 2 months. You can see the full configuration <a href="https://github.com/mrsuh/rent-k8s" target="_blank">here</a>.</p>
+</div>
+
+<div class="footer" style="height: 40px"></div>
+</body>
+<link rel="stylesheet" href="/highlight.github-dark-dimmed.min.css">
+<script src="/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+</html>
