@@ -91,7 +91,7 @@
   </url>
   <url>
     <loc>https://mrsuh.com/articles/2020/how-i-migrated-my-hobby-project-to-k8s/</loc>
-    <lastmod>2024-11-17</lastmod>
+    <lastmod>2024-11-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1</priority>
   </url>
@@ -110,6 +110,12 @@
   <url>
     <loc>https://mrsuh.com/articles/2017/continuous-delivery-with-travis-ci-and-ansible/</loc>
     <lastmod>2024-11-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1</priority>
+  </url>
+  <url>
+    <loc>https://mrsuh.com/articles/2017/classifying-listings-from-social-networks-in-search-of-the-best-solution/</loc>
+    <lastmod>2024-11-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1</priority>
   </url>

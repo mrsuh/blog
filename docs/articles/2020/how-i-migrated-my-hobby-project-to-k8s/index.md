@@ -8,7 +8,7 @@ In this article, I want to talk about my hobby project for searching and classif
 
 In March 2017, I launched a service for parsing and classifying apartment rental ads from vk.com.
 
-You can read more [here]((https://habr.com/en/post/342220)) about how I tried different ways to classify ads and eventually settled on the lexical parser Yandex Tomita Parser.
+You can read more [here](/articles/2017/classifying-listings-from-social-networks-in-search-of-the-best-solution/) about how I tried different ways to classify ads and eventually settled on the lexical parser Yandex Tomita Parser.
 
 You can also read [here](https://habr.com/en/post/328282) about the project's architecture at the start and the technologies used and why.
 

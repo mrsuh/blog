@@ -362,8 +362,9 @@ $articles = [
         ),
         Article::create(
             'Classifying listings from social networks: In search of the best solution',
-            'https://habr.com/ru/articles/328282', 
+            '/articles/2017/classifying-listings-from-social-networks-in-search-of-the-best-solution/', 
             '2017-05-14',
+            ['natural language processing', 'machine learning', 'tomita']
         ),
         Article::create(
             'Architecture of a service for collecting and classifying housing listings', 

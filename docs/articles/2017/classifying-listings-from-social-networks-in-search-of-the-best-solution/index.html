@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="author" content="Anton Sukhachev">
+    <title>Classifying listings from social networks: In search of the best solution</title>
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+
+    <meta name="description" content="I’ll share how text classification helped me find an apartment, why I stopped using regular expres..."/>
+    <meta name="keywords" content="natural language processing, machine learning, tomita"/>
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="mrsuh.com">
+    <meta property="og:url" content="https://mrsuh.com/articles/2017/classifying-listings-from-social-networks-in-search-of-the-best-solution/">
+    <meta property="og:title" content="Classifying listings from social networks: In search of the best solution">
+    <meta property="og:description" content="I’ll share how text classification helped me find an apartment, why I stopped using regular expres...">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:alt" content="Anton Sukhachev">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="mrsuh.com">
+    <meta name="twitter:url" content="https://mrsuh.com/articles/2017/classifying-listings-from-social-networks-in-search-of-the-best-solution/">
+    <meta name="twitter:title" content="Classifying listings from social networks: In search of the best solution">
+    <meta name="twitter:creator" content="@mrsuh6">
+    <meta name="twitter:description" content="I’ll share how text classification helped me find an apartment, why I stopped using regular expres...">
+    <meta name="twitter:image:alt" content="Anton Sukhachev">
+    
+    <link href="/bootstrap.min.css" rel="stylesheet">
+    <link href="/style.css?v=3" rel="stylesheet">
+    <script>
+        if (!window.location.host.includes('127.0.0.1') && !window.location.host.includes('localhost')) {
+            !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+            posthog.init('phc_D8fuOCgUvowJZQavoR29IHq7FQcZMWByA9mtvPq5PIg',{api_host:'https://eu.i.posthog.com', person_profiles: 'identified_only' // or 'always' to create profiles for anonymous users as well
+            })
+        }
+    </script>
+</head>
+
+<body class="container fs-5" style="max-width: 1000px">
+
+<div class="header" style="padding-top: 20px; padding-bottom: 10px">
+    <div class="row">
+        <div class="col">
+            <a href="/">Anton Sukhachev</a>
+        </div>
+        <div class="col text-end">
+            <a href="/articles/">Articles</a>
+        </div>
+    </div>
+    <hr/>
+</div>
+
+<div class="content">
+    <h1>Classifying listings from social networks: In search of the best solution</h1>
+<p>I’ll share how text classification helped me find an apartment, why I stopped using regular expressions and neural networks, and why I switched to a lexical analyzer.</p>
+<p>About a year ago, I needed to find an apartment to rent. Most private listings are posted on social networks, where ads are written in free form, and there are no filters for searching. Manually browsing posts in various groups was slow and inefficient.</p>
+<p>At that time, there were already a few services that collected ads from social networks and published them on websites. These services allowed you to see all the listings in one place. Unfortunately, they lacked filters for types of ads or prices. So, I decided to create my own service with the features I needed.</p>
+<a href="#h2-text-classification" id="h2-text-classification" class="text-decoration-none text-reset"><h2>Text Classification</h2></a>
+<a href="#h3-first-attempt-(regexp)" id="h3-first-attempt-(regexp)" class="text-decoration-none text-reset"><h3>First Attempt (RegExp)</h3></a>
+<p>At first, I tried to solve the problem simply using regular expressions.</p>
+<p>Besides writing the expressions themselves, I also had to process the results afterward. It was necessary to account for the number of matches and how they were positioned relative to each other. Another issue was processing text sentence by sentence—it was impossible to separate one sentence from another, so the entire text was processed at once.</p>
+<p>As regular expressions and result processing became more complex, it got harder to improve the accuracy of the results in the test set.</p>
+<p><em>Examples of regular expressions used in the tests</em></p>
+<pre><code class="language-yaml rounded">- '/(комнат|\d.{0,10}комнат[^н])/u'
+- '/(квартир\D{4})/u'
+- '/(((^|\D)1\D{0,30}(к\.|кк|кв)|одноком|однуш)|(квартир\D{0,3}1(\D).{0,10}комнатн))/u'
+- '/(((^|\D)2\D{0,30}(к\.|кк|кв)|двух.{0,5}к|двуш|двух.{5,10}(к\.|кк|кв))|(квартир\D{0,3}2(\D).{0,10}комнатн))/u'
+- '/(((^|\D)3\D{0,30}(к\.|кк|кв)|тр(е|ё)х.{0,5}к|тр(е|ё)ш|тр(е|ё)х.{5,10}(к\.|кк|кв))|(квартир\D{0,3}3(\D).{0,10}комнатн))/u'
+- '/(((^|\D)4\D{0,30}(к\.|кк|кв)|четыр\Sх)|(квартир\D{0,3}4(\D).{0,10}комнатн))/u'
+- '/(студи)/u'
+- '/(ищ.{1,5}сосед)/u'
+- '/(сда|засел|подсел|свобо(ж|д))/u'
+- '/(\?)$/u'&lt;/source&gt;</code></pre>
+<p>This method gave <strong>72.61%.</strong> correct answers on the test set.</p>
+<a href="#h3-second-attempt-(neural-networks)" id="h3-second-attempt-(neural-networks)" class="text-decoration-none text-reset"><h3>Second Attempt (Neural Networks)</h3></a>
+<p>Recently, using machine learning for almost anything has become very popular. After training, it’s hard or even impossible to explain why a neural network makes certain decisions, but this doesn’t stop it from being successful in text classification. For the tests, I used a multilayer perceptron with backpropagation learning.<br />
+The following neural network libraries were used:</p>
+<ul>
+<li><a href="http://leenissen.dk/fann/wp" target="_blank">FANN</a> - written in C</li>
+<li><a href="https://github.com/harthur/brain" target="_blank">Brain</a> - written in JavaScript</li>
+</ul>
+<p>The challenge was converting texts of varying lengths into a format suitable for input into a neural network with a fixed number of inputs.<br />
+To do this, I extracted n-grams (sequences of more than 2 characters) that appeared in more than 15% of the texts from the test dataset. There were slightly over 200 such n-grams.</p>
+<p><em>Example of n-grams</em></p>
+<pre><code class="language-yaml rounded">- /ные/u
+- /уютн/u
+- /доб/u
+- /кон/u
+- /пол/u
+- /але/u
+- /двух/u
+- /так/u
+- /даю/u</code></pre>
+<p>To classify one ad, the program searched for n-grams in the text, determined their positions, and sent this data to the neural network. The values were scaled between 0 and 1.<br />
+This method gave <strong>77.13%</strong> correct answers on the test set (but tests were done on the same dataset used for training).</p>
+<p>I’m sure that with a much larger dataset and using recurrent neural networks, it would be possible to get much better results.</p>
+<a href="#h3-third-attempt-(syntax-analyzer)" id="h3-third-attempt-(syntax-analyzer)" class="text-decoration-none text-reset"><h3>Third Attempt (Syntax Analyzer)</h3></a>
+<p>At the same time, I started reading more articles about <a href="https://en.wikipedia.org/wiki/Natural_language_processing" target="_blank">natural language processing</a> and found a great parser called <a href="https://tech.yandex.ru/tomita" target="_blank">Tomita</a>. Its main advantage over other similar tools is that it supports the Russian language and has clear documentation. You can even use regular expressions in the configuration, which was useful because I already had some written.</p>
+<p>Essentially, Tomita is a much more advanced version of the approach using regular expressions but far more powerful and user-friendly. However, it also required preprocessing the text. Social media posts often don't follow grammatical or syntactical rules, so the parser struggles with tasks like splitting text into sentences, breaking sentences into lexemes, and normalizing words.</p>
+<p><em>Example configuration</em></p>
+<pre><code class="language-bash rounded">#encoding "utf8"
+#GRAMMAR_ROOT ROOT
+
+Rent -&gt; Word&lt;kwset=[rent, populate]&gt;;
+Flat -&gt; Word&lt;kwset=[flat]&gt; interp (+FactRent.Type="квартира");
+AnyWordFlat -&gt; AnyWord&lt;kwset=~[rent, populate, studio, flat, room, neighbor, search, number, numeric]&gt;;
+
+ROOT -&gt; Rent AnyWordFlat* Flat { weight=1 };&lt;/source&gt;</code></pre>
+<p>All configurations can be found <a href="https://github.com/mrsuh/rent-parser/tree/master/tomita" target="_blank">here</a>. This method gave <strong>93.40%</strong> correct answers on the test set.<br />
+In addition to classifying text, it also extracts facts like rent price, apartment size, metro station, and phone number.<br />
+In the end, with a small test set and the need for high accuracy, it was better to write algorithms manually.</p>
+<p><a href="./images/image-0.png"><img src="./images/image-0.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<a href="#h2-service-development" id="h2-service-development" class="text-decoration-none text-reset"><h2>Service Development</h2></a>
+<p>While working on text classification, several services were created to collect ads and display them in a user-friendly way.</p>
+<p><a href="https://github.com/mrsuh/rent-view">https://github.com/mrsuh/rent-view</a><br />
+This service handles ad display.<br />
+Features:</p>
+<ul>
+<li>NodeJS</li>
+<li>doT.js</li>
+<li>MongoDB</li>
+</ul>
+<p><a href="https://github.com/mrsuh/rent-collector">https://github.com/mrsuh/rent-collector</a><br />
+This service collects ads. It was designed to gather data from various sources, but almost all ads are posted on vk.com. Since vk.com has an excellent API, it was easy to collect ads from walls and discussions in public groups.<br />
+Features:</p>
+<ul>
+<li>PHP</li>
+<li>Symfony3</li>
+<li>MongoDB</li>
+</ul>
+<p><a href="https://github.com/mrsuh/rent-parser">https://github.com/mrsuh/rent-parser</a><br />
+This service classifies ads. Essentially, it’s a wrapper around the parser but also does text preprocessing and post-processing of parsing results.<br />
+Features:</p>
+<ul>
+<li>Go</li>
+<li>Tomita parser</li>
+</ul>
+<p>CI is set up for all services using Travis-CI and Ansible. More details about automated deployment can be found in <a href="https://mrsuh.com/articles/2017/continuous-delivery-with-travis-ci-and-ansible/" target="_blank">this article</a>.</p>
+<a href="#h2-statistics" id="h2-statistics" class="text-decoration-none text-reset"><h2>Statistics</h2></a>
+<p>The service has been running for about two months for Saint-Petersburg and has collected over 8000 ads during this time. Here's some interesting data from the ads collected so far:</p>
+<p>On average, <em>131.2</em> ads (or texts classified as ads) are added daily.<br />
+<a href="./images/image-1.png"><img src="./images/image-1.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>The busiest hour for posting is 12 PM.<br />
+<a href="./images/image-2.png"><img src="./images/image-2.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>The most popular metro station is &quot;Девяткино&quot;.<br />
+<a href="./images/image-3.png"><img src="./images/image-3.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<a href="#h2-conclusions" id="h2-conclusions" class="text-decoration-none text-reset"><h2>Conclusions</h2></a>
+<p>If you don’t have a large dataset to train a network but need high accuracy, it’s better to use custom-written algorithms.<br />
+If you want to try solving a similar task, you can find a test dataset with <em>8000</em> texts and their types <a href="https://github.com/mrsuh/rent-parser/tree/master/tests" target="_blank">here</a>.</p>
+</div>
+
+<div class="footer" style="height: 40px"></div>
+</body>
+<link rel="stylesheet" href="/highlight.github-dark-dimmed.min.css">
+<script src="/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+</html>
