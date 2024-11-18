@@ -122,7 +122,7 @@ cd docker/php-ppm && docker-compose up -d
 
 ### Nginx Unit
 
-[Application Server by the Nginx Team]((https://unit.nginx.org)). Written in C
+[Application Server by the Nginx Team](https://unit.nginx.org). Written in C
 
 Pros:
 * configuration can be modified via HTTP API.
