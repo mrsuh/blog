@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <meta name="author" content="Anton Sukhachev">
-    <title>Classifying listings from social networks: In search of the best solution</title>
+    <title>Classifying housing ads: In search of the best solution</title>
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
@@ -14,16 +14,16 @@
 
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="mrsuh.com">
-    <meta property="og:url" content="https://mrsuh.com/articles/2017/classifying-listings-from-social-networks-in-search-of-the-best-solution/">
-    <meta property="og:title" content="Classifying listings from social networks: In search of the best solution">
+    <meta property="og:url" content="https://mrsuh.com/articles/2017/classifying-housing-ads-in-search-of-the-best-solution/">
+    <meta property="og:title" content="Classifying housing ads: In search of the best solution">
     <meta property="og:description" content="I’ll share how text classification helped me find an apartment, why I stopped using regular expres...">
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:alt" content="Anton Sukhachev">
     
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="mrsuh.com">
-    <meta name="twitter:url" content="https://mrsuh.com/articles/2017/classifying-listings-from-social-networks-in-search-of-the-best-solution/">
-    <meta name="twitter:title" content="Classifying listings from social networks: In search of the best solution">
+    <meta name="twitter:url" content="https://mrsuh.com/articles/2017/classifying-housing-ads-in-search-of-the-best-solution/">
+    <meta name="twitter:title" content="Classifying housing ads: In search of the best solution">
     <meta name="twitter:creator" content="@mrsuh6">
     <meta name="twitter:description" content="I’ll share how text classification helped me find an apartment, why I stopped using regular expres...">
     <meta name="twitter:image:alt" content="Anton Sukhachev">
@@ -54,10 +54,10 @@
 </div>
 
 <div class="content">
-    <h1>Classifying listings from social networks: In search of the best solution</h1>
+    <h1>Classifying housing ads: In search of the best solution</h1>
 <p>I’ll share how text classification helped me find an apartment, why I stopped using regular expressions and neural networks, and why I switched to a lexical analyzer.</p>
-<p>About a year ago, I needed to find an apartment to rent. Most private listings are posted on social networks, where ads are written in free form, and there are no filters for searching. Manually browsing posts in various groups was slow and inefficient.</p>
-<p>At that time, there were already a few services that collected ads from social networks and published them on websites. These services allowed you to see all the listings in one place. Unfortunately, they lacked filters for types of ads or prices. So, I decided to create my own service with the features I needed.</p>
+<p>About a year ago, I needed to find an apartment to rent. Most private ads are posted on social networks, where ads are written in free form, and there are no filters for searching. Manually browsing posts in various groups was slow and inefficient.</p>
+<p>At that time, there were already a few services that collected ads from social networks and published them on websites. These services allowed you to see all the ads in one place. Unfortunately, they lacked filters for types of ads or prices. So, I decided to create my own service with the features I needed.</p>
 <a href="#h2-text-classification" id="h2-text-classification" class="text-decoration-none text-reset"><h2>Text Classification</h2></a>
 <a href="#h3-first-attempt-(regexp)" id="h3-first-attempt-(regexp)" class="text-decoration-none text-reset"><h3>First Attempt (RegExp)</h3></a>
 <p>At first, I tried to solve the problem simply using regular expressions.</p>

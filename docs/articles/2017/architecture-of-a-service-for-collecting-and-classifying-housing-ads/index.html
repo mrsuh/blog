@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="author" content="Anton Sukhachev">
+    <title>Architecture of a service for collecting and classifying housing ads</title>
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+
+    <meta name="description" content="In this article, I will talk about how the service for finding rental ads from vk.com is designed an..."/>
+    <meta name="keywords" content="soa, microservices"/>
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="mrsuh.com">
+    <meta property="og:url" content="https://mrsuh.com/articles/2017/architecture-of-a-service-for-collecting-and-classifying-housing-ads/">
+    <meta property="og:title" content="Architecture of a service for collecting and classifying housing ads">
+    <meta property="og:description" content="In this article, I will talk about how the service for finding rental ads from vk.com is designed an...">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:alt" content="Anton Sukhachev">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="mrsuh.com">
+    <meta name="twitter:url" content="https://mrsuh.com/articles/2017/architecture-of-a-service-for-collecting-and-classifying-housing-ads/">
+    <meta name="twitter:title" content="Architecture of a service for collecting and classifying housing ads">
+    <meta name="twitter:creator" content="@mrsuh6">
+    <meta name="twitter:description" content="In this article, I will talk about how the service for finding rental ads from vk.com is designed an...">
+    <meta name="twitter:image:alt" content="Anton Sukhachev">
+    
+    <link href="/bootstrap.min.css" rel="stylesheet">
+    <link href="/style.css?v=3" rel="stylesheet">
+    <script>
+        if (!window.location.host.includes('127.0.0.1') && !window.location.host.includes('localhost')) {
+            !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+            posthog.init('phc_D8fuOCgUvowJZQavoR29IHq7FQcZMWByA9mtvPq5PIg',{api_host:'https://eu.i.posthog.com', person_profiles: 'identified_only' // or 'always' to create profiles for anonymous users as well
+            })
+        }
+    </script>
+</head>
+
+<body class="container fs-5" style="max-width: 1000px">
+
+<div class="header" style="padding-top: 20px; padding-bottom: 10px">
+    <div class="row">
+        <div class="col">
+            <a href="/">Anton Sukhachev</a>
+        </div>
+        <div class="col text-end">
+            <a href="/articles/">Articles</a>
+        </div>
+    </div>
+    <hr/>
+</div>
+
+<div class="content">
+    <h1>Architecture of a service for collecting and classifying housing ads</h1>
+<p>In this article, I will talk about how the service for finding rental ads from vk.com is designed and developed, why a service-oriented architecture (SOA) was chosen, and what technologies and solutions were used during development.<br />
+The service has been running for over nine months.</p>
+<p>During this time:</p>
+<ul>
+<li>The service expanded to cover 21 major Russian cities, including Moscow, Saint Petersburg, Yekaterinburg, and Kazan.</li>
+<li>The total number of metro stations increased from 65 to 346.</li>
+<li>The average number of ads grew from 131.2 to 519.41 per day.</li>
+<li>A settings management panel was added.</li>
+<li>Bots for Telegram and vk.com were introduced to automatically notify subscribers about new ads.</li>
+</ul>
+<p>Throughout the article, I will use the word <strong>service</strong> to mean a SOA module, not the entire web service.</p>
+<p>I chose a SOA architecture because it allowed:</p>
+<ul>
+<li>Using different technologies to solve specific tasks.</li>
+<li>Developing services independently of one another.</li>
+<li>Deploying services separately.</li>
+<li>Scaling services horizontally.</li>
+</ul>
+<p>While it could be called a microservice architecture, there were some differences. Services exchange data using a &quot;Shared Database&quot; approach based on the MDBWP protocol instead of the traditional HTTP API with separate databases for each service. This approach enabled faster development while keeping the benefits of the SOA method.</p>
+<p>To automate deployment, I chose Ansible, a configuration management tool with a low entry barrier.</p>
+<p>As the database, I selected MongoDB. This document-oriented database was well-suited for storing rental ads, metro station lists, landlord contact information, and ad descriptions.</p>
+<p>Currently, the overall interaction scheme of the services looks like this:</p>
+<p><a href="./images/image-0.png"><img src="./images/image-0.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<a href="#h2-services" id="h2-services" class="text-decoration-none text-reset"><h2>Services</h2></a>
+<h4>Service for displaying and searching ads</h4>
+<p><a href="./images/image-1.png"><img src="./images/image-1.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><a href="https://github.com/mrsuh/rent-view">https://github.com/mrsuh/rent-view</a></p>
+<p>This service is written in NodeJS because the most important quality criteria were fast server response times for users.<br />
+The service fetches ads from MongoDB, renders HTML pages using the doT.js templating engine, and sends them to the browser.<br />
+The service is built with Grunt.<br />
+For the browser, scripts are written in pure JS, and styles are created with LESS. Nginx is used as a proxy server to cache some responses and enable HTTPS connections.</p>
+<h4>Ad Collection Service</h4>
+<p><a href="./images/image-2.png"><img src="./images/image-2.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><a href="https://github.com/mrsuh/rent-collector">https://github.com/mrsuh/rent-collector</a></p>
+<p>This service collects ads, classifies them, and saves them to the database.<br />
+It is written in PHP for several reasons: familiarity with the necessary libraries and fast development speed.<br />
+The framework used is Symfony 3.<br />
+Beanstalk was chosen as the queue service. It is lightweight but doesn't have its own message broker, making it ideal for a small virtual server and non-critical data.</p>
+<p>Using Beanstalk, four message exchange channels were created:</p>
+<ul>
+<li>parser: Extracts facts like ad type, price, description, and links from the text. To speed up processing, multiple consumers were launched for this channel. Note: The consumer communicates with the rent-parser service.</li>
+<li>collector: Saves processed ad data to the database.</li>
+<li>notifier: Notifies users about new ads. Note: The consumer communicates with the rent-notifier service.</li>
+<li>publisher: Publishes ads in several vk groups.</li>
+</ul>
+<h4>Ad Classification Service</h4>
+<p><a href="https://github.com/mrsuh/rent-parser">https://github.com/mrsuh/rent-parser</a></p>
+<p>The service is written in Golang.<br />
+To extract structured data from text, the service uses the Tomita parser. It performs both preprocessing of the text and postprocessing of parsing results.<br />
+You can read more about ad classification in <a href="/articles/2017/classifying-housing-ads-in-search-of-the-best-solution/">this article</a>.</p>
+<h4>Settings Management Service</h4>
+<p><a href="./images/image-3.png"><img src="./images/image-3.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><a href="https://github.com/mrsuh/rent-control">https://github.com/mrsuh/rent-control</a></p>
+<p>The service is written in PHP for its familiarity with the required libraries and fast development speed.<br />
+Framework: Symfony 3<br />
+Style Library: Bootstrap 3</p>
+<p>This service manages settings such as:</p>
+<ul>
+<li>Advertisements</li>
+<li>Blacklist</li>
+<li>Publishing configurations</li>
+<li>Parsing configurations</li>
+</ul>
+<p>Originally, all parsing management data was stored in configuration files. However, as the number of cities grew, it became necessary to:</p>
+<ul>
+<li>Visualize the data</li>
+<li>Simplify editing records</li>
+<li>Make adding new parameters easier</li>
+</ul>
+<h4>Notification service</h4>
+<p><em>Notification Example</em><br />
+<a href="./images/image-4.png"><img src="./images/image-4.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>The Service is written in Golang</p>
+<p>How it works:</p>
+<ul>
+<li>You subscribe to receive new ads.</li>
+<li>As new ads are added, the bot sends messages to you.</li>
+<li>Each message includes a link to the original ad.</li>
+</ul>
+<a href="#h2-helper-repositories" id="h2-helper-repositories" class="text-decoration-none text-reset"><h2>Helper Repositories</h2></a>
+<h4>Code for the Shared Database in PHP</h4>
+<p><em>Shared Database Schema</em><br />
+<a href="./images/image-5.png"><img src="./images/image-5.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><a href="https://github.com/mrsuh/rent-schema">https://github.com/mrsuh/rent-schema</a></p>
+<p>When the rent-control service was added, database schema code started to duplicate across services. To avoid this, the schema code was moved to a separate package.<br />
+Now, any PHP service can easily use this package by adding it as a dependency with composer:</p>
+<pre><code class="language-bash rounded">composer require mrsuh/rent-schema</code></pre>
+<h4>ODM for mongoDB</h4>
+<p><a href="https://github.com/mrsuh/mongo-odm">https://github.com/mrsuh/mongo-odm</a></p>
+<p>The first ODM for PHP MongoDB I considered was Doctrine 2. It comes with Symfony 3 and has excellent documentation.<br />
+However, at the time of building the service, for Doctrine 2 to work with the latest version of Mongo PHP drivers, you needed to install an additional package as a bridge between the new and old API. Doctrine 2 is already a large project, and adding another package made it even heavier.<br />
+I wanted something more lightweight. So, I decided to write my own ODM with a minimal set of features. And it worked! The ODM handles its tasks perfectly.</p>
+<a href="#h2-statistics" id="h2-statistics" class="text-decoration-none text-reset"><h2>Statistics</h2></a>
+<p>The service adds an average of <strong>519.41</strong> listings to the site every day.<br />
+The most popular metro stations in the largest cities of Russia are:</p>
+<ul>
+<li>Saint Petersburg: Devyatkino</li>
+<li>Moscow: Komsomolskaya</li>
+<li>Kazan: Prospekt Pobedy</li>
+<li>Yekaterinburg: Uralmash</li>
+<li>Nizhny Novgorod: Avtozavodskaya</li>
+<li>Novosibirsk: Ploshchad Marksa</li>
+<li>Samara: Moskovskaya</li>
+</ul>
+<a href="#h2-conclusion" id="h2-conclusion" class="text-decoration-none text-reset"><h2>Conclusion</h2></a>
+<p>If you are unsure whether you need SOA architecture, start by building a monolithic application with modular breakdowns. This way, it will be easier to transition to services if needed. However, if you choose to use SOA architecture, be aware that it may increase the complexity of development, deployment, the amount of code, and the volume of messages between services.</p>
+<p>P.S. I found my last two apartments using my service. I hope it helps you too.</p>
+</div>
+
+<div class="footer" style="height: 40px"></div>
+</body>
+<link rel="stylesheet" href="/highlight.github-dark-dimmed.min.css">
+<script src="/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+</html>

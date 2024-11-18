@@ -1,10 +1,10 @@
-# Classifying listings from social networks: In search of the best solution
+# Classifying housing ads: In search of the best solution
 
 I’ll share how text classification helped me find an apartment, why I stopped using regular expressions and neural networks, and why I switched to a lexical analyzer.
 
-About a year ago, I needed to find an apartment to rent. Most private listings are posted on social networks, where ads are written in free form, and there are no filters for searching. Manually browsing posts in various groups was slow and inefficient.
+About a year ago, I needed to find an apartment to rent. Most private ads are posted on social networks, where ads are written in free form, and there are no filters for searching. Manually browsing posts in various groups was slow and inefficient.
 
-At that time, there were already a few services that collected ads from social networks and published them on websites. These services allowed you to see all the listings in one place. Unfortunately, they lacked filters for types of ads or prices. So, I decided to create my own service with the features I needed.
+At that time, there were already a few services that collected ads from social networks and published them on websites. These services allowed you to see all the ads in one place. Unfortunately, they lacked filters for types of ads or prices. So, I decided to create my own service with the features I needed.
 
 ## Text Classification
 

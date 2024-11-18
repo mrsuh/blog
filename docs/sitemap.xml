@@ -114,7 +114,13 @@
     <priority>1</priority>
   </url>
   <url>
-    <loc>https://mrsuh.com/articles/2017/classifying-listings-from-social-networks-in-search-of-the-best-solution/</loc>
+    <loc>https://mrsuh.com/articles/2017/classifying-housing-ads-in-search-of-the-best-solution/</loc>
+    <lastmod>2024-11-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1</priority>
+  </url>
+  <url>
+    <loc>https://mrsuh.com/articles/2017/architecture-of-a-service-for-collecting-and-classifying-housing-ads/</loc>
     <lastmod>2024-11-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1</priority>

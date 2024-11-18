@@ -361,15 +361,16 @@ $articles = [
             ["tutorial", "development", "travis ci", "ansible", "continuous delivery"]
         ),
         Article::create(
-            'Classifying listings from social networks: In search of the best solution',
-            '/articles/2017/classifying-listings-from-social-networks-in-search-of-the-best-solution/', 
+            'Classifying housing ads: In search of the best solution',
+            '/articles/2017/classifying-housing-ads-in-search-of-the-best-solution/', 
             '2017-05-14',
             ['natural language processing', 'machine learning', 'tomita']
         ),
         Article::create(
-            'Architecture of a service for collecting and classifying housing listings', 
-            'https://habr.com/ru/articles/342220', 
+            'Architecture of a service for collecting and classifying housing ads', 
+            '/articles/2017/architecture-of-a-service-for-collecting-and-classifying-housing-ads/', 
             '2017-12-04',
+            ['soa', 'microservices']
         ),
     ],
     2015 => [
