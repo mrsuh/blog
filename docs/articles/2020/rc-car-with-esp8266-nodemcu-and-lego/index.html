@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="author" content="Anton Sukhachev">
+    <title>RC car with ESP8266 NodeMCU and LEGO</title>
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+
+    <meta name="description" content="Build a Remote-Controlled Model with a Microcontroller and Wi-Fi Module After assembling an impressi..."/>
+    <meta name="keywords" content="esp8266, diy, rc car, lego"/>
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="mrsuh.com">
+    <meta property="og:url" content="https://mrsuh.com/articles/2020/rc-car-with-esp8266-nodemcu-and-lego/">
+    <meta property="og:title" content="RC car with ESP8266 NodeMCU and LEGO">
+    <meta property="og:description" content="Build a Remote-Controlled Model with a Microcontroller and Wi-Fi Module After assembling an impressi...">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:alt" content="Anton Sukhachev">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="mrsuh.com">
+    <meta name="twitter:url" content="https://mrsuh.com/articles/2020/rc-car-with-esp8266-nodemcu-and-lego/">
+    <meta name="twitter:title" content="RC car with ESP8266 NodeMCU and LEGO">
+    <meta name="twitter:creator" content="@mrsuh6">
+    <meta name="twitter:description" content="Build a Remote-Controlled Model with a Microcontroller and Wi-Fi Module After assembling an impressi...">
+    <meta name="twitter:image:alt" content="Anton Sukhachev">
+    
+    <link href="/bootstrap.min.css" rel="stylesheet">
+    <link href="/style.css?v=3" rel="stylesheet">
+    <script>
+        if (!window.location.host.includes('127.0.0.1') && !window.location.host.includes('localhost')) {
+            !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+            posthog.init('phc_D8fuOCgUvowJZQavoR29IHq7FQcZMWByA9mtvPq5PIg',{api_host:'https://eu.i.posthog.com', person_profiles: 'identified_only' // or 'always' to create profiles for anonymous users as well
+            })
+        }
+    </script>
+</head>
+
+<body class="container fs-5" style="max-width: 1000px">
+
+<div class="header" style="padding-top: 20px; padding-bottom: 10px">
+    <div class="row">
+        <div class="col">
+            <a href="/">Anton Sukhachev</a>
+        </div>
+        <div class="col text-end">
+            <a href="/articles/">Articles</a>
+        </div>
+    </div>
+    <hr/>
+</div>
+
+<div class="content">
+    <h1>RC car with ESP8266 NodeMCU and LEGO</h1>
+<p><a href="./images/image-0.jpeg"><img src="./images/image-0.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>Build a Remote-Controlled Model with a Microcontroller and Wi-Fi Module<br />
+After assembling an impressive LEGO collection (as any grown-up should), I wanted to get even more joy from it. Combining colorful LEGO pieces with my love for programming led to a fascinating project. If you share both hobbies, let’s build a dream from childhood—a remote-controlled LEGO car!<br />
+Let’s go!</p>
+<a href="#h2-about-the-esp8266-nodemcu" id="h2-about-the-esp8266-nodemcu" class="text-decoration-none text-reset"><h2>About the ESP8266 NodeMCU</h2></a>
+<p>The ESP8266 NodeMCU is a development board based on the ESP8266 chip. This chip is a UART-Wi-Fi module designed for Internet of Things (IoT) projects, with ultra-low power consumption. The board simplifies development because it:</p>
+<ul>
+<li>Includes a USB connection.</li>
+<li>Has a built-in voltage regulator.</li>
+<li>Exposes all chip pins via standard 2.54 mm headers, making it easy to use on a breadboard for prototyping.</li>
+<li>Additionally, the board comes preloaded with the NodeMCU firmware, so it can be programmed using the Arduino IDE.</li>
+</ul>
+<a href="#h2-how-it-works" id="h2-how-it-works" class="text-decoration-none text-reset"><h2>How It Works</h2></a>
+<p><a href="./images/image-1.png"><img src="./images/image-1.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>On the ESP8266 NodeMCU, we set up a Wi-Fi access point, an HTTP server, and a WebSocket server.<br />
+Here's how it works:</p>
+<ul>
+<li>Connect to the Wi-Fi: Use your smartphone to connect to the Wi-Fi network created by the NodeMCU.</li>
+<li>Access the Control Page: The HTTP server delivers an HTML page with embedded JavaScript.</li>
+<li>Control the Car:
+<ul>
+<li>The JavaScript automatically connects to the WebSocket server.</li>
+<li>When you touch the screen, the JavaScript sends the touch coordinates to the WebSocket server.</li>
+<li>For example, touching the top of the screen signals the car to move forward. Similarly, other touch areas correspond to different directions.</li>
+</ul></li>
+</ul>
+<p>This setup lets you control the LEGO car intuitively, directly from your smartphone screen!</p>
+<p><a href="./images/image-19.gif"><img src="./images/image-19.gif" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<a href="#h2-materials" id="h2-materials" class="text-decoration-none text-reset"><h2>Materials</h2></a>
+<ul>
+<li>ESP8266 NodeMCU (Wi-Fi development board)</li>
+<li>Mini L298N (motor driver)</li>
+<li>Breadboard (for prototyping)</li>
+<li>4 TT 130 Motors with gearboxes and wheels</li>
+<li>Wires (for connections)</li>
+<li>Power bank (for power supply)</li>
+<li>USB to microUSB adapter</li>
+<li>USB cable compatible with the breadboard</li>
+<li>LEGO blocks (to build the car frame)</li>
+</ul>
+<a href="#h2-setting-up-the-arduino-ide-for-esp8266-nodemcu" id="h2-setting-up-the-arduino-ide-for-esp8266-nodemcu" class="text-decoration-none text-reset"><h2>Setting Up the Arduino IDE for ESP8266 NodeMCU</h2></a>
+<p>Adding the ESP8266 NodeMCU Board to Arduino IDE.<br />
+Download Arduino IDE: Get it from the official website: <a href="https://www.arduino.cc/en/Main/Software" target="_blank">Arduino Software</a>.</p>
+<p>Add the ESP8266 Board Manager URL:<br />
+Open Preferences from the File menu.<br />
+Find the Additional Boards Manager URLs field and add the following URL:</p>
+<pre><code class="language-bash rounded">http://arduino.esp8266.com/staging/package_esp8266com_index.json</code></pre>
+<p><a href="./images/image-2.png"><img src="./images/image-2.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>Install the ESP8266 Board:<br />
+Go to Tools &gt; Boards &gt; Boards Manager.<br />
+In the search box, type ESP.<br />
+Select ESP8266 by ESP8266 Community and click Install.<br />
+<a href="./images/image-4.png"><img src="./images/image-4.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>Select the NodeMCU Board:<br />
+Go to Tools &gt; Boards &gt; ESP8266 Boards.<br />
+Choose NodeMCU 1.0.<br />
+<a href="./images/image-5.png"><img src="./images/image-5.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>Adding Required Libraries</p>
+<p>Download Libraries:</p>
+<ul>
+<li><a href="https://github.com/me-no-dev/ESPAsyncWebServer">https://github.com/me-no-dev/ESPAsyncWebServer</a></li>
+<li><a href="https://github.com/bblanchon/ArduinoJson">https://github.com/bblanchon/ArduinoJson</a></li>
+</ul>
+<p><a href="./images/image-6.png"><img src="./images/image-6.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>Install Libraries in Arduino IDE:<br />
+Open Sketch &gt; Include Library &gt; Add .ZIP Library.<br />
+Select the downloaded .zip files one by one to add them.</p>
+<p><a href="./images/image-7.png"><img src="./images/image-7.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<a href="#h2-flashing-the-esp8266-controller" id="h2-flashing-the-esp8266-controller" class="text-decoration-none text-reset"><h2>Flashing the ESP8266 Controller</h2></a>
+<p>Create a New Project:<br />
+Open Arduino IDE.<br />
+Go to File &gt; New to create a new project.<br />
+<a href="./images/image-8.png"><img src="./images/image-8.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>Save the Project:<br />
+Click File &gt; Save, and name the project esp8266-car.<br />
+<a href="./images/image-9.png"><img src="./images/image-9.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>Copy the code from this <a href="https://raw.githubusercontent.com/mrsuh/car-esp8266/master/main.ino" target="_blank">link</a>.<br />
+Paste it into the Arduino IDE.</p>
+<p>In the code, you can change the Wi-Fi access point name and password:</p>
+<pre><code class="language-cpp rounded">const char *ssid = "car-esp8266";//название Wi-Fi точки доступа
+const char *password = "password";//пароль Wi-Fi точки доступа</code></pre>
+<p>Upload the Code to the Controller:<br />
+Connect the ESP8266 NodeMCU to your computer using a USB cable.<br />
+Click the Upload button in the Arduino IDE.<br />
+<a href="./images/image-10.png"><img src="./images/image-10.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<a href="#h2-building-the-car" id="h2-building-the-car" class="text-decoration-none text-reset"><h2>Building the Car</h2></a>
+<p>View the Wiring Diagram:<br />
+<a href="./images/image-12.png"><img src="./images/image-12.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>Prepare the Motors and L298N:<br />
+Attach small LEGO pieces to the motors using a hot glue gun.<br />
+Solder wires to the L298N motor driver as per the wiring diagram.<br />
+Assemble the Car:<br />
+Use your creativity to build a unique LEGO car around the motors and ESP8266 NodeMCU.<br />
+<a href="./images/image-20.gif"><img src="./images/image-20.gif" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p><a href="./images/image-13.jpeg"><img src="./images/image-13.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a><br />
+<a href="./images/image-14.jpeg"><img src="./images/image-14.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a><br />
+<a href="./images/image-15.jpeg"><img src="./images/image-15.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a><br />
+<a href="./images/image-16.jpeg"><img src="./images/image-16.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>Initial Connection:<br />
+Power up your car using the connected power source (e.g., a power bank).<br />
+Connect to the Access Point:<br />
+<a href="./images/image-17.jpeg"><img src="./images/image-17.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a><br />
+Look for your car's Wi-Fi access point in the available networks list (e.g., car-esp8266).<br />
+Connect to it.<br />
+<a href="./images/image-18.jpeg"><img src="./images/image-18.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<p>If needed, configure the network settings on your device to use a manual IP address for this connection.</p>
+<pre><code class="language-bash rounded">Configure: Manual
+IP: 192.168.4.100
+Subnet mask: 255.255.255.0
+Router: 192.168.4.1</code></pre>
+<a href="#h2-first-launch!" id="h2-first-launch!" class="text-decoration-none text-reset"><h2>First launch!</h2></a>
+<iframe class="rounded" src="https://www.youtube.com/embed/eQIDCTf4-K4?si=4ObjRgaso9gTZzQT" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>That's all! Good luck with your creative projects!</p>
+</div>
+
+<div class="footer" style="height: 40px"></div>
+</body>
+<link rel="stylesheet" href="/highlight.github-dark-dimmed.min.css">
+<script src="/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+</html>

@@ -328,14 +328,15 @@ $articles = [
         ),
         Article::create(
             'RC car with ESP8266 NodeMCU and LEGO',
-            'https://vc.ru/dev/160142-rc-mashinka-iz-esp8266-nodemcu-i-lego', 
+            '/articles/2020/rc-car-with-esp8266-nodemcu-and-lego/', 
             '2020-09-21',
+            ["esp8266", "diy", "rc car", "lego"]
         ),
         Article::create(
             'RC boat with ESP8266 NodeMCU', 
             '/articles/2020/rc-boat-with-esp8266-nodemcu/', 
             '2020-11-03',
-            ["esp8266", "DIY", "RC boat"]
+            ["esp8266", "diy", "rc boat"]
         ),
     ],
     2019 => [
