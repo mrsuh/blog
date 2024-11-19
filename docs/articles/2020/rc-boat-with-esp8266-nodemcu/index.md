@@ -95,7 +95,6 @@ The most useful material I found was in the book by John Finch, "Advanced R/C Bo
 
 Articles:
 * <a href="https://www.instructables.com/RC-Boat-2" target="_blank">www.instructables.com/RC-Boat-2</a>
-* <a href="https://habr.com/en/post/367731" target="_blank">habr.com/en/post/367731</a>
 * <a href="http://www.parkflyer.ru/ru/blogs/view_entry/600" target="_blank">www.parkflyer.ru/ru/blogs/view_entry/600</a>
 
 Video course [how to make a rocket boat](https://www.youtube.com/watch?v=dFc1KUHF7-s&list=PLGL_lVjhxY8eKivkT19brQz_dBuW9ueWr)

@@ -8,9 +8,9 @@ In this article, I want to talk about my hobby project for searching and classif
 
 In March 2017, I launched a service for parsing and classifying apartment rental ads from vk.com.
 
-You can read more [here](/articles/2017/classifying-listings-from-social-networks-in-search-of-the-best-solution/) about how I tried different ways to classify ads and eventually settled on the lexical parser Yandex Tomita Parser.
+You can read more [here](/articles/2017/classifying-housing-ads-in-search-of-the-best-solution/) about how I tried different ways to classify ads and eventually settled on the lexical parser Yandex Tomita Parser.
 
-You can also read [here](https://habr.com/en/post/328282) about the project's architecture at the start and the technologies used and why.
+You can also read [here](/articles/2017/architecture-of-a-service-for-collecting-and-classifying-housing-ads/) about the project's architecture at the start and the technologies used and why.
 
 The development of the first version of the service took about a year. I wrote scripts in Ansible to deploy each service component. Occasionally, the service didn't work due to bugs in the overly complicated code or incorrect component settings.
 
