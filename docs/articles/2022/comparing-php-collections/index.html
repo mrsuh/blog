@@ -9,14 +9,14 @@
     <link rel="manifest" href="/site.webmanifest">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 
-    <meta name="description" content="Let&#039;s imagine that we want to store a collection of Item objects: &amp;lt;?php namespace App\En..."/>
+    <meta name="description" content="Let's imagine that we want to store a collection of Item objects: &amp;lt;?php namespace App\Entity;..."/>
     <meta name="keywords" content="php, collections, generics"/>
 
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="mrsuh.com">
     <meta property="og:url" content="https://mrsuh.com/articles/2022/comparing-php-collections/">
     <meta property="og:title" content="Comparing PHP Collections">
-    <meta property="og:description" content="Let&#039;s imagine that we want to store a collection of Item objects: &amp;lt;?php namespace App\En...">
+    <meta property="og:description" content="Let's imagine that we want to store a collection of Item objects: &amp;lt;?php namespace App\Entity;...">
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:alt" content="Anton Sukhachev">
     
@@ -25,11 +25,11 @@
     <meta name="twitter:url" content="https://mrsuh.com/articles/2022/comparing-php-collections/">
     <meta name="twitter:title" content="Comparing PHP Collections">
     <meta name="twitter:creator" content="@mrsuh6">
-    <meta name="twitter:description" content="Let&#039;s imagine that we want to store a collection of Item objects: &amp;lt;?php namespace App\En...">
+    <meta name="twitter:description" content="Let's imagine that we want to store a collection of Item objects: &amp;lt;?php namespace App\Entity;...">
     <meta name="twitter:image:alt" content="Anton Sukhachev">
     
     <link href="/bootstrap.min.css" rel="stylesheet">
-    <link href="/style.css?v=3" rel="stylesheet">
+    <link href="/style.css?v=4" rel="stylesheet">
     <script>
         if (!window.location.host.includes('127.0.0.1') && !window.location.host.includes('localhost')) {
             !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
@@ -44,10 +44,11 @@
 <div class="header" style="padding-top: 20px; padding-bottom: 10px">
     <div class="row">
         <div class="col">
-            <a href="/">Anton Sukhachev</a>
+            <a href="/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Anton Sukhachev</a>
         </div>
         <div class="col text-end">
-            <a href="/articles/">Articles</a>
+            <a href="/articles/" class="link-primary link-underline-opacity-100">Articles</a>
+            <a href="/projects/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Projects</a>
         </div>
     </div>
     <hr/>
@@ -72,10 +73,10 @@ class Item {
 </ul>
 <p>I want to compare:</p>
 <ul>
-<li><a href="https://www.php.net/manual/en/language.types.array.php" target="_blank">array</a></li>
-<li><a href="https://psalm.dev/docs/annotating_code/templated_annotations" target="_blank">Psalm annotation templates</a></li>
-<li><a href="https://github.com/mrsuh/php-generics#monomorphization" target="_blank">Monomorphic generics</a></li>
-<li><a href="https://github.com/mrsuh/php-generics#type-erasure" target="_blank">Type-erased generics</a></li>
+<li><a href="https://www.php.net/manual/en/language.types.array.php" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">array</a></li>
+<li><a href="https://psalm.dev/docs/annotating_code/templated_annotations" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Psalm annotation templates</a></li>
+<li><a href="https://github.com/mrsuh/php-generics#monomorphization" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Monomorphic generics</a></li>
+<li><a href="https://github.com/mrsuh/php-generics#type-erasure" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Type-erased generics</a></li>
 </ul>
 <a href="#h2-usage" id="h2-usage" class="text-decoration-none text-reset"><h2>Usage</h2></a>
 <p>Let's first compare usage.</p>
@@ -223,7 +224,7 @@ function test(Collection&lt;Item&gt; $data): Collection&lt;Item&gt; {}</code></p
 <a href="#h2-memory" id="h2-memory" class="text-decoration-none text-reset"><h2>Memory</h2></a>
 <p>Memory test is very simple.<br />
 It creates <code>$collection</code> and puts <code>Item</code> objects into it <code>count</code> times.<br />
-For measurement I use <a href="https://github.com/mrsuh/php-var-sizeof" target="_blank">var_sizeof()</a> and <code>memory_get_usage()</code>.</p>
+For measurement I use <a href="https://github.com/mrsuh/php-var-sizeof" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">var_sizeof()</a> and <code>memory_get_usage()</code>.</p>
 <p><em>Items in collection: 0</em></p>
 <table class="table table-bordered">
 <thead class="table-secondary">
@@ -375,7 +376,7 @@ For measurement I use <a href="https://github.com/mrsuh/php-var-sizeof" target="
 <p>It's not surprising an <code>array</code> requires the least amount of memory.<br />
 Other approaches have roughly the same internal structure and require the same amount of memory.</p>
 <a href="#h2-performance" id="h2-performance" class="text-decoration-none text-reset"><h2>Performance</h2></a>
-<p>I used <a href="https://github.com/phpbench/phpbench" target="_blank">phpbench</a> to measure performance.<br />
+<p>I used <a href="https://github.com/phpbench/phpbench" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">phpbench</a> to measure performance.<br />
 I think one of the big differences between all the solutions is the type checking. So I decided to try measure it.<br />
 How much faster will code with/without type checking?</p>
 <pre><code class="language-bash rounded">PHPBench (1.2.3) running benchmarks...
@@ -405,9 +406,9 @@ Subjects: 4, Assertions: 0, Failures: 0, Errors: 0
 <p><a href="./images/memory.png"><img src="./images/memory.png" alt="PHP memory usage" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>If you are only using simple collections you can use <code>array</code> - it is very fast and requires little memory.<br />
 PHP doesn't support generic syntax and IDE can't make hints about the type of objects in a collection (yet),<br />
-but if you want PHP to do type checks at runtime you can test the <a href="https://github.com/mrsuh/php-generics" target="_blank">php-generics</a> library.</p>
-<p>I think for now the best solution is a combination of <code>array</code> with annotations for simple collections and <a href="https://psalm.dev/docs/annotating_code/templated_annotations" target="_blank">Psalm annotation templates</a> for complex objects.</p>
-<p>If you want to reproduce the tests result you can find the source code and instructions <a href="https://github.com/mrsuh/php-collections-comparison" target="_blank">here</a>.</p>
+but if you want PHP to do type checks at runtime you can test the <a href="https://github.com/mrsuh/php-generics" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">php-generics</a> library.</p>
+<p>I think for now the best solution is a combination of <code>array</code> with annotations for simple collections and <a href="https://psalm.dev/docs/annotating_code/templated_annotations" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Psalm annotation templates</a> for complex objects.</p>
+<p>If you want to reproduce the tests result you can find the source code and instructions <a href="https://github.com/mrsuh/php-collections-comparison" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">here</a>.</p>
 </div>
 
 <div class="footer" style="height: 40px"></div>

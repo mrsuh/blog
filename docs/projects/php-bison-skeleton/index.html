@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="author" content="Anton Sukhachev">
+    <title>PHP Skeleton for Bison</title>
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+
+    <meta name="description" content="Bison is a parser generator. It can be used to create AST parsers for PHP, JSON, SQL, and more. By d..."/>
+    <meta name="keywords" content="nginx, lua, redis, php, session"/>
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="mrsuh.com">
+    <meta property="og:url" content="https://mrsuh.com/projects/php-bison-skeleton/">
+    <meta property="og:title" content="PHP Skeleton for Bison">
+    <meta property="og:description" content="Bison is a parser generator. It can be used to create AST parsers for PHP, JSON, SQL, and more. By d...">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:alt" content="Anton Sukhachev">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="mrsuh.com">
+    <meta name="twitter:url" content="https://mrsuh.com/projects/php-bison-skeleton/">
+    <meta name="twitter:title" content="PHP Skeleton for Bison">
+    <meta name="twitter:creator" content="@mrsuh6">
+    <meta name="twitter:description" content="Bison is a parser generator. It can be used to create AST parsers for PHP, JSON, SQL, and more. By d...">
+    <meta name="twitter:image:alt" content="Anton Sukhachev">
+    
+    <link href="/bootstrap.min.css" rel="stylesheet">
+    <link href="/style.css?v=4" rel="stylesheet">
+    <script>
+        if (!window.location.host.includes('127.0.0.1') && !window.location.host.includes('localhost')) {
+            !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+            posthog.init('phc_D8fuOCgUvowJZQavoR29IHq7FQcZMWByA9mtvPq5PIg',{api_host:'https://eu.i.posthog.com', person_profiles: 'identified_only' // or 'always' to create profiles for anonymous users as well
+            })
+        }
+    </script>
+</head>
+
+<body class="container fs-5" style="max-width: 1000px">
+
+<div class="header" style="padding-top: 20px; padding-bottom: 10px">
+    <div class="row">
+        <div class="col">
+            <a href="/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Anton Sukhachev</a>
+        </div>
+        <div class="col text-end">
+            <a href="/articles/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Articles</a>
+            <a href="/projects/" class="link-primary link-underline-opacity-100">Projects</a>
+        </div>
+    </div>
+    <hr/>
+</div>
+
+<div class="content">
+    <h1>PHP Skeleton for Bison</h1>
+<p><a href="https://en.wikipedia.org/wiki/GNU_Bison" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Bison</a> is a parser generator.<br />
+You can extend it with <a href="https://github.com/mrsuh/php-bison-skeleton" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">PHP Skeleton</a> to generate PHP parsers.<br />
+For example, the PHP parser that can parse Nginx config:</p>
+<pre><code class="language-bash rounded">php bin/parse.php nginx.conf
+.
+├── T_SERVER
+    ├── T_SERVER_NAME { names: 'domain.tld, www.domain.tld' }
+    ├── T_SERVER_ROOT { path: '/var/www/project/public' }
+    ├── T_LOCATION { regexp: '' path: '/' }
+    │   └── T_TRY_FILES { paths: '$uri, /index.php$is_args$args' }
+    ├── T_LOCATION { regexp: '' path: '/bundles' }
+    │   └── T_TRY_FILES { paths: '$uri, =404' }
+    ├── T_LOCATION { regexp: '~' path: '^/index\.php(/|$)' }
+    │   ├── T_FAST_CGI_PATH { path: 'unix:/var/run/php/php-fpm.sock' }
+    │   ├── T_FAST_CGI_SPLIT_PATH_INFO { path: '^(.+\.php)(/.*)$' }
+    │   ├── T_INCLUDE { path: 'fastcgi_params' }
+    │   ├── T_FAST_CGI_PARAM { APP_ENV: 'prod' }
+    │   ├── T_FAST_CGI_PARAM { APP_SECRET: '&lt;app-secret-id&gt;' }
+    │   ├── T_FAST_CGI_PARAM { DATABASE_URL: '"mysql://db_user:db_pass@host:3306/db_name"' }
+    │   ├── T_FAST_CGI_PARAM { SCRIPT_FILENAME: '$realpath_root$fastcgi_script_name' }
+    │   ├── T_FAST_CGI_PARAM { DOCUMENT_ROOT: '$realpath_root' }
+    │   └── T_INTERNAL
+    ├── T_LOCATION { regexp: '~' path: '\.php$' }
+    │   └── T_RETURN { code: '404' body: '' }
+    ├── T_ERROR_LOG { path: '/var/log/nginx/project_error.log' }
+    └── T_ACCESS_LOG { path: '/var/log/nginx/project_access.log' }</code></pre>
+<p>By default, Bison works with C, C++, D, and Java. But you can use it with PHP by adding a <a href="https://github.com/mrsuh/php-bison-skeleton" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">PHP skeleton</a>.</p>
+<a href="#h2-how-it-works" id="h2-how-it-works" class="text-decoration-none text-reset"><h2>How It Works</h2></a>
+<p><a href="./images/flow.png"><img src="./images/flow.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
+<ul>
+<li>grammar.y: a file where you define the syntax using BNF (Backus-Naur Form)</li>
+<li>skeleton.m4: a template file (written in M4) that helps create the parser</li>
+<li>parser.php: the parser file Bison generates, containing a Parser class</li>
+</ul>
+<p>Bison reads your grammar.y file, processes it, and uses the skeleton.m4 file to generate the final parser file.</p>
+<a href="#h2-about-bison" id="h2-about-bison" class="text-decoration-none text-reset"><h2>About Bison</h2></a>
+<ul>
+<li><a href="/articles/2023/php-skeleton-for-bison/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Read</a> about how Bison works</li>
+<li><a href="/articles/2023/how-i-wrote-php-skeleton-for-bison/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Read</a> about how the PHP parser was made and compare it with other PHP parsers</li>
+<li><a href="/articles/2022/parsing-with-php-bison-and-re2c/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Read</a> how to generate a C parser and use it with PHP FFI</li>
+</ul>
+<a href="#h2-examples" id="h2-examples" class="text-decoration-none text-reset"><h2>Examples</h2></a>
+<ul>
+<li><a href="/articles/ast-parser-with-php-and-bison/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Math parser</a></li>
+<li><a href="/articles/2023/nginx-parser-with-php-and-bison/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Nginx parser</a></li>
+<li><a href="/articles/2023/json-parser-with-php-and-bison/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">JSON parser</a></li>
+</ul>
+</div>
+
+<div class="footer" style="height: 40px"></div>
+</body>
+<link rel="stylesheet" href="/highlight.github-dark-dimmed.min.css">
+<script src="/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+</html>

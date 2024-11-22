@@ -3,29 +3,29 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <meta name="author" content="Anton Sukhachev">
-    <title>{{ title }}</title>
+    <title>Projects</title>
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 
-    <meta name="description" content="{{ description }}"/>
-    <meta name="keywords" content="{{ keywords }}"/>
+    <meta name="description" content=""/>
+    <meta name="keywords" content="anton sukhachev, mrsuh, blog, articles, posts, projects"/>
 
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="mrsuh.com">
-    <meta property="og:url" content="https://mrsuh.com{{ path }}">
-    <meta property="og:title" content="{{ title }}">
-    <meta property="og:description" content="{{ description }}">
+    <meta property="og:url" content="https://mrsuh.com/projects">
+    <meta property="og:title" content="Projects">
+    <meta property="og:description" content="">
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:alt" content="Anton Sukhachev">
     
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="mrsuh.com">
-    <meta name="twitter:url" content="https://mrsuh.com{{ path }}">
-    <meta name="twitter:title" content="{{ title }}">
+    <meta name="twitter:url" content="https://mrsuh.com/projects">
+    <meta name="twitter:title" content="Projects">
     <meta name="twitter:creator" content="@mrsuh6">
-    <meta name="twitter:description" content="{{ description }}">
+    <meta name="twitter:description" content="">
     <meta name="twitter:image:alt" content="Anton Sukhachev">
     
     <link href="/bootstrap.min.css" rel="stylesheet">
@@ -44,21 +44,49 @@
 <div class="header" style="padding-top: 20px; padding-bottom: 10px">
     <div class="row">
         <div class="col">
-            <a href="/" class="link-primary {{ menu_main_class }}">Anton Sukhachev</a>
+            <a href="/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Anton Sukhachev</a>
         </div>
         <div class="col text-end">
-            <a href="/articles/" class="link-primary {{ menu_article_class }}">Articles</a>
-            <a href="/projects/" class="link-primary {{ menu_project_class }}">Projects</a>
+            <a href="/articles/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Articles</a>
+            <a href="/projects/" class="link-primary link-underline-opacity-100">Projects</a>
         </div>
     </div>
     <hr/>
 </div>
 
 <div class="content">
-    {{ content }}
+    
+    <div class="card mb-3" style="max-width: 100%;">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="/projects/php-generics/images/poster.png"class="img-fluid rounded-start">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title"><a href="/projects/php-generics/">PHP Generics</a></h5>
+                        <p class="card-text">Real PHP generics implemented in PHP with RFC-style syntax <b>Class&lt;T&gt;</b> and runtime type checking.</p>
+                    </div>
+                </div>
+            </div>
+    </div>
+    
+    <div class="card mb-3" style="max-width: 100%;">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="/projects/php-bison-skeleton/images/poster.png"class="img-fluid rounded-start">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title"><a href="/projects/php-bison-skeleton/">PHP Skeleton for Bison</a></h5>
+                        <p class="card-text">Bison is a parser generator. It can be used to create AST parsers for PHP, JSON, SQL, and more. By default, Bison supports C/C++/D/Java, but it can be extended using a PHP skeleton.</p>
+                    </div>
+                </div>
+            </div>
+    </div>
+    
 </div>
 
 <div class="footer" style="height: 40px"></div>
 </body>
-{{ scripts }}
+
 </html>

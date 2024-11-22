@@ -29,7 +29,7 @@
     <meta name="twitter:image:alt" content="Anton Sukhachev">
     
     <link href="/bootstrap.min.css" rel="stylesheet">
-    <link href="/style.css?v=3" rel="stylesheet">
+    <link href="/style.css?v=4" rel="stylesheet">
     <script>
         if (!window.location.host.includes('127.0.0.1') && !window.location.host.includes('localhost')) {
             !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
@@ -44,10 +44,11 @@
 <div class="header" style="padding-top: 20px; padding-bottom: 10px">
     <div class="row">
         <div class="col">
-            <a href="/">Anton Sukhachev</a>
+            <a href="/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Anton Sukhachev</a>
         </div>
         <div class="col text-end">
-            <a href="/articles/">Articles</a>
+            <a href="/articles/" class="link-primary link-underline-opacity-100">Articles</a>
+            <a href="/projects/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Projects</a>
         </div>
     </div>
     <hr/>
@@ -74,9 +75,9 @@ class Box&lt;T&gt; {
         return $this-&gt;data;
     }
 }</code></pre>
-<p>If you are interested you can <a href="https://github.com/mrsuh/php-generics" target="_blank">test it</a>. Only native PHP is required (without extensions).<br><br />
-But in this article, I want to tell you about a very important part of my library - <a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree" target="_blank">AST</a> parser.<br><br />
-I use a very popular library <a href="https://github.com/nikic/PHP-Parser" target="_blank">nikic/php-parser</a>. Many other software uses it.<br><br />
+<p>If you are interested you can <a href="https://github.com/mrsuh/php-generics" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">test it</a>. Only native PHP is required (without extensions).<br><br />
+But in this article, I want to tell you about a very important part of my library - <a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">AST</a> parser.<br><br />
+I use a very popular library <a href="https://github.com/nikic/PHP-Parser" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">nikic/php-parser</a>. Many other software uses it.<br><br />
 It helps you to build AST from source code like this:</p>
 <pre><code class="language-php rounded">&lt;?php
 
@@ -101,15 +102,15 @@ class Test
 <p>You don't need to write Lexer and Parser from scratch.<br><br />
 To build Lexer you can use tools:</p>
 <ul>
-<li><a href="https://re2c.org" target="_blank">re2c</a> - PHP engine uses it to parse source code</li>
-<li><a href="https://www.php.net/manual/en/function.token-get-all.php" target="_blank">get_token_all()</a> - php-parser uses this function to parse source code</li>
-<li><a href="https://github.com/doctrine/lexer" target="_blank">doctrine lexer</a> - doctrine uses it to parse annotations</li>
+<li><a href="https://re2c.org" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">re2c</a> - PHP engine uses it to parse source code</li>
+<li><a href="https://www.php.net/manual/en/function.token-get-all.php" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">get_token_all()</a> - php-parser uses this function to parse source code</li>
+<li><a href="https://github.com/doctrine/lexer" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">doctrine lexer</a> - doctrine uses it to parse annotations</li>
 </ul>
 <p>How do Lexers work?</p>
 <p><a href="./images/lexer.png"><img src="./images/lexer.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>Lexers help you to parse text into tokens.<br><br />
-For example PHP engine's Lexer use <a href="https://re2c.org" target="_blank">re2c</a>.</p>
-<p><a href="https://github.com/php/php-src/blob/master/Zend/zend_language_scanner.l" target="_blank">php-src Lexer example</a></p>
+For example PHP engine's Lexer use <a href="https://re2c.org" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">re2c</a>.</p>
+<p><a href="https://github.com/php/php-src/blob/master/Zend/zend_language_scanner.l" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">php-src Lexer example</a></p>
 <pre><code class="language-c rounded">/*!re2c
 re2c:yyfill:check = 0;
 LNUM    [0-9]+(_[0-9]+)*
@@ -133,13 +134,13 @@ echo $a; |   T_ECHO T_WHITESPACE T_VARIABLE ;</code></pre>
 After the Lexer we have tokens, and we need a Parser to build AST.</p>
 <p>To build Parser you can use the tools:</p>
 <ul>
-<li><a href="https://www.gnu.org/software/bison/" target="_blank">Bison</a> - PHP engine uses it</li>
-<li><a href="https://github.com/ircmaxell/PHP-Yacc" target="_blank">KmYacc</a> - php-parser uses it</li>
-<li><a href="https://www.antlr.org" target="_blank">ANTLR</a> - Twitter search uses ANTLR for query parsing</li>
+<li><a href="https://www.gnu.org/software/bison/" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Bison</a> - PHP engine uses it</li>
+<li><a href="https://github.com/ircmaxell/PHP-Yacc" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">KmYacc</a> - php-parser uses it</li>
+<li><a href="https://www.antlr.org" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">ANTLR</a> - Twitter search uses ANTLR for query parsing</li>
 </ul>
 <p>How do parser generators work?</p>
 <p><a href="./images/parser-generator.png"><img src="./images/parser-generator.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
-<p>A generator takes your <code>grammar.y</code> <a href="https://en.wikipedia.org/wiki/Backus–Naur_form" target="_blank">BNF</a> file, parses it, extracts all definitions, and then constructs a bunch of tables like this:</p>
+<p>A generator takes your <code>grammar.y</code> <a href="https://en.wikipedia.org/wiki/Backus–Naur_form" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">BNF</a> file, parses it, extracts all definitions, and then constructs a bunch of tables like this:</p>
 <pre><code class="language-php rounded">$yytable = [
     6, 3, 7, 20, 8, 51, 28, 1, 52, 4,
     9, 13, 10, 29, 15, 30, 18, 31, 16, 19,
@@ -149,15 +150,15 @@ After the Lexer we have tokens, and we need a Parser to build AST.</p>
     48, 0, 50, 0, 53, 54
 ];</code></pre>
 <p>Then, this data is passed to a template that is called a <code>Skeleton</code>.<br><br />
-For Bison, <code>Skeleton</code> is a special file written in <a href="https://en.wikipedia.org/wiki/M4_(computer_language)" target="_blank">M4</a> language that renders your <code>parser</code> file.<br><br />
+For Bison, <code>Skeleton</code> is a special file written in <a href="https://en.wikipedia.org/wiki/M4_(computer_language)" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">M4</a> language that renders your <code>parser</code> file.<br><br />
 By default, Bison Skeletons supports C/C++/D/Java languages.</p>
 <p>PHP engine and php-parser use different parser generators but use very similar grammar files.</p>
-<p><a href="https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y" target="_blank">php-src grammar example</a></p>
+<p><a href="https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">php-src grammar example</a></p>
 <pre><code class="language-bnf rounded">statement:
     |   T_BREAK optional_expr ';'    { $$ = zend_ast_create(ZEND_AST_BREAK, $2); }
     |   T_CONTINUE optional_expr ';' { $$ = zend_ast_create(ZEND_AST_CONTINUE, $2); }
     |   T_RETURN optional_expr ';'   { $$ = zend_ast_create(ZEND_AST_RETURN, $2); }</code></pre>
-<p><a href="https://github.com/nikic/PHP-Parser/blob/4.x/grammar/php7.y" target="_blank">php-parser grammar example</a></p>
+<p><a href="https://github.com/nikic/PHP-Parser/blob/4.x/grammar/php7.y" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">php-parser grammar example</a></p>
 <pre><code class="language-bnf rounded">non_empty_statement:
     |   T_BREAK optional_expr semi    { $$ = Stmt\Break_[$2]; }
     |   T_CONTINUE optional_expr semi { $$ = Stmt\Continue_[$2]; }
@@ -170,19 +171,19 @@ Even the fact, that Bison doesn't have PHP Skeleton didn't stop me.<br><br />
 I decided to create my own skeleton.<br><br />
 I translated Java skeleton to PHP. It took a few months for me.<br><br />
 Translating Java code to PHP is not very hard, but if your code is not written with m4 and has not very many options.</p>
-<p><a href="https://github.com/akimd/bison/blob/master/data/skeletons/lalr1.java" target="_blank">Java-skeleton example</a></p>
+<p><a href="https://github.com/akimd/bison/blob/master/data/skeletons/lalr1.java" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Java-skeleton example</a></p>
 <pre><code class="language-bash rounded">]b4_yystype[ lval = yylexer.getLVal();]b4_locations_if([[
 ]b4_location_type[ yyloc = new ]b4_location_type[(yylexer.getStartPos(), yylexer.getEndPos());
 status = push_parse(token, lval, yyloc);]], [[
 status = push_parse(token, lval);]])[</code></pre>
-<p><a href="https://github.com/mrsuh/php-bison-skeleton/blob/master/src/lalr1.php" target="_blank">PHP-skeleton example</a></p>
+<p><a href="https://github.com/mrsuh/php-bison-skeleton/blob/master/src/lalr1.php" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">PHP-skeleton example</a></p>
 <pre><code class="language-bash rounded">/** @@var ]b4_yystype[ */
 $lval = $this-&gt;yylexer-&gt;getLVal();]b4_locations_if([[
 /** @@var ]b4_location_type[ */
 $yyloc = new ]b4_location_type[($this-&gt;yylexer-&gt;getStartPos(), $this-&gt;yylexer-&gt;getEndPos());
 $status = $this-&gt;push_parse($token, $lval, $yyloc);]], [[
 $status = $this-&gt;push_parse($token, $lval);]])[</code></pre>
-<p>After a few months and many auto tests <a href="https://github.com/mrsuh/php-bison-skeleton" target="_blank">php-skeleton</a> was ready!</p>
+<p>After a few months and many auto tests <a href="https://github.com/mrsuh/php-bison-skeleton" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">php-skeleton</a> was ready!</p>
 <pre><code class="language-bash rounded">[php-bison-skeleton] composer test
 &gt; php vendor/bin/phpunit
 PHPUnit 9.6.5 by Sebastian Bergmann and contributors.
@@ -209,7 +210,7 @@ php grammar/rebuildParsers.php --keep-tmp-grammar
 cp grammar/tmp_parser.phpy ../../../../../examples/php/nikic-grammar.y</code></pre>
 </li>
 <li>
-<p>replace the dollar sign before Bison generate Parser and replace it back after because Bison <a href="https://github.com/akimd/bison/issues/100" target="_blank">doesn't support dollar sign</a> in the grammar:</p>
+<p>replace the dollar sign before Bison generate Parser and replace it back after because Bison <a href="https://github.com/akimd/bison/issues/100" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">doesn't support dollar sign</a> in the grammar:</p>
 <pre><code class="language-bash rounded">php bin/replace-dollar-sign.php in nikic-grammar.y nikic-grammar-replaced.y
 bison -S ../../src/php-skel.m4 -o lib/parser-tmp.php nikic-grammar-replaced.y
 php bin/replace-dollar-sign.php out lib/parser-tmp.php lib/parser.php</code></pre>
@@ -218,18 +219,18 @@ php bin/replace-dollar-sign.php out lib/parser-tmp.php lib/parser.php</code></pr
 <p>Great! The parser is ready.</p>
 <p>Time to compare PHP parser generated with <code>Bison</code> and <code>KmYacc</code>.<br><br />
 I had run tests with 3 different files sizes and different PHP versions (smaller is better):</p>
-<h4><a href="https://github.com/mrsuh/php-bison-skeleton/blob/master/examples/php/bin/parse-bison.php" target="_blank">PHP file 684 bytes</a></h4>
+<a href="#h4-[php-file-684-bytes](https://github.com/mrsuh/php-bison-skeleton/blob/master/examples/php/bin/parse-bison.php)" id="h4-[php-file-684-bytes](https://github.com/mrsuh/php-bison-skeleton/blob/master/examples/php/bin/parse-bison.php)" class="text-decoration-none text-reset"><h4><a href="https://github.com/mrsuh/php-bison-skeleton/blob/master/examples/php/bin/parse-bison.php" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">PHP file 684 bytes</a></h4></a>
 <p><a href="./images/chart-little.png"><img src="./images/chart-little.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
-<h4><a href="https://github.com/nikic/PHP-Parser/blob/4.x/lib/PhpParser/Lexer/Emulative.php" target="_blank">PHP file 8.8 kilobytes</a></h4>
+<a href="#h4-[php-file-8.8-kilobytes](https://github.com/nikic/php-parser/blob/4.x/lib/phpparser/lexer/emulative.php)" id="h4-[php-file-8.8-kilobytes](https://github.com/nikic/php-parser/blob/4.x/lib/phpparser/lexer/emulative.php)" class="text-decoration-none text-reset"><h4><a href="https://github.com/nikic/PHP-Parser/blob/4.x/lib/PhpParser/Lexer/Emulative.php" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">PHP file 8.8 kilobytes</a></h4></a>
 <p><a href="./images/chart-mid.png"><img src="./images/chart-mid.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
-<h4><a href="https://github.com/mrsuh/php-bison-skeleton/blob/master/examples/php/lib/parser.php" target="_blank">PHP file 329 kilobytes</a></h4>
+<a href="#h4-[php-file-329-kilobytes](https://github.com/mrsuh/php-bison-skeleton/blob/master/examples/php/lib/parser.php)" id="h4-[php-file-329-kilobytes](https://github.com/mrsuh/php-bison-skeleton/blob/master/examples/php/lib/parser.php)" class="text-decoration-none text-reset"><h4><a href="https://github.com/mrsuh/php-bison-skeleton/blob/master/examples/php/lib/parser.php" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">PHP file 329 kilobytes</a></h4></a>
 <p><a href="./images/chart-big.png"><img src="./images/chart-big.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>As you can see performance of the parser generated with <code>Bison</code> is slower than the parser generated with <code>KmYacc</code>.<br><br />
 I tried to optimize generated parser code, but it gave maximum  ~15 percent improvement. Not such much.<br></p>
 <p>In the end, I replaced <code>KmYacc</code> with <code>Bison</code> in php-parser, but it works not such well as I imagined.<br><br />
 Now I have a well-working php-skeleton for <code>Bison</code>.<br><br />
 Maybe next time I'll try to replace <code>KmYacc</code> with <code>ANTLR</code>.</p>
-<p>You can found php-bison-skeleton, many examples and tests into this <a href="https://github.com/mrsuh/php-bison-skeleton" target="_blank">repository</a></p>
+<p>You can found php-bison-skeleton, many examples and tests into this <a href="https://github.com/mrsuh/php-bison-skeleton" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">repository</a></p>
 <p>Thank you for your time. Hope you find this article useful.</p>
 </div>
 

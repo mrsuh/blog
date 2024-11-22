@@ -29,7 +29,7 @@
     <meta name="twitter:image:alt" content="Anton Sukhachev">
     
     <link href="/bootstrap.min.css" rel="stylesheet">
-    <link href="/style.css?v=3" rel="stylesheet">
+    <link href="/style.css?v=4" rel="stylesheet">
     <script>
         if (!window.location.host.includes('127.0.0.1') && !window.location.host.includes('localhost')) {
             !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
@@ -44,10 +44,11 @@
 <div class="header" style="padding-top: 20px; padding-bottom: 10px">
     <div class="row">
         <div class="col">
-            <a href="/">Anton Sukhachev</a>
+            <a href="/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Anton Sukhachev</a>
         </div>
         <div class="col text-end">
-            <a href="/articles/">Articles</a>
+            <a href="/articles/" class="link-primary link-underline-opacity-100">Articles</a>
+            <a href="/projects/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Projects</a>
         </div>
     </div>
     <hr/>
@@ -55,15 +56,15 @@
 
 <div class="content">
     <h1>SQLite Index Visualization: Search</h1>
-<p>In the previous <a href="/articles/2024/sqlite-index-visualization-structure/">post</a>, I explained how to extract data from SQLite Indexes and make it visual.<br />
+<p>In the previous <a href="/articles/2024/sqlite-index-visualization-structure/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">post</a>, I explained how to extract data from SQLite Indexes and make it visual.<br />
 This time, I'll try to show what a search inside an Index looks like.</p>
 <a href="#h2-how-does-sqlite-search-within-an-index?" id="h2-how-does-sqlite-search-within-an-index?" class="text-decoration-none text-reset"><h2>How does SQLite search within an Index?</h2></a>
 <p><a href="./images/b-tree-sqlite-search.svg"><img src="./images/b-tree-sqlite-search.svg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>Inside each Page, SQLite performs a binary search among Cell values. After finding the closest match, it picks the left child of that Cell.<br />
 If all Cell values on the Page are smaller than the target, it selects the Page’s right child.</p>
-<p>If we compile SQLite with <a href="https://www.sqlite.org/debugging.html" target="_blank">debugging</a> enabled and turn it on for queries, we can get detailed information about how the query work internally.<br />
+<p>If we compile SQLite with <a href="https://www.sqlite.org/debugging.html" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">debugging</a> enabled and turn it on for queries, we can get detailed information about how the query work internally.<br />
 First, we should know that SQLite has a virtual machine. Even using a simple EXPLAIN command, we can view the virtual machine’s OPCODEs, its registers (p1, p2...), and comments.<br />
-You can learn more about its internals <a href="https://www.sqlite.org/opcode.html" target="_blank">here</a>.</p>
+You can learn more about its internals <a href="https://www.sqlite.org/opcode.html" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">here</a>.</p>
 <pre><code class="language-sql rounded">EXPLAIN SELECT rowId, column1 FROM table_test INDEXED BY idx WHERE column1 = 1;
 addr  opcode         p1    p2    p3    p4             p5  comment      
 ----  -------------  ----  ----  ----  -------------  --  -------------
@@ -91,7 +92,7 @@ addr  opcode         p1    p2    p3    p4             p5  comment
 .testctrl seek_count
 1</code></pre>
 <p>We can't get more detailed information about pages and cells from the EXPLAIN output.<br />
-I dug into the code and <a href="https://github.com/mrsuh/sqlite-index/blob/main/sqlite.patch" target="_blank">added</a> functions to track all the Pages and Cells read during the search.<br />
+I dug into the code and <a href="https://github.com/mrsuh/sqlite-index/blob/main/sqlite.patch" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">added</a> functions to track all the Pages and Cells read during the search.<br />
 Example of code:</p>
 <pre><code class="language-c rounded">if (sqlite3DebugIsBtreeIndexSeekEnabled()) {
   char **payload = sqlite3DebugGetCellPayloadAndRowId(pCur, pPage, idx);
@@ -492,7 +493,7 @@ Understanding SQLite's inner workings helps us optimize queries and makes workin
 <p>All the images generated above can be reproduced using the following commands:</p>
 <pre><code class="language-bash rounded">docker run -it --rm -v "$PWD":/app/data --platform linux/x86_64 mrsuh/sqlite-index bash
 sh bin/test-search.sh</code></pre>
-<p>The code and examples are available <a href="https://github.com/mrsuh/sqlite-index" target="_blank">here</a></p>
+<p>The code and examples are available <a href="https://github.com/mrsuh/sqlite-index" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">here</a></p>
 </div>
 
 <div class="footer" style="height: 40px"></div>

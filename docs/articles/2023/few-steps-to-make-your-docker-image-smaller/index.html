@@ -9,14 +9,14 @@
     <link rel="manifest" href="/site.webmanifest">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 
-    <meta name="description" content="I have some projects where I need bison. I decided to build my image when I didn&#039;t find officia..."/>
+    <meta name="description" content="I have some projects where I need bison. I decided to build my image when I didn't find official or ..."/>
     <meta name="keywords" content="php, docker"/>
 
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="mrsuh.com">
     <meta property="og:url" content="https://mrsuh.com/articles/2023/few-steps-to-make-your-docker-image-smaller/">
     <meta property="og:title" content="Few steps to make your docker image smaller">
-    <meta property="og:description" content="I have some projects where I need bison. I decided to build my image when I didn&#039;t find officia...">
+    <meta property="og:description" content="I have some projects where I need bison. I decided to build my image when I didn't find official or ...">
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:alt" content="Anton Sukhachev">
     
@@ -25,11 +25,11 @@
     <meta name="twitter:url" content="https://mrsuh.com/articles/2023/few-steps-to-make-your-docker-image-smaller/">
     <meta name="twitter:title" content="Few steps to make your docker image smaller">
     <meta name="twitter:creator" content="@mrsuh6">
-    <meta name="twitter:description" content="I have some projects where I need bison. I decided to build my image when I didn&#039;t find officia...">
+    <meta name="twitter:description" content="I have some projects where I need bison. I decided to build my image when I didn't find official or ...">
     <meta name="twitter:image:alt" content="Anton Sukhachev">
     
     <link href="/bootstrap.min.css" rel="stylesheet">
-    <link href="/style.css?v=3" rel="stylesheet">
+    <link href="/style.css?v=4" rel="stylesheet">
     <script>
         if (!window.location.host.includes('127.0.0.1') && !window.location.host.includes('localhost')) {
             !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
@@ -44,10 +44,11 @@
 <div class="header" style="padding-top: 20px; padding-bottom: 10px">
     <div class="row">
         <div class="col">
-            <a href="/">Anton Sukhachev</a>
+            <a href="/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Anton Sukhachev</a>
         </div>
         <div class="col text-end">
-            <a href="/articles/">Articles</a>
+            <a href="/articles/" class="link-primary link-underline-opacity-100">Articles</a>
+            <a href="/projects/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Projects</a>
         </div>
     </div>
     <hr/>
@@ -55,7 +56,7 @@
 
 <div class="content">
     <h1>Few steps to make your docker image smaller</h1>
-<p>I have some projects where I need <a href="https://www.gnu.org/software/bison/" target="_blank">bison</a>. I decided to build my image when I didn't find official or fresh unofficial docker images.</p>
+<p>I have some projects where I need <a href="https://www.gnu.org/software/bison/" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">bison</a>. I decided to build my image when I didn't find official or fresh unofficial docker images.</p>
 <p>To compile bison you need to install some apt dependencies and compile the last version of <code>autoconf</code> from the source code.<br />
 I decided to make it from <code>debian:bullseye-slim</code> image. It is the latest Debian light image which size is 80.5MB (without compression).</p>
 <pre><code class="language-bash rounded">docker images --format="table {{.Repository}}\t{{.Tag}}\t{{ .Size }}"  | grep "REPOSITORY\|debian"
@@ -263,7 +264,7 @@ bison-test    4.0             91.8MB</code></pre>
 <li>reduce the number of layers</li>
 <li>remove unnecessary files/dependencies inside the layer where you created it</li>
 </ul>
-<p>You can see the original bison Dockerfile <a href="https://github.com/mrsuh/docker-bison" target="_blank">here</a>.</p>
+<p>You can see the original bison Dockerfile <a href="https://github.com/mrsuh/docker-bison" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">here</a>.</p>
 </div>
 
 <div class="footer" style="height: 40px"></div>

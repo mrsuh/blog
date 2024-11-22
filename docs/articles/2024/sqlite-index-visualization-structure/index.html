@@ -29,7 +29,7 @@
     <meta name="twitter:image:alt" content="Anton Sukhachev">
     
     <link href="/bootstrap.min.css" rel="stylesheet">
-    <link href="/style.css?v=3" rel="stylesheet">
+    <link href="/style.css?v=4" rel="stylesheet">
     <script>
         if (!window.location.host.includes('127.0.0.1') && !window.location.host.includes('localhost')) {
             !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
@@ -44,10 +44,11 @@
 <div class="header" style="padding-top: 20px; padding-bottom: 10px">
     <div class="row">
         <div class="col">
-            <a href="/">Anton Sukhachev</a>
+            <a href="/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Anton Sukhachev</a>
         </div>
         <div class="col text-end">
-            <a href="/articles/">Articles</a>
+            <a href="/articles/" class="link-primary link-underline-opacity-100">Articles</a>
+            <a href="/projects/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Projects</a>
         </div>
     </div>
     <hr/>
@@ -66,7 +67,7 @@ I chose SQLite for my experiments:</p>
 <li>it’s open-source.</li>
 </ul>
 <a href="#h2-node-and-page-structure" id="h2-node-and-page-structure" class="text-decoration-none text-reset"><h2>Node and Page Structure</h2></a>
-<p>According to SQLite <a href="https://sqlite.org/fileformat2.html" target="_blank">documentation</a>, Indexes are stored in a B-Tree structure, which is a balanced tree where each node has multiple children.<br />
+<p>According to SQLite <a href="https://sqlite.org/fileformat2.html" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">documentation</a>, Indexes are stored in a B-Tree structure, which is a balanced tree where each node has multiple children.<br />
 It typically looks like this:</p>
 <p><a href="./images/b-tree.svg"><img src="./images/b-tree.svg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>To understand how SQLite stores Nodes, let’s look at the Page and Cell structures.<br />
@@ -96,7 +97,7 @@ If we want to know child Page number - we need to read the header separately wit
   u8 *pPayload;  /* Pointer to the start of payload */
   ...
 };</code></pre>
-<p>To view index data, we can use <a href="https://www.sqlite.org/sqlanalyze.html" target="_blank">sqlite3 analyzer</a>:</p>
+<p>To view index data, we can use <a href="https://www.sqlite.org/sqlanalyze.html" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">sqlite3 analyzer</a>:</p>
 <pre><code class="language-bash rounded">sqlite3_analyzer database.sqlite
 ...
 Page size in bytes................................ 4096      
@@ -109,7 +110,7 @@ Total pages used.................................. 4
 <p>This tool provides only general information about index.</p>
 <a href="#h2-analyzing-sqlite-source-code" id="h2-analyzing-sqlite-source-code" class="text-decoration-none text-reset"><h2>Analyzing SQLite Source Code</h2></a>
 <p>After a few weeks of experimenting, I wrote my functions for index analysis.</p>
-<p>You can view the code <a href="https://github.com/mrsuh/sqlite-index/blob/main/sqlite.patch" target="_blank">here</a>:</p>
+<p>You can view the code <a href="https://github.com/mrsuh/sqlite-index/blob/main/sqlite.patch" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">here</a>:</p>
 <pre><code class="language-c rounded">char *sqlite3DebugGetMemoryPayload(Mem *mem);
 
 char **sqlite3DebugGetCellPayloadAndRowId(BtCursor *pCur, MemPage *pPage, int cellIndex);
@@ -141,7 +142,7 @@ sqlite3BtreeIndexDump: cell, number=1, leftChildPageNumber=-1, payload=2, rowId=
 ...</code></pre>
 <p>Great!<br />
 The next step was to display everything visually — an easy part of the process.</p>
-<p>I found a library called <a href="https://github.com/benyasin/d3-org-tree" target="_blank">d3-org-tree</a> for visualizing index structures.<br />
+<p>I found a library called <a href="https://github.com/benyasin/d3-org-tree" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">d3-org-tree</a> for visualizing index structures.<br />
 Here’s how it looked in the early stages:</p>
 <p><a href="./images/test-tree-d3.png"><img src="./images/test-tree-d3.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>However, there was a problem: I couldn’t adjust the spacing between Pages, so as the tree became deeper and more Pages were added at each level, the image became too large and hard to read.</p>
@@ -178,7 +179,7 @@ After a few tries with d3-org-tree, I decided that using text to display the str
                |============================================| |============================================|
 ------------------------------------------------------------------------------------------------------------------------</code></pre>
 <p>Not bad, but I could go further.<br />
-PHP's <a href="https://www.php.net/manual/en/intro.imagick.php" target="_blank">ImageMagick</a> extension lets us create images with more control over design and spacing than text alone. After about a dozen tries, here's the final version I came up with:</p>
+PHP's <a href="https://www.php.net/manual/en/intro.imagick.php" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">ImageMagick</a> extension lets us create images with more control over design and spacing than text alone. After about a dozen tries, here's the final version I came up with:</p>
 <p><a href="./images/test-tree-php.webp"><img src="./images/test-tree-php.webp" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>The image now includes all the needed data and is easy to read.</p>
 <p>In the top-left corner, there’s general information about the Index.<br />
@@ -270,7 +271,7 @@ Both Indexes look similar, but the second Index, with fewer Pages, should be fas
 +--------+-------------+-------------+</code></pre>
 <a href="#h2-vacuum-and-reindex" id="h2-vacuum-and-reindex" class="text-decoration-none text-reset"><h2>VACUUM and REINDEX</h2></a>
 <p>To achieve similar optimization, we can rebuild an existing Index with these commands:</p>
-<p><a href="https://www.sqlite.org/lang_vacuum.html" target="_blank">VACUUM</a> recreates Indexes and tables with data:</p>
+<p><a href="https://www.sqlite.org/lang_vacuum.html" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">VACUUM</a> recreates Indexes and tables with data:</p>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 INT NOT NULL);
 CREATE INDEX idx ON table_test (column1 ASC);
 INSERT INTO table_test (column1) VALUES (1),(2),(3),...,(999998),(999999),(1000000);
@@ -281,7 +282,7 @@ VACUUM;</code></pre>
 | Before | 3342        | 1000000     |
 | After  | 2930        | 1000000     |
 +--------+-------------+-------------+</code></pre>
-<p><a href="https://www.sqlite.org/lang_reindex.html" target="_blank">REINDEX</a> -  recreates Indexes only:</p>
+<p><a href="https://www.sqlite.org/lang_reindex.html" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">REINDEX</a> -  recreates Indexes only:</p>
 <pre><code class="language-sql rounded">CREATE TABLE table_test (column1 INT NOT NULL);
 CREATE INDEX idx ON table_test (column1 ASC);
 INSERT INTO table_test (column1) VALUES (1),(2),(3),...,(999998),(999999),(1000000);
@@ -318,7 +319,7 @@ The visualization helped analyze and compare different Indexes.</p>
 <p>To reproduce all of these examples, you can run the following:</p>
 <pre><code class="language-bash rounded">docker run -it --rm -v "$PWD":/app/data --platform linux/x86_64 mrsuh/sqlite-index bash
 sh bin/test-index.sh</code></pre>
-<p>Code and examples are available <a href="https://github.com/mrsuh/sqlite-index" target="_blank">here</a></p>
+<p>Code and examples are available <a href="https://github.com/mrsuh/sqlite-index" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">here</a></p>
 <p>Next, I'll focus on visualizing Index-based searches and explore some interesting SQL queries.</p>
 </div>
 

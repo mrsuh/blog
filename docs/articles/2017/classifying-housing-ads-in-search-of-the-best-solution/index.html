@@ -29,7 +29,7 @@
     <meta name="twitter:image:alt" content="Anton Sukhachev">
     
     <link href="/bootstrap.min.css" rel="stylesheet">
-    <link href="/style.css?v=3" rel="stylesheet">
+    <link href="/style.css?v=4" rel="stylesheet">
     <script>
         if (!window.location.host.includes('127.0.0.1') && !window.location.host.includes('localhost')) {
             !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
@@ -44,10 +44,11 @@
 <div class="header" style="padding-top: 20px; padding-bottom: 10px">
     <div class="row">
         <div class="col">
-            <a href="/">Anton Sukhachev</a>
+            <a href="/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Anton Sukhachev</a>
         </div>
         <div class="col text-end">
-            <a href="/articles/">Articles</a>
+            <a href="/articles/" class="link-primary link-underline-opacity-100">Articles</a>
+            <a href="/projects/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Projects</a>
         </div>
     </div>
     <hr/>
@@ -79,8 +80,8 @@
 <p>Recently, using machine learning for almost anything has become very popular. After training, it’s hard or even impossible to explain why a neural network makes certain decisions, but this doesn’t stop it from being successful in text classification. For the tests, I used a multilayer perceptron with backpropagation learning.<br />
 The following neural network libraries were used:</p>
 <ul>
-<li><a href="http://leenissen.dk/fann/wp" target="_blank">FANN</a> - written in C</li>
-<li><a href="https://github.com/harthur/brain" target="_blank">Brain</a> - written in JavaScript</li>
+<li><a href="http://leenissen.dk/fann/wp" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">FANN</a> - written in C</li>
+<li><a href="https://github.com/harthur/brain" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Brain</a> - written in JavaScript</li>
 </ul>
 <p>The challenge was converting texts of varying lengths into a format suitable for input into a neural network with a fixed number of inputs.<br />
 To do this, I extracted n-grams (sequences of more than 2 characters) that appeared in more than 15% of the texts from the test dataset. There were slightly over 200 such n-grams.</p>
@@ -98,7 +99,7 @@ To do this, I extracted n-grams (sequences of more than 2 characters) that appea
 This method gave <strong>77.13%</strong> correct answers on the test set (but tests were done on the same dataset used for training).</p>
 <p>I’m sure that with a much larger dataset and using recurrent neural networks, it would be possible to get much better results.</p>
 <a href="#h3-third-attempt-(syntax-analyzer)" id="h3-third-attempt-(syntax-analyzer)" class="text-decoration-none text-reset"><h3>Third Attempt (Syntax Analyzer)</h3></a>
-<p>At the same time, I started reading more articles about <a href="https://en.wikipedia.org/wiki/Natural_language_processing" target="_blank">natural language processing</a> and found a great parser called <a href="https://tech.yandex.ru/tomita" target="_blank">Tomita</a>. Its main advantage over other similar tools is that it supports the Russian language and has clear documentation. You can even use regular expressions in the configuration, which was useful because I already had some written.</p>
+<p>At the same time, I started reading more articles about <a href="https://en.wikipedia.org/wiki/Natural_language_processing" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">natural language processing</a> and found a great parser called <a href="https://tech.yandex.ru/tomita" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Tomita</a>. Its main advantage over other similar tools is that it supports the Russian language and has clear documentation. You can even use regular expressions in the configuration, which was useful because I already had some written.</p>
 <p>Essentially, Tomita is a much more advanced version of the approach using regular expressions but far more powerful and user-friendly. However, it also required preprocessing the text. Social media posts often don't follow grammatical or syntactical rules, so the parser struggles with tasks like splitting text into sentences, breaking sentences into lexemes, and normalizing words.</p>
 <p><em>Example configuration</em></p>
 <pre><code class="language-bash rounded">#encoding "utf8"
@@ -109,7 +110,7 @@ Flat -&gt; Word&lt;kwset=[flat]&gt; interp (+FactRent.Type="квартира");
 AnyWordFlat -&gt; AnyWord&lt;kwset=~[rent, populate, studio, flat, room, neighbor, search, number, numeric]&gt;;
 
 ROOT -&gt; Rent AnyWordFlat* Flat { weight=1 };&lt;/source&gt;</code></pre>
-<p>All configurations can be found <a href="https://github.com/mrsuh/rent-parser/tree/master/tomita" target="_blank">here</a>. This method gave <strong>93.40%</strong> correct answers on the test set.<br />
+<p>All configurations can be found <a href="https://github.com/mrsuh/rent-parser/tree/master/tomita" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">here</a>. This method gave <strong>93.40%</strong> correct answers on the test set.<br />
 In addition to classifying text, it also extracts facts like rent price, apartment size, metro station, and phone number.<br />
 In the end, with a small test set and the need for high accuracy, it was better to write algorithms manually.</p>
 <p><a href="./images/image-0.png"><img src="./images/image-0.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
@@ -138,7 +139,7 @@ Features:</p>
 <li>Go</li>
 <li>Tomita parser</li>
 </ul>
-<p>CI is set up for all services using Travis-CI and Ansible. More details about automated deployment can be found in <a href="https://mrsuh.com/articles/2017/continuous-delivery-with-travis-ci-and-ansible/" target="_blank">this article</a>.</p>
+<p>CI is set up for all services using Travis-CI and Ansible. More details about automated deployment can be found in <a href="https://mrsuh.com/articles/2017/continuous-delivery-with-travis-ci-and-ansible/" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">this article</a>.</p>
 <a href="#h2-statistics" id="h2-statistics" class="text-decoration-none text-reset"><h2>Statistics</h2></a>
 <p>The service has been running for about two months for Saint-Petersburg and has collected over 8000 ads during this time. Here's some interesting data from the ads collected so far:</p>
 <p>On average, <em>131.2</em> ads (or texts classified as ads) are added daily.<br />
@@ -149,7 +150,7 @@ Features:</p>
 <a href="./images/image-3.png"><img src="./images/image-3.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <a href="#h2-conclusions" id="h2-conclusions" class="text-decoration-none text-reset"><h2>Conclusions</h2></a>
 <p>If you don’t have a large dataset to train a network but need high accuracy, it’s better to use custom-written algorithms.<br />
-If you want to try solving a similar task, you can find a test dataset with <em>8000</em> texts and their types <a href="https://github.com/mrsuh/rent-parser/tree/master/tests" target="_blank">here</a>.</p>
+If you want to try solving a similar task, you can find a test dataset with <em>8000</em> texts and their types <a href="https://github.com/mrsuh/rent-parser/tree/master/tests" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">here</a>.</p>
 </div>
 
 <div class="footer" style="height: 40px"></div>

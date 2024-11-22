@@ -29,7 +29,7 @@
     <meta name="twitter:image:alt" content="Anton Sukhachev">
     
     <link href="/bootstrap.min.css" rel="stylesheet">
-    <link href="/style.css?v=3" rel="stylesheet">
+    <link href="/style.css?v=4" rel="stylesheet">
     <script>
         if (!window.location.host.includes('127.0.0.1') && !window.location.host.includes('localhost')) {
             !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
@@ -44,10 +44,11 @@
 <div class="header" style="padding-top: 20px; padding-bottom: 10px">
     <div class="row">
         <div class="col">
-            <a href="/">Anton Sukhachev</a>
+            <a href="/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Anton Sukhachev</a>
         </div>
         <div class="col text-end">
-            <a href="/articles/">Articles</a>
+            <a href="/articles/" class="link-primary link-underline-opacity-100">Articles</a>
+            <a href="/projects/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Projects</a>
         </div>
     </div>
     <hr/>
@@ -115,10 +116,10 @@ With this interface, frequent requests had to be sent to the server, so I added 
 <p><em>Control example</em><br />
 <a href="./images/image-5.gif"><img src="./images/image-5.gif" alt="Control example" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <iframe class="rounded" src="https://www.youtube.com/embed/eQIDCTf4-K4?si=BHR7rdUEf01EsKzm" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-<p>Detailed instructions on how to build such a car can be found <a href="https://vc.ru/dev/160142-rc-mashinka-iz-esp8266-nodemcu-i-lego" target="_blank">here</a>.</p>
+<p>Detailed instructions on how to build such a car can be found <a href="https://vc.ru/dev/160142-rc-mashinka-iz-esp8266-nodemcu-i-lego" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">here</a>.</p>
 <a href="#h2-a-bit-of-theory-and-materials" id="h2-a-bit-of-theory-and-materials" class="text-decoration-none text-reset"><h2>A Bit of Theory and Materials</h2></a>
 <p>Before diving into the details of creating the boat, I should briefly explain its components.</p>
-<p><em>Image taken from <a href="http://sudomodeli.masteraero.ru/kater_model-8.php" target="_blank">here</a></em><br />
+<p><em>Image taken from <a href="http://sudomodeli.masteraero.ru/kater_model-8.php" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">here</a></em><br />
 <a href="./images/image-6.png"><img src="./images/image-6.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>The main parts that I will be discussing are highlighted in blue:<br />
 1 - rudder;<br />
@@ -134,7 +135,7 @@ The most useful material I found was in the book by John Finch, &quot;Advanced R
 <li><a href="https://www.instructables.com/RC-Boat-2" target="_blank">www.instructables.com/RC-Boat-2</a></li>
 <li><a href="http://www.parkflyer.ru/ru/blogs/view_entry/600" target="_blank">www.parkflyer.ru/ru/blogs/view_entry/600</a></li>
 </ul>
-<p>Video course <a href="https://www.youtube.com/watch?v=dFc1KUHF7-s&amp;list=PLGL_lVjhxY8eKivkT19brQz_dBuW9ueWr" target="_blank">how to make a rocket boat</a></p>
+<p>Video course <a href="https://www.youtube.com/watch?v=dFc1KUHF7-s&amp;list=PLGL_lVjhxY8eKivkT19brQz_dBuW9ueWr" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">how to make a rocket boat</a></p>
 <a href="#h2-testing-reception-range" id="h2-testing-reception-range" class="text-decoration-none text-reset"><h2>Testing Reception Range</h2></a>
 <p>To test the range of the control system, I built this device:</p>
 <p><a href="./images/image-7.jpeg"><img src="./images/image-7.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
@@ -145,7 +146,7 @@ The table displays the number of requests/responses and the response time percen
 27 meters: 95th percentile ~ 48 milliseconds, 99th percentile ~ 283 milliseconds.</p>
 <p><em>Client interface for testing reception range</em><br />
 <a href="./images/image-9.jpeg"><img src="./images/image-9.jpeg" alt="Client interface for testing reception range" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
-<p><a href="https://github.com/mrsuh/esp8266-distance-test" target="_blank">Here</a> is the link to get the code and run the experiment yourself.</p>
+<p><a href="https://github.com/mrsuh/esp8266-distance-test" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Here</a> is the link to get the code and run the experiment yourself.</p>
 <a href="#h2-version-1.0" id="h2-version-1.0" class="text-decoration-none text-reset"><h2>Version 1.0</h2></a>
 <p>Electronic components:</p>
 <ul>
@@ -170,7 +171,7 @@ The table displays the number of requests/responses and the response time percen
 <li>The drive shaft leaks badly.</li>
 </ul>
 <p>I already had a working remote control scheme, so I could start working on the hull.<br />
-To assemble the boat's hull, I used blueprints from an article by <a href="https://www.instructables.com/id/RC-Boat-2" target="_blank">Francisco Moliner</a>.<br />
+To assemble the boat's hull, I used blueprints from an article by <a href="https://www.instructables.com/id/RC-Boat-2" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Francisco Moliner</a>.<br />
 I printed them, glued them together, and cut them out of ceiling tile.</p>
 <p><a href="./images/image-10.jpeg"><img src="./images/image-10.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>While I was assembling the hull and thinking about what to make the drive shaft from, my brushless motor A2212 1000KV arrived.</p>
@@ -449,8 +450,8 @@ I didn’t focus much on the printing settings, so the quality isn’t great.</p
 My friend liked the gift, so I’m doubly satisfied!</p>
 <p><a href="./images/image-80.jpeg"><img src="./images/image-80.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p><a href="./images/image-81.jpeg"><img src="./images/image-81.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
-<p>The source code for the 3D models and the boat code can be found <a href="https://github.com/mrsuh/boat-esp8266" target="_blank">here</a>.<br />
-The source code for the distance test is available <a href="https://github.com/mrsuh/esp8266-distance-test" target="_blank">here</a>.</p>
+<p>The source code for the 3D models and the boat code can be found <a href="https://github.com/mrsuh/boat-esp8266" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">here</a>.<br />
+The source code for the distance test is available <a href="https://github.com/mrsuh/esp8266-distance-test" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">here</a>.</p>
 <p>Thanks for your attention!</p>
 </div>
 

@@ -29,7 +29,7 @@
     <meta name="twitter:image:alt" content="Anton Sukhachev">
     
     <link href="/bootstrap.min.css" rel="stylesheet">
-    <link href="/style.css?v=3" rel="stylesheet">
+    <link href="/style.css?v=4" rel="stylesheet">
     <script>
         if (!window.location.host.includes('127.0.0.1') && !window.location.host.includes('localhost')) {
             !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
@@ -44,10 +44,11 @@
 <div class="header" style="padding-top: 20px; padding-bottom: 10px">
     <div class="row">
         <div class="col">
-            <a href="/">Anton Sukhachev</a>
+            <a href="/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Anton Sukhachev</a>
         </div>
         <div class="col text-end">
-            <a href="/articles/">Articles</a>
+            <a href="/articles/" class="link-primary link-underline-opacity-100">Articles</a>
+            <a href="/projects/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Projects</a>
         </div>
     </div>
     <hr/>
@@ -60,16 +61,16 @@ Today, I’ll show you how to achieve this using Nginx, Lua, and Redis. This app
 <p>First, you’ll need to build Nginx with the <code>nginx_lua_module</code>.</p>
 <a href="#h2-installation-guide" id="h2-installation-guide" class="text-decoration-none text-reset"><h2>Installation Guide</h2></a>
 <p>Install the Lua compiler (version 2.0 or 2.1).</p>
-<p>Download and build <a href="http://luajit.org/download.html" target="_blank">LuaJIT</a></p>
+<p>Download and build <a href="http://luajit.org/download.html" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">LuaJIT</a></p>
 <pre><code class="language-bash rounded">make &amp;&amp; sudo make install</code></pre>
 <p>To compile Nginx with the Nginx devel kit, you’ll need the <code>http_rewrite_module</code>, which, in turn, requires the PCRE library. So, let’s install that first.</p>
 <pre><code class="language-bash rounded">sudo apt-get update
 sudo apt-get install libpcre3 libpcre3-dev</code></pre>
 <p>Download the required modules along with Nginx:</p>
 <ul>
-<li><a href="https://github.com/simpl/ngx_devel_kit/tags" target="_blank">nginx devel kit</a></li>
-<li><a href="https://github.com/openresty/lua-nginx-module/tags" target="_blank">nginx lua module</a></li>
-<li><a href="http://nginx.org" target="_blank">nginx</a></li>
+<li><a href="https://github.com/simpl/ngx_devel_kit/tags" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">nginx devel kit</a></li>
+<li><a href="https://github.com/openresty/lua-nginx-module/tags" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">nginx lua module</a></li>
+<li><a href="http://nginx.org" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">nginx</a></li>
 </ul>
 <p>Let’s configure and install <code>Nginx</code></p>
 <pre><code class="language-bash rounded">export LUAJIT_LIB=/usr/local/lib // path to  lua
@@ -97,7 +98,7 @@ export LUAJIT_INC=/usr/local/include/luajit-2.1 // path to luaJit
 
 make -j2
 sudo make install</code></pre>
-<p>Download the Lua library for working with Redis from <a href="https://github.com/openresty/lua-resty-redis" target="_blank">lua redis lib</a> and copy it to the Lua library folder using the command:</p>
+<p>Download the Lua library for working with Redis from <a href="https://github.com/openresty/lua-resty-redis" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">lua redis lib</a> and copy it to the Lua library folder using the command:</p>
 <pre><code class="language-bash rounded">sudo make install</code></pre>
 <p>Include the Lua Redis library in the Nginx configuration.</p>
 <pre><code class="language-bash rounded">http {
@@ -142,7 +143,7 @@ end</code></pre>
 <p>Now, when a request is made to <code>/search-by-string?string=smth</code>, Lua will connect to Redis and try to find data with the key search:smth. If no data is found, the request will be handled by PHP. However, if the data is already cached in Redis, it will be immediately returned to the user.</p>
 <p>What if we only want to serve data to authenticated users with a specific role?<br />
 In that case, we can store the session in Redis and check the user's role based on the session data before serving the content.</p>
-<p>Since I work with the Symfony2 framework, I created a small bundle, <a href="https://github.com/mrsuh/nginx-session-handler" target="_blank">nginx-session-handler</a>, which allows storing sessions in Redis in a way that suits our needs.</p>
+<p>Since I work with the Symfony2 framework, I created a small bundle, <a href="https://github.com/mrsuh/nginx-session-handler" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">nginx-session-handler</a>, which allows storing sessions in Redis in a way that suits our needs.</p>
 <p>In Redis, the session data will be stored as a hash value:</p>
 <ul>
 <li><code>phpsession</code> - key prefix for the session;</li>

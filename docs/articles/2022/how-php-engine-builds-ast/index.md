@@ -2,7 +2,7 @@
 
 First let's look at the PHP codeflow:
 
-![PHP codeflow](./images/flow.png)
+![PHP codeflow](./images/flow.svg)
 
 Prior to version 7, PHP generated `OPcodes` right inside the parser. PHP 7 introduced a new code abstraction - [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree).
 Now we can separate `parsing` and `compilation`.

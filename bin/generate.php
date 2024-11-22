@@ -71,7 +71,7 @@ class MyParserdown extends \Parsedown
         }
 
         $name = $data['element']['name'];
-        if (!in_array($name, ['h2', 'h3'])) {
+        if (in_array($name, ['h1'])) {
             return $data;
         }
 
@@ -106,6 +106,8 @@ class MyParserdown extends \Parsedown
         if(strpos($link, 'http') !== false) {
             $data['element']['attributes']['target'] = '_blank';
         }
+
+        $data['element']['attributes']['class'] = 'link-primary link-underline-opacity-0 link-underline-opacity-100-hover';
         
         return $data;
     }
@@ -138,30 +140,9 @@ $parser = new MyParserdown();
 
 $parser->setBreaksEnabled(true);
 
-$template = file_get_contents(__DIR__ . '/../src/template.html');
+$indexContent = file_get_contents(__DIR__ . '/../src/index.md');
 
-file_put_contents(
-    __DIR__ . '/../docs/index.html',
-    str_replace(
-        [
-            '{{ content }}',
-            '{{ title }}',
-            '{{ description }}',
-            '{{ path }}',
-            '{{ scripts }}',
-            '{{ keywords }}',
-        ],
-        [
-            $parser->text(file_get_contents(__DIR__ . '/../src/index.md')),
-            'Anton Sukhachev',
-            'Personal page',
-            '',
-            '',
-            'anton sukhachev, mrsuh, blog'
-        ],
-        $template
-    )
-);
+$template = file_get_contents(__DIR__ . '/../src/template.html');
 
 class Article
 {
@@ -185,6 +166,30 @@ class Article
         $self->date = $date;
         $self->keywords = $keywords;
         $self->active = $active;
+
+        return $self;
+    }
+}
+
+class Project
+{
+    public string $title;
+    public string $description;
+    public string $url;
+    public array $keywords;
+
+    public static function create(
+        string $title,
+        string $description,
+        string $url,
+        array $keywords = [],
+    ): self
+    {
+        $self = new self();
+        $self->title = $title;
+        $self->description = $description;
+        $self->url = $url;
+        $self->keywords = $keywords;
 
         return $self;
     }
@@ -300,11 +305,6 @@ $articles = [
             '2022-09-05',
             ["php", "engine", "ast"]
         ),
-        Article::create(
-            'PHP generics', 
-            'https://phprussia.ru/moscow/2022/abstracts/9165', 
-            '2022-11-25',
-        ),
     ],
     2021 => [
         Article::create(
@@ -395,6 +395,10 @@ $articles = [
 ];
 
 $content = '';
+$indexContent .= '</br>' . PHP_EOL;
+$indexContent .= '<h4>Recent Articles</h4>' . PHP_EOL;
+$indexContent .= '<div class="row">' . PHP_EOL;
+$articleIndex = 0;
 foreach ($articles as $year => $list) {
     $content .= '<h4>' . $year . '</h4>' . PHP_EOL;
     $content .= '<div class="row">' . PHP_EOL;
@@ -405,20 +409,31 @@ foreach ($articles as $year => $list) {
             continue;
         }
         
+        $articleContent = '';
+        
         $isSamePage = strpos($article->url, 'http') === false;
-        $content .= sprintf(
-            '<div class="col-10"><a href="%s" %s>%s</a></div>', 
+        $articleContent .= sprintf(
+            '<div class="col-10"><a href="%s" %s class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">%s</a></div>', 
             $article->url,
             $isSamePage ? '' : 'target="_blank"',
             $article->name
         );
-        $content .= sprintf('<div class="col-2 text-end list-date">%s</div>', \DateTime::createFromFormat('Y-m-d', $article->date)->format('M j'));
-        $content .= '<hr class="list"/>' . PHP_EOL;
+        $articleContent .= sprintf('<div class="col-2 text-end list-date">%s</div>', \DateTime::createFromFormat('Y-m-d', $article->date)->format('M j'));
+        $articleContent .= '<hr class="list"/>' . PHP_EOL;
+        
+        $content .= $articleContent;
+        if($articleIndex < 2) {
+            $indexContent .= $articleContent;    
+        }
+        $articleIndex++;
     }
 
     $content .= '</div>' . PHP_EOL;
     $content .= '<br/>' . PHP_EOL;
 }
+
+$indexContent .= '</div>' . PHP_EOL;
+$indexContent .= '<br/>' . PHP_EOL;
 
 file_put_contents(
     __DIR__ . '/../docs/articles/index.html',
@@ -430,6 +445,9 @@ file_put_contents(
             '{{ path }}',
             '{{ scripts }}',
             '{{ keywords }}',
+            '{{ menu_main_class }}',
+            '{{ menu_article_class }}',
+            '{{ menu_project_class }}',
         ],
         [
             $content,
@@ -437,7 +455,10 @@ file_put_contents(
             '',
             '/articles',
             '',
-            'anton sukhachev, mrsuh, blog, articles, posts'
+            'anton sukhachev, mrsuh, blog, articles, posts',
+            'link-underline-opacity-0 link-underline-opacity-100-hover',
+            'link-underline-opacity-100',
+            'link-underline-opacity-0 link-underline-opacity-100-hover',
         ],
         $template
     )
@@ -488,6 +509,9 @@ foreach($articles as $year => $list) {
                     '{{ path }}',
                     '{{ scripts }}',
                     '{{ keywords }}',
+                    '{{ menu_main_class }}',
+                    '{{ menu_article_class }}',
+                    '{{ menu_project_class }}',
                 ],
                 [
                     $parser->text(file_get_contents($articleFilePath)),
@@ -498,7 +522,10 @@ foreach($articles as $year => $list) {
 <script src="/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
 ',
-                    implode(', ', $article->keywords)
+                    implode(', ', $article->keywords),
+                    'link-underline-opacity-0 link-underline-opacity-100-hover',
+                    'link-underline-opacity-100',
+                    'link-underline-opacity-0 link-underline-opacity-100-hover',
                 ],
                 $template,
             )
@@ -511,6 +538,134 @@ foreach($articles as $year => $list) {
         
     }
 }
+
+$projects = [
+    Project::create(
+        'PHP Generics',
+        'Real PHP generics implemented in PHP with RFC-style syntax <b>Class&lt;T&gt;</b> and runtime type checking.',
+        '/projects/php-generics/',
+        ["php", "generics"],
+    ),
+    Project::create(
+        'PHP Skeleton for Bison',
+        'Bison is a parser generator. It can be used to create AST parsers for PHP, JSON, SQL, and more. By default, Bison supports C/C++/D/Java, but it can be extended using a PHP skeleton.',
+        '/projects/php-bison-skeleton/',
+        ["php", "bison", "skeleton"],
+    ),
+];
+
+$indexContent .= '<h4>Recent Projects</h4>' . PHP_EOL;
+
+$projectIndex = 0;
+$content = '';
+/** @var Project $project */
+foreach ($projects as $project) {
+
+    $projectContent = '';
+
+    $projectContent .= sprintf('
+    <div class="card mb-3" style="max-width: 100%%;">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="%s"class="img-fluid rounded-start">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title"><a href="%s">%s</a></h5>
+                        <p class="card-text">%s</p>
+                    </div>
+                </div>
+            </div>
+    </div>
+    ',
+    $project->url . 'images/poster.png',
+    $project->url,
+    $project->title,
+        $project->description
+    );
+    
+    $content .= $projectContent;
+    
+    if($projectIndex < 2) {
+        $indexContent .= $projectContent;
+    }
+    $projectIndex++;
+
+    $projectFilePath = $directory . $project->url . 'index.md';
+
+    file_put_contents(
+        $directory . $project->url . 'index.html',
+        str_replace(
+            [
+                '{{ content }}',
+                '{{ title }}',
+                '{{ description }}',
+                '{{ path }}',
+                '{{ scripts }}',
+                '{{ keywords }}',
+                '{{ menu_main_class }}',
+                '{{ menu_article_class }}',
+                '{{ menu_project_class }}',
+            ],
+            [
+                $parser->text(file_get_contents($projectFilePath)),
+                $project->title,
+                substr($project->description, 0, 100) . '...',
+                $project->url,
+                '<link rel="stylesheet" href="/highlight.github-dark-dimmed.min.css">
+<script src="/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+',
+                implode(', ', $article->keywords),
+                'link-underline-opacity-0 link-underline-opacity-100-hover',
+                'link-underline-opacity-0 link-underline-opacity-100-hover',
+                'link-underline-opacity-100',
+            ],
+            $template,
+        )
+    );
+
+    $sitemap[] = SiteMapEntity::create(
+        'https://mrsuh.com' . $project->url,
+        date('Y-m-d', filemtime($projectFilePath))
+    );
+}
+
+
+file_put_contents(
+    __DIR__ . '/../docs/projects/index.html',
+    str_replace(
+        [
+            '{{ content }}',
+            '{{ title }}',
+            '{{ description }}',
+            '{{ path }}',
+            '{{ scripts }}',
+            '{{ keywords }}',
+            '{{ menu_main_class }}',
+            '{{ menu_article_class }}',
+            '{{ menu_project_class }}',
+        ],
+        [
+            $content,
+            'Projects',
+            '',
+            '/projects',
+            '',
+            'anton sukhachev, mrsuh, blog, articles, posts, projects',
+            'link-underline-opacity-0 link-underline-opacity-100-hover',
+            'link-underline-opacity-0 link-underline-opacity-100-hover',
+            'link-underline-opacity-100',
+        ],
+        $template
+    )
+);
+
+$sitemap[] = SiteMapEntity::create(
+    'https://mrsuh.com/projects/',
+    date('Y-m-d', filemtime(__DIR__ . '/../docs/projects/index.html')),
+    'daily'
+);
 
 
 $sitemapContent = '
@@ -528,3 +683,30 @@ foreach($sitemap as $entity) {
 $sitemapContent .= '</urlset>';
 
 file_put_contents(__DIR__ . '/../docs/sitemap.xml', trim($sitemapContent));
+
+
+file_put_contents(__DIR__ . '/../docs/index.html', str_replace(
+    [
+        '{{ content }}',
+        '{{ title }}',
+        '{{ description }}',
+        '{{ path }}',
+        '{{ scripts }}',
+        '{{ keywords }}',
+        '{{ menu_main_class }}',
+        '{{ menu_article_class }}',
+        '{{ menu_project_class }}',
+    ],
+    [
+        $parser->text($indexContent),
+        'Anton Sukhachev',
+        'Personal page',
+        '',
+        '',
+        'anton sukhachev, mrsuh, blog',
+        'link-underline-opacity-100',
+        'link-underline-opacity-0 link-underline-opacity-100-hover',
+        'link-underline-opacity-0 link-underline-opacity-100-hover',
+    ],
+    $template
+));

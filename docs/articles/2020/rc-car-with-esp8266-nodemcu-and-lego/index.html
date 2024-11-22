@@ -29,7 +29,7 @@
     <meta name="twitter:image:alt" content="Anton Sukhachev">
     
     <link href="/bootstrap.min.css" rel="stylesheet">
-    <link href="/style.css?v=3" rel="stylesheet">
+    <link href="/style.css?v=4" rel="stylesheet">
     <script>
         if (!window.location.host.includes('127.0.0.1') && !window.location.host.includes('localhost')) {
             !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
@@ -44,10 +44,11 @@
 <div class="header" style="padding-top: 20px; padding-bottom: 10px">
     <div class="row">
         <div class="col">
-            <a href="/">Anton Sukhachev</a>
+            <a href="/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Anton Sukhachev</a>
         </div>
         <div class="col text-end">
-            <a href="/articles/">Articles</a>
+            <a href="/articles/" class="link-primary link-underline-opacity-100">Articles</a>
+            <a href="/projects/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Projects</a>
         </div>
     </div>
     <hr/>
@@ -97,7 +98,7 @@ Here's how it works:</p>
 </ul>
 <a href="#h2-setting-up-the-arduino-ide-for-esp8266-nodemcu" id="h2-setting-up-the-arduino-ide-for-esp8266-nodemcu" class="text-decoration-none text-reset"><h2>Setting Up the Arduino IDE for ESP8266 NodeMCU</h2></a>
 <p>Adding the ESP8266 NodeMCU Board to Arduino IDE.<br />
-Download Arduino IDE: Get it from the official website: <a href="https://www.arduino.cc/en/Main/Software" target="_blank">Arduino Software</a>.</p>
+Download Arduino IDE: Get it from the official website: <a href="https://www.arduino.cc/en/Main/Software" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Arduino Software</a>.</p>
 <p>Add the ESP8266 Board Manager URL:<br />
 Open Preferences from the File menu.<br />
 Find the Additional Boards Manager URLs field and add the following URL:</p>
@@ -131,7 +132,7 @@ Go to File &gt; New to create a new project.<br />
 <p>Save the Project:<br />
 Click File &gt; Save, and name the project esp8266-car.<br />
 <a href="./images/image-9.png"><img src="./images/image-9.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
-<p>Copy the code from this <a href="https://raw.githubusercontent.com/mrsuh/car-esp8266/master/main.ino" target="_blank">link</a>.<br />
+<p>Copy the code from this <a href="https://raw.githubusercontent.com/mrsuh/car-esp8266/master/main.ino" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">link</a>.<br />
 Paste it into the Arduino IDE.</p>
 <p>In the code, you can change the Wi-Fi access point name and password:</p>
 <pre><code class="language-cpp rounded">const char *ssid = "car-esp8266";//название Wi-Fi точки доступа

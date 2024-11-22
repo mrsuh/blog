@@ -29,7 +29,7 @@
     <meta name="twitter:image:alt" content="Anton Sukhachev">
     
     <link href="/bootstrap.min.css" rel="stylesheet">
-    <link href="/style.css?v=3" rel="stylesheet">
+    <link href="/style.css?v=4" rel="stylesheet">
     <script>
         if (!window.location.host.includes('127.0.0.1') && !window.location.host.includes('localhost')) {
             !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
@@ -44,10 +44,11 @@
 <div class="header" style="padding-top: 20px; padding-bottom: 10px">
     <div class="row">
         <div class="col">
-            <a href="/">Anton Sukhachev</a>
+            <a href="/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Anton Sukhachev</a>
         </div>
         <div class="col text-end">
-            <a href="/articles/">Articles</a>
+            <a href="/articles/" class="link-primary link-underline-opacity-100">Articles</a>
+            <a href="/projects/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Projects</a>
         </div>
     </div>
     <hr/>
@@ -59,7 +60,7 @@
 Symfony 4 and PHP 7.2 were used as the application.<br />
 The goal was to compare the performance of the services under different loads and identify the optimal solution.<br />
 For convenience, everything was packaged into Docker containers and launched with docker-compose.<br />
-The source code is available <a href="https://github.com/mrsuh/php-load-test" target="_blank">here</a>.<br />
+The source code is available <a href="https://github.com/mrsuh/php-load-test" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">here</a>.<br />
 All command examples mentioned in the article should be run from the project directory.</p>
 <a href="#h2-application" id="h2-application" class="text-decoration-none text-reset"><h2>Application</h2></a>
 <p>The application runs on Symfony 4 and PHP 7.2.<br />
@@ -99,7 +100,7 @@ It responds to only one route and returns:</p>
 <ul>
 <li>OPcache enabled;</li>
 <li>bootstrap cache configured using Composer;</li>
-<li>php.ini settings aligned with <a href="https://symfony.com/doc/current/performance.html#performance-install-apcu-polyfill" target="_blank">Symfony's best practices</a>.</li>
+<li>php.ini settings aligned with <a href="https://symfony.com/doc/current/performance.html#performance-install-apcu-polyfill" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Symfony's best practices</a>.</li>
 </ul>
 <p>Logs are written to stderr:<br />
 /config/packages/prod/monolog.yaml</p>
@@ -135,7 +136,7 @@ class Kernel extends BaseKernel
 <p>Request handling is limited to two application instances (equal to the number of CPU cores).</p>
 <a href="#h2-services" id="h2-services" class="text-decoration-none text-reset"><h2>Services</h2></a>
 <a href="#h3-php-fpm" id="h3-php-fpm" class="text-decoration-none text-reset"><h3>PHP FPM</h3></a>
-<p><a href="https://www.php.net/manual/en/install.fpm.php" target="_blank">PHP Process Manager</a>. Written in C.</p>
+<p><a href="https://www.php.net/manual/en/install.fpm.php" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">PHP Process Manager</a>. Written in C.</p>
 <p>Pros:</p>
 <ul>
 <li>no need to monitor memory usage.</li>
@@ -148,7 +149,7 @@ class Kernel extends BaseKernel
 <p>Command to run the application with docker-compose:</p>
 <pre><code class="language-bash rounded">cd docker/php-fpm &amp;&amp; docker-compose up -d</code></pre>
 <a href="#h3-php-ppm" id="h3-php-ppm" class="text-decoration-none text-reset"><h3>PHP PPM</h3></a>
-<p><a href="https://github.com/php-pm/php-pm" target="_blank">PHP Process Manager</a>. Written in PHP.</p>
+<p><a href="https://github.com/php-pm/php-pm" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">PHP Process Manager</a>. Written in PHP.</p>
 <p>Pros:</p>
 <ul>
 <li>initializes variables once and reuses them afterward.</li>
@@ -161,7 +162,7 @@ class Kernel extends BaseKernel
 <p>Command to run the application with docker-compose:</p>
 <pre><code class="language-bash rounded">cd docker/php-ppm &amp;&amp; docker-compose up -d</code></pre>
 <a href="#h3-nginx-unit" id="h3-nginx-unit" class="text-decoration-none text-reset"><h3>Nginx Unit</h3></a>
-<p><a href="https://unit.nginx.org" target="_blank">Application Server by the Nginx Team</a>. Written in C</p>
+<p><a href="https://unit.nginx.org" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Application Server by the Nginx Team</a>. Written in C</p>
 <p>Pros:</p>
 <ul>
 <li>configuration can be modified via HTTP API.</li>
@@ -179,7 +180,7 @@ variables_order=E</code></pre>
 <p>Command to run the application with docker-compose:</p>
 <pre><code class="language-bash rounded">cd docker/nginx-unit &amp;&amp; docker-compose up -d</code></pre>
 <a href="#h3-react-php" id="h3-react-php" class="text-decoration-none text-reset"><h3>React PHP</h3></a>
-<p><a href="https://reactphp.org" target="_blank">Event-Driven Programming Library</a>. Written in PHP.</p>
+<p><a href="https://reactphp.org" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Event-Driven Programming Library</a>. Written in PHP.</p>
 <p>Pros:</p>
 <ul>
 <li>the library allows you to write a server that initializes variables only once and then continues to reuse them.</li>
@@ -287,7 +288,7 @@ $loop-&gt;run();</code></pre>
 <p>Command to run the application with docker-compose:</p>
 <pre><code class="language-bash rounded">cd docker/react-php &amp;&amp; docker-compose up -d --scale php=2</code></pre>
 <a href="#h3-road-runner" id="h3-road-runner" class="text-decoration-none text-reset"><h3>Road Runner</h3></a>
-<p><a href="https://github.com/spiral/roadrunner/wiki/About-RoadRunner" target="_blank">Web Server and PHP Process Manager</a>. Written in Go</p>
+<p><a href="https://github.com/spiral/roadrunner/wiki/About-RoadRunner" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Web Server and PHP Process Manager</a>. Written in Go</p>
 <p>Pros:</p>
 <ul>
 <li>you can write a worker that initializes variables only once and continues to reuse them.</li>

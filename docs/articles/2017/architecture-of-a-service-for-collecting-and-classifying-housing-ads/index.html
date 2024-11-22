@@ -29,7 +29,7 @@
     <meta name="twitter:image:alt" content="Anton Sukhachev">
     
     <link href="/bootstrap.min.css" rel="stylesheet">
-    <link href="/style.css?v=3" rel="stylesheet">
+    <link href="/style.css?v=4" rel="stylesheet">
     <script>
         if (!window.location.host.includes('127.0.0.1') && !window.location.host.includes('localhost')) {
             !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
@@ -44,10 +44,11 @@
 <div class="header" style="padding-top: 20px; padding-bottom: 10px">
     <div class="row">
         <div class="col">
-            <a href="/">Anton Sukhachev</a>
+            <a href="/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Anton Sukhachev</a>
         </div>
         <div class="col text-end">
-            <a href="/articles/">Articles</a>
+            <a href="/articles/" class="link-primary link-underline-opacity-100">Articles</a>
+            <a href="/projects/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Projects</a>
         </div>
     </div>
     <hr/>
@@ -79,14 +80,14 @@ The service has been running for over nine months.</p>
 <p>Currently, the overall interaction scheme of the services looks like this:</p>
 <p><a href="./images/image-0.png"><img src="./images/image-0.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <a href="#h2-services" id="h2-services" class="text-decoration-none text-reset"><h2>Services</h2></a>
-<h4>Service for displaying and searching ads</h4>
+<a href="#h4-service-for-displaying-and-searching-ads" id="h4-service-for-displaying-and-searching-ads" class="text-decoration-none text-reset"><h4>Service for displaying and searching ads</h4></a>
 <p><a href="./images/image-1.png"><img src="./images/image-1.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p><a href="https://github.com/mrsuh/rent-view">https://github.com/mrsuh/rent-view</a></p>
 <p>This service is written in NodeJS because the most important quality criteria were fast server response times for users.<br />
 The service fetches ads from MongoDB, renders HTML pages using the doT.js templating engine, and sends them to the browser.<br />
 The service is built with Grunt.<br />
 For the browser, scripts are written in pure JS, and styles are created with LESS. Nginx is used as a proxy server to cache some responses and enable HTTPS connections.</p>
-<h4>Ad Collection Service</h4>
+<a href="#h4-ad-collection-service" id="h4-ad-collection-service" class="text-decoration-none text-reset"><h4>Ad Collection Service</h4></a>
 <p><a href="./images/image-2.png"><img src="./images/image-2.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p><a href="https://github.com/mrsuh/rent-collector">https://github.com/mrsuh/rent-collector</a></p>
 <p>This service collects ads, classifies them, and saves them to the database.<br />
@@ -100,12 +101,12 @@ Beanstalk was chosen as the queue service. It is lightweight but doesn't have it
 <li>notifier: Notifies users about new ads. Note: The consumer communicates with the rent-notifier service.</li>
 <li>publisher: Publishes ads in several vk groups.</li>
 </ul>
-<h4>Ad Classification Service</h4>
+<a href="#h4-ad-classification-service" id="h4-ad-classification-service" class="text-decoration-none text-reset"><h4>Ad Classification Service</h4></a>
 <p><a href="https://github.com/mrsuh/rent-parser">https://github.com/mrsuh/rent-parser</a></p>
 <p>The service is written in Golang.<br />
 To extract structured data from text, the service uses the Tomita parser. It performs both preprocessing of the text and postprocessing of parsing results.<br />
-You can read more about ad classification in <a href="/articles/2017/classifying-housing-ads-in-search-of-the-best-solution/">this article</a>.</p>
-<h4>Settings Management Service</h4>
+You can read more about ad classification in <a href="/articles/2017/classifying-housing-ads-in-search-of-the-best-solution/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">this article</a>.</p>
+<a href="#h4-settings-management-service" id="h4-settings-management-service" class="text-decoration-none text-reset"><h4>Settings Management Service</h4></a>
 <p><a href="./images/image-3.png"><img src="./images/image-3.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p><a href="https://github.com/mrsuh/rent-control">https://github.com/mrsuh/rent-control</a></p>
 <p>The service is written in PHP for its familiarity with the required libraries and fast development speed.<br />
@@ -124,7 +125,7 @@ Style Library: Bootstrap 3</p>
 <li>Simplify editing records</li>
 <li>Make adding new parameters easier</li>
 </ul>
-<h4>Notification service</h4>
+<a href="#h4-notification-service" id="h4-notification-service" class="text-decoration-none text-reset"><h4>Notification service</h4></a>
 <p><em>Notification Example</em><br />
 <a href="./images/image-4.png"><img src="./images/image-4.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p>The Service is written in Golang</p>
@@ -135,14 +136,14 @@ Style Library: Bootstrap 3</p>
 <li>Each message includes a link to the original ad.</li>
 </ul>
 <a href="#h2-helper-repositories" id="h2-helper-repositories" class="text-decoration-none text-reset"><h2>Helper Repositories</h2></a>
-<h4>Code for the Shared Database in PHP</h4>
+<a href="#h4-code-for-the-shared-database-in-php" id="h4-code-for-the-shared-database-in-php" class="text-decoration-none text-reset"><h4>Code for the Shared Database in PHP</h4></a>
 <p><em>Shared Database Schema</em><br />
 <a href="./images/image-5.png"><img src="./images/image-5.png" alt="" class="img-fluid mx-auto d-block rounded img-size" /></a></p>
 <p><a href="https://github.com/mrsuh/rent-schema">https://github.com/mrsuh/rent-schema</a></p>
 <p>When the rent-control service was added, database schema code started to duplicate across services. To avoid this, the schema code was moved to a separate package.<br />
 Now, any PHP service can easily use this package by adding it as a dependency with composer:</p>
 <pre><code class="language-bash rounded">composer require mrsuh/rent-schema</code></pre>
-<h4>ODM for mongoDB</h4>
+<a href="#h4-odm-for-mongodb" id="h4-odm-for-mongodb" class="text-decoration-none text-reset"><h4>ODM for mongoDB</h4></a>
 <p><a href="https://github.com/mrsuh/mongo-odm">https://github.com/mrsuh/mongo-odm</a></p>
 <p>The first ODM for PHP MongoDB I considered was Doctrine 2. It comes with Symfony 3 and has excellent documentation.<br />
 However, at the time of building the service, for Doctrine 2 to work with the latest version of Mongo PHP drivers, you needed to install an additional package as a bridge between the new and old API. Doctrine 2 is already a large project, and adding another package made it even heavier.<br />

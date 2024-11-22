@@ -29,7 +29,7 @@
     <meta name="twitter:image:alt" content="Anton Sukhachev">
     
     <link href="/bootstrap.min.css" rel="stylesheet">
-    <link href="/style.css?v=3" rel="stylesheet">
+    <link href="/style.css?v=4" rel="stylesheet">
     <script>
         if (!window.location.host.includes('127.0.0.1') && !window.location.host.includes('localhost')) {
             !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
@@ -44,10 +44,11 @@
 <div class="header" style="padding-top: 20px; padding-bottom: 10px">
     <div class="row">
         <div class="col">
-            <a href="/">Anton Sukhachev</a>
+            <a href="/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Anton Sukhachev</a>
         </div>
         <div class="col text-end">
-            <a href="/articles/">Articles</a>
+            <a href="/articles/" class="link-primary link-underline-opacity-100">Articles</a>
+            <a href="/projects/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Projects</a>
         </div>
     </div>
     <hr/>
@@ -131,7 +132,7 @@ This approach has a small performance/memory effect and some generics types rest
 </tbody>
 </table>
 <p>no* - generics types of some languages like <code>Java</code>/<code>Hack</code> may be reflected and not used by VM at <code>runtime</code>.</p>
-<p>I can assume the PHP <a href="https://psalm.dev/docs/annotating_code/templated_annotations" target="_blank">Psalm annotations</a> are a kind of <code>type erasure generics</code>, but there is no such thing in PHP as generic types at <code>compile/run time</code>.<br />
+<p>I can assume the PHP <a href="https://psalm.dev/docs/annotating_code/templated_annotations" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Psalm annotations</a> are a kind of <code>type erasure generics</code>, but there is no such thing in PHP as generic types at <code>compile/run time</code>.<br />
 PHP Psalm annotations visibility table:</p>
 <table class="table table-bordered">
 <thead class="table-secondary">
@@ -226,7 +227,7 @@ Let's look inside the <code>$stringContainer</code> variable by <code>var_dump()
 I think <code>kind =&gt; 4</code> is a constant for type <code>string</code>.<br />
 It means you can get the generics type at <code>runtime</code>.</p>
 <p>This approach has a small performance/memory effect.<br />
-Nikita Popov already had an <a href="https://github.com/PHPGenerics/php-generics-rfc/issues/45" target="_blank">attempt</a> to implement this type of generics in <code>PHP</code>.</p>
+Nikita Popov already had an <a href="https://github.com/PHPGenerics/php-generics-rfc/issues/45" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">attempt</a> to implement this type of generics in <code>PHP</code>.</p>
 <p><code>Reified</code> generics visibility table:</p>
 <table class="table table-bordered">
 <thead class="table-secondary">
@@ -281,7 +282,7 @@ class ContainerForInt {
 
 $intContainer = new ContainerForInt(1);</code></pre>
 <p>This approach has a big memory effect.<br />
-PHP doesn't support native generics, but you can test <code>monomorphic</code> generics with my <a href="https://github.com/mrsuh/php-generics" target="_blank">library</a>.</p>
+PHP doesn't support native generics, but you can test <code>monomorphic</code> generics with my <a href="https://github.com/mrsuh/php-generics" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">library</a>.</p>
 <p><code>Monomorphic</code> generics visibility table:</p>
 <table class="table table-bordered">
 <thead class="table-secondary">
@@ -345,7 +346,7 @@ test.cpp:8:17: note:   initializing argument 1 of 'void MyContainer&lt;T&gt;::se
 <p>This approach increases <code>compile time</code>, but improves performance <code>runtime</code>.</p>
 <p>I hope it was helpful to you.<br />
 Play around with the examples above - it's a really interesting process!<br />
-If you want to go further, read this great <a href="https://thume.ca/2019/07/14/a-tour-of-metaprogramming-models-for-generics/" target="_blank">article</a> about generics.</p>
+If you want to go further, read this great <a href="https://thume.ca/2019/07/14/a-tour-of-metaprogramming-models-for-generics/" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">article</a> about generics.</p>
 <p>Have a nice day!</p>
 </div>
 

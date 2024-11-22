@@ -29,3 +29,22 @@ iframe {
     width:100%;
     height: calc(50vh);
 }
+
+.badge {
+    font-size: 0.7rem;
+    margin-right: 10px;
+}
+.article-line {
+    line-height: normal;
+    margin-bottom: 5px;
+}
+
+.contacts svg {
+    max-width: 2rem;
+    margin-right: 0.6rem;
+    text-decoration: none;
+}
+
+.contacts a {
+    text-decoration: none;
+}
