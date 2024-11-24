@@ -1,0 +1,28 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block content -%}
+    <p>Hi, I'm Anton Sukhachev<br/>
+        I'm a Software Engineer with extensive experience in web development, primarily using PHP.<br/>
+        Proven expertise in developing and maintaining scalable systems, including CDN services and streaming platforms.<br/>
+        Passionate about sharing knowledge through blog posts and technical talks.<br/>
+        Experienced in leading backend development projects, with a focus on optimizing processes and tools.
+    </p>
+
+    {% include 'layout/contacts.html.twig' %}
+
+    </br>
+
+    <h4>Recent Articles</h4>
+    <div class="row">
+        {% for item in articles %}
+            {%- include 'article/item.html.twig' with {item: item} -%}
+        {% endfor %}
+    </div>
+    
+    </br>
+    
+    <h4>Recent Projects</h4>
+    {% for item in projects %}
+        {%- include 'project/item.html.twig' with {item: item} -%}
+    {% endfor %}
+{%- endblock %}

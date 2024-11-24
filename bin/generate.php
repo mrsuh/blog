@@ -1,224 +1,34 @@
 <?php
 
+error_reporting(E_ALL ^ E_DEPRECATED);
+
+use App\Dto\SiteMap;
+use App\Dto\Article;
+use App\Dto\Project;
+use App\Html\Generator;
+use App\Markdown\Parser;
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
-class MyParserdown extends \Parsedown
-{
-    protected function inlineImage($Excerpt)
-    {
-        $data = parent::inlineImage($Excerpt);
-        if (!is_array($data)) {
-            return;
-        }
+$loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/../templates');
+$twig = new \Twig\Environment($loader, [
+    'strict_variables' => true,
+]);
+$twig->addGlobal('asset_version', time());
 
-        $data['element']['attributes']['class'] = 'img-fluid mx-auto d-block rounded img-size';
+$directory = __DIR__ . '/../docs';
 
-        $Inline = array(
-            'extent' => $data['extent'],
-            'element' => array(
-                'name' => 'a',
-                'handler' => 'element',
-                'attributes' => array(
-                    'href' => $data['element']['attributes']['src'],
-                ),
-                'text' => $data['element']
-            ),
-        );
+$generator = new Generator($directory, $twig);
 
-        return $Inline;
-    }
+$indexProjects = [];
+$indexArticles = [];
 
-    protected function blockFencedCode($Line)
-    {
-        $data = parent::blockFencedCode($Line);
-        if (!is_array($data)) {
-            return;
-        }
-
-        $element = &$data['element']['text'];
-        if (!isset($element['attributes'])) {
-            $element['attributes'] = ['class' => ''];
-        }
-
-        $element['attributes']['class'] .= ' rounded';
-
-        return $data;
-    }
-    
-    protected function blockTable($Line, array $Block = null)
-    {
-        $data = parent::blockTable($Line, $Block);
-        if (!is_array($data)) {
-            return;
-        }
-
-        $data['element']['attributes'] = [
-            'class' => 'table table-bordered'
-        ];
-
-        $data['element']['text'][0]['attributes'] = [
-            'class' => 'table-secondary'
-        ];
-
-        return $data;
-    }
-
-    protected function blockHeader($Line)
-    {
-        $data = parent::blockHeader($Line);
-        if (!is_array($data)) {
-            return;
-        }
-
-        $name = $data['element']['name'];
-        if (in_array($name, ['h1'])) {
-            return $data;
-        }
-
-        $text = $data['element']['text'];
-
-        $id = $name . '-' . str_replace(' ', '-', strtolower($text));
-
-        $Inline = [
-            'element' => [
-                'name' => 'a',
-                'handler' => 'element',
-                'attributes' => [
-                    'href' => '#' . $id,
-                    'id' => $id,
-                    'class' => 'text-decoration-none text-reset',
-                ],
-                'text' => $data['element']
-            ],
-        ];
-
-        return $Inline;
-    }
-
-    protected function inlineLink($Excerpt) {
-        $data = parent::inlineLink($Excerpt);
-        if (!is_array($data)) {
-            return;
-        }
-        
-        $link = $data['element']['attributes']['href'];
-        
-        if(strpos($link, 'http') !== false) {
-            $data['element']['attributes']['target'] = '_blank';
-        }
-
-        $data['element']['attributes']['class'] = 'link-primary link-underline-opacity-0 link-underline-opacity-100-hover';
-        
-        return $data;
-    }
-
-    protected function blockQuote($Line) {
-        $data = parent::blockQuote($Line);
-        if (!is_array($data)) {
-            return;
-        }
-        
-        $data['element']['attributes'] = [
-            'class' => 'text-muted link-secondary quote'
-        ];
-        
-        return $data;
-    }
-
-    protected function blockQuoteContinue($Line, array $Block)
-    {
-        $data = parent::blockQuoteContinue($Line, $Block);
-        if (!is_array($data)) {
-            return;
-        }
-
-        return $data;
-    }
-}
-
-$parser = new MyParserdown();
-
+$parser = new Parser();
 $parser->setBreaksEnabled(true);
 
-$indexContent = file_get_contents(__DIR__ . '/../src/index.md');
-
-$template = file_get_contents(__DIR__ . '/../src/template.html');
-
-class Article
-{
-    public string $name;
-    public string $url;
-    public string $date;
-    public array $keywords;
-    public bool $active;
-
-    public static function create(
-        string $name,
-        string $url,
-        string $date,
-        array $keywords = [],
-        bool $active = true,
-    ): self
-    {
-        $self = new self();
-        $self->name = $name;
-        $self->url = $url;
-        $self->date = $date;
-        $self->keywords = $keywords;
-        $self->active = $active;
-
-        return $self;
-    }
-}
-
-class Project
-{
-    public string $title;
-    public string $description;
-    public string $url;
-    public array $keywords;
-
-    public static function create(
-        string $title,
-        string $description,
-        string $url,
-        array $keywords = [],
-    ): self
-    {
-        $self = new self();
-        $self->title = $title;
-        $self->description = $description;
-        $self->url = $url;
-        $self->keywords = $keywords;
-
-        return $self;
-    }
-}
-
-class SiteMapEntity
-{
-    public string $url;
-    public string $date;
-    public string $changefreq;
-
-    public static function create(
-        string $url,
-        string $date,
-        string $changefreq = 'weekly',
-    ): self
-    {
-        $self = new self();
-        $self->url = $url;
-        $self->date = $date;
-        $self->changefreq = $changefreq;
-
-        return $self;
-    }
-}
-
 $sitemap = [
-    SiteMapEntity::create('https://mrsuh.com', '2024-11-01'),
-    SiteMapEntity::create('https://mrsuh.com/articles/', '2024-11-13', 'daily'),
+    SiteMap::create('https://mrsuh.com', '2024-11-01'),
+    SiteMap::create('https://mrsuh.com/articles/', '2024-11-13', 'daily'),
 ];
 
 $articles = [
@@ -393,83 +203,14 @@ $articles = [
         ),
     ]
 ];
-
-$content = '';
-$indexContent .= '</br>' . PHP_EOL;
-$indexContent .= '<h4>Recent Articles</h4>' . PHP_EOL;
-$indexContent .= '<div class="row">' . PHP_EOL;
-$articleIndex = 0;
-foreach ($articles as $year => $list) {
-    $content .= '<h4>' . $year . '</h4>' . PHP_EOL;
-    $content .= '<div class="row">' . PHP_EOL;
-    /** @var Article $article */
-    foreach ($list as $index => $article) {
-        
-        if(!$article->active) {
-            continue;
-        }
-        
-        $articleContent = '';
-        
-        $isSamePage = strpos($article->url, 'http') === false;
-        $articleContent .= sprintf(
-            '<div class="col-10"><a href="%s" %s class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">%s</a></div>', 
-            $article->url,
-            $isSamePage ? '' : 'target="_blank"',
-            $article->name
-        );
-        $articleContent .= sprintf('<div class="col-2 text-end list-date">%s</div>', \DateTime::createFromFormat('Y-m-d', $article->date)->format('M j'));
-        $articleContent .= '<hr class="list"/>' . PHP_EOL;
-        
-        $content .= $articleContent;
-        if($articleIndex < 2) {
-            $indexContent .= $articleContent;    
-        }
-        $articleIndex++;
-    }
-
-    $content .= '</div>' . PHP_EOL;
-    $content .= '<br/>' . PHP_EOL;
-}
-
-$indexContent .= '</div>' . PHP_EOL;
-$indexContent .= '<br/>' . PHP_EOL;
-
-file_put_contents(
-    __DIR__ . '/../docs/articles/index.html',
-    str_replace(
-        [
-            '{{ content }}',
-            '{{ title }}',
-            '{{ description }}',
-            '{{ path }}',
-            '{{ scripts }}',
-            '{{ keywords }}',
-            '{{ menu_main_class }}',
-            '{{ menu_article_class }}',
-            '{{ menu_project_class }}',
-        ],
-        [
-            $content,
-            'Articles',
-            '',
-            '/articles',
-            '',
-            'anton sukhachev, mrsuh, blog, articles, posts',
-            'link-underline-opacity-0 link-underline-opacity-100-hover',
-            'link-underline-opacity-100',
-            'link-underline-opacity-0 link-underline-opacity-100-hover',
-        ],
-        $template
-    )
-);
-
-
-$directory = __DIR__ . '/../docs';
 foreach($articles as $year => $list) {
     foreach($list as $article) {
         
-        if(strpos($article->url, 'https://') !== false) {
+        if(str_contains($article->url, 'https://')) {
+            continue;
+        }
+        
+        if(!$article->active) {
             continue;
         }
 
@@ -483,7 +224,7 @@ foreach($articles as $year => $list) {
         $description = '';
         fgets($file);
         while (strlen($description) < 100) {
-            $line = htmlspecialchars(trim(strip_tags($parser->text(fgets($file)))));
+            $line = trim(strip_tags($parser->text(fgets($file))));
             if (empty($line)) {
                 continue;
             }
@@ -493,49 +234,27 @@ foreach($articles as $year => $list) {
         $description = substr($description, 0, 100) . '...';
         fclose($file);
 
-        $keywords = ["development"];
-        $keywordsFilePath = $directory . $article->url . 'keywords.json';
-        if(is_file($keywordsFilePath)) {
-            $keywords = json_decode(file_get_contents($keywordsFilePath), true);
-        }
-
-        file_put_contents(
-            $directory . $article->url . 'index.html',
-            str_replace(
-                [
-                    '{{ content }}',
-                    '{{ title }}',
-                    '{{ description }}',
-                    '{{ path }}',
-                    '{{ scripts }}',
-                    '{{ keywords }}',
-                    '{{ menu_main_class }}',
-                    '{{ menu_article_class }}',
-                    '{{ menu_project_class }}',
-                ],
-                [
-                    $parser->text(file_get_contents($articleFilePath)),
-                    $article->name,
-                    $description,
-                    $article->url,
-                    '<link rel="stylesheet" href="/highlight.github-dark-dimmed.min.css">
-<script src="/highlight.min.js"></script>
-<script>hljs.highlightAll();</script>
-',
-                    implode(', ', $article->keywords),
-                    'link-underline-opacity-0 link-underline-opacity-100-hover',
-                    'link-underline-opacity-100',
-                    'link-underline-opacity-0 link-underline-opacity-100-hover',
-                ],
-                $template,
-            )
+        $generator->generate(
+            $article->url . 'index.html',
+            'article/index.html.twig',
+            [
+                'title' => $article->title,
+                'description' => $description,
+                'keywords' => $article->keywords,
+                'page_name' => 'article',
+                'content' => $parser->text(file_get_contents($articleFilePath)),
+                'path' => $article->url,
+            ]
         );
-
-        $sitemap[] = SiteMapEntity::create(
+        
+        if(count($indexArticles) < 2) {
+            $indexArticles[] = $article;
+        }
+        
+        $sitemap[] = SiteMap::create(
             'https://mrsuh.com' . $article->url,
             date('Y-m-d', filemtime($articleFilePath))
         );
-        
     }
 }
 
@@ -553,160 +272,81 @@ $projects = [
         ["php", "bison", "skeleton"],
     ),
 ];
-
-$indexContent .= '<h4>Recent Projects</h4>' . PHP_EOL;
-
-$projectIndex = 0;
-$content = '';
-/** @var Project $project */
 foreach ($projects as $project) {
-
-    $projectContent = '';
-
-    $projectContent .= sprintf('
-    <div class="card mb-3" style="max-width: 100%%;">
-            <div class="row g-0">
-                <div class="col-md-4">
-                    <img src="%s"class="img-fluid rounded-start">
-                </div>
-                <div class="col-md-8">
-                    <div class="card-body">
-                        <h5 class="card-title"><a href="%s">%s</a></h5>
-                        <p class="card-text">%s</p>
-                    </div>
-                </div>
-            </div>
-    </div>
-    ',
-    $project->url . 'images/poster.png',
-    $project->url,
-    $project->title,
-        $project->description
-    );
-    
-    $content .= $projectContent;
-    
-    if($projectIndex < 2) {
-        $indexContent .= $projectContent;
-    }
-    $projectIndex++;
 
     $projectFilePath = $directory . $project->url . 'index.md';
 
-    file_put_contents(
-        $directory . $project->url . 'index.html',
-        str_replace(
-            [
-                '{{ content }}',
-                '{{ title }}',
-                '{{ description }}',
-                '{{ path }}',
-                '{{ scripts }}',
-                '{{ keywords }}',
-                '{{ menu_main_class }}',
-                '{{ menu_article_class }}',
-                '{{ menu_project_class }}',
-            ],
-            [
-                $parser->text(file_get_contents($projectFilePath)),
-                $project->title,
-                substr($project->description, 0, 100) . '...',
-                $project->url,
-                '<link rel="stylesheet" href="/highlight.github-dark-dimmed.min.css">
-<script src="/highlight.min.js"></script>
-<script>hljs.highlightAll();</script>
-',
-                implode(', ', $article->keywords),
-                'link-underline-opacity-0 link-underline-opacity-100-hover',
-                'link-underline-opacity-0 link-underline-opacity-100-hover',
-                'link-underline-opacity-100',
-            ],
-            $template,
-        )
+    $generator->generate(
+        $project->url . 'index.html',
+        'project/index.html.twig',
+        [
+            'title' => $project->title,
+            'description' => substr($project->description, 0, 100) . '...',
+            'keywords' => $project->keywords,
+            'page_name' => 'project',
+            'content' => $parser->text(file_get_contents($projectFilePath)),
+            'path' => $project->url,
+        ]
     );
 
-    $sitemap[] = SiteMapEntity::create(
+    $sitemap[] = SiteMap::create(
         'https://mrsuh.com' . $project->url,
         date('Y-m-d', filemtime($projectFilePath))
     );
+    
+    if(count($indexProjects) < 2) {
+        $indexProjects[] = $project;
+    }
 }
 
-
-file_put_contents(
-    __DIR__ . '/../docs/projects/index.html',
-    str_replace(
-        [
-            '{{ content }}',
-            '{{ title }}',
-            '{{ description }}',
-            '{{ path }}',
-            '{{ scripts }}',
-            '{{ keywords }}',
-            '{{ menu_main_class }}',
-            '{{ menu_article_class }}',
-            '{{ menu_project_class }}',
-        ],
-        [
-            $content,
-            'Projects',
-            '',
-            '/projects',
-            '',
-            'anton sukhachev, mrsuh, blog, articles, posts, projects',
-            'link-underline-opacity-0 link-underline-opacity-100-hover',
-            'link-underline-opacity-0 link-underline-opacity-100-hover',
-            'link-underline-opacity-100',
-        ],
-        $template
-    )
-);
-
-$sitemap[] = SiteMapEntity::create(
+$sitemap[] = SiteMap::create(
     'https://mrsuh.com/projects/',
-    date('Y-m-d', filemtime(__DIR__ . '/../docs/projects/index.html')),
+    date('Y-m-d', filemtime($directory . '/projects/index.html')),
     'daily'
 );
 
-
-$sitemapContent = '
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
-
-foreach($sitemap as $entity) {
-    $sitemapContent .= '  <url>' . PHP_EOL;
-    $sitemapContent .= '    <loc>' . $entity->url . '</loc>' . PHP_EOL;
-    $sitemapContent .= '    <lastmod>' . $entity->date . '</lastmod>' . PHP_EOL;
-    $sitemapContent .= '    <changefreq>' . $entity->changefreq . '</changefreq>' . PHP_EOL;
-    $sitemapContent .= '    <priority>1</priority>' . PHP_EOL;
-    $sitemapContent .= '  </url>' . PHP_EOL;
-}
-$sitemapContent .= '</urlset>';
-
-file_put_contents(__DIR__ . '/../docs/sitemap.xml', trim($sitemapContent));
-
-
-file_put_contents(__DIR__ . '/../docs/index.html', str_replace(
+$generator->generate(
+    'index.html',
+    'index.html.twig',
     [
-        '{{ content }}',
-        '{{ title }}',
-        '{{ description }}',
-        '{{ path }}',
-        '{{ scripts }}',
-        '{{ keywords }}',
-        '{{ menu_main_class }}',
-        '{{ menu_article_class }}',
-        '{{ menu_project_class }}',
-    ],
+        'title' => 'Anton Sukhachev',
+        'description' => 'Personal page',
+        'keywords' => ['anton sukhachev', 'mrsuh', 'blog'],
+        'page_name' => 'index',
+        'projects' => $indexProjects,
+        'articles' => $indexArticles,
+        'path' => ''
+    ]
+);
+
+$generator->generate(
+    'projects/index.html',
+    'project/list.html.twig',
     [
-        $parser->text($indexContent),
-        'Anton Sukhachev',
-        'Personal page',
-        '',
-        '',
-        'anton sukhachev, mrsuh, blog',
-        'link-underline-opacity-100',
-        'link-underline-opacity-0 link-underline-opacity-100-hover',
-        'link-underline-opacity-0 link-underline-opacity-100-hover',
-    ],
-    $template
-));
+        'title' => 'Projects',
+        'keywords' => ['anton sukhachev', 'mrsuh', 'blog', 'articles', 'posts', 'projects'],
+        'page_name' => 'project',
+        'list' => $projects,
+        'path' => '/projects/',
+    ]
+);
+
+$generator->generate(
+    'articles/index.html',
+    'article/list.html.twig', 
+    [
+        'title' => 'Articles',
+        'keywords' => ['anton sukhachev', 'mrsuh', 'blog', 'articles', 'posts', 'projects'],
+        'page_name' => 'article',
+        'list' => $articles,
+        'path' => '/articles/',
+    ]
+);
+
+$generator->generate(
+    'sitemap.xml',
+    'sitemap.html.twig', 
+    [
+        'list' => $sitemap,
+    ]
+);

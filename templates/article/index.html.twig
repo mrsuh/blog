@@ -1,0 +1,18 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block content -%}
+    {{- content|raw -}}
+{%- endblock %}
+
+{% block footer %}
+    <div class="row" style="height: 80px">
+        <hr class="list"/>
+        {% include 'layout/contacts.html.twig' with {class: 'text-center'} %}
+    </div>
+{% endblock %}
+
+{% block script %}
+    <link rel="stylesheet" href="/highlight.github-dark-dimmed.min.css">
+    <script src="/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+{% endblock %}

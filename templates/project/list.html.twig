@@ -1,0 +1,7 @@
+{% extends "layout/base.html.twig" %}
+
+{% block content %}
+    {% for item in list %}
+        {%- include 'project/item.html.twig' with {item: item} -%}
+    {% endfor %}
+{% endblock %}

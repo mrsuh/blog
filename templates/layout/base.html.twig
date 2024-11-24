@@ -8,15 +8,18 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-
-    <meta name="description" content="{{ description }}"/>
-    <meta name="keywords" content="{{ keywords }}"/>
+{% if description is defined %}
+    <meta name="description" content="{{ description|raw }}"/>
+{% endif %}
+    <meta name="keywords" content="{{ keywords|join(', ') }}"/>
 
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="mrsuh.com">
     <meta property="og:url" content="https://mrsuh.com{{ path }}">
     <meta property="og:title" content="{{ title }}">
-    <meta property="og:description" content="{{ description }}">
+{% if description is defined %}
+    <meta property="og:description" content="{{ description|raw }}">
+{% endif %}
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:alt" content="Anton Sukhachev">
     
@@ -25,11 +28,13 @@
     <meta name="twitter:url" content="https://mrsuh.com{{ path }}">
     <meta name="twitter:title" content="{{ title }}">
     <meta name="twitter:creator" content="@mrsuh6">
-    <meta name="twitter:description" content="{{ description }}">
+{% if description is defined %}
+    <meta name="twitter:description" content="{{ description|raw }}">
+{% endif %}
     <meta name="twitter:image:alt" content="Anton Sukhachev">
     
     <link href="/bootstrap.min.css" rel="stylesheet">
-    <link href="/style.css?v=4" rel="stylesheet">
+    <link href="/style.css?v={{ asset_version }}" rel="stylesheet">
     <script>
         if (!window.location.host.includes('127.0.0.1') && !window.location.host.includes('localhost')) {
             !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
@@ -40,25 +45,28 @@
 </head>
 
 <body class="container fs-5" style="max-width: 1000px">
+{% import 'layout/macro.html.twig' as macro %}
 
 <div class="header" style="padding-top: 20px; padding-bottom: 10px">
     <div class="row">
         <div class="col">
-            <a href="/" class="link-primary {{ menu_main_class }}">Anton Sukhachev</a>
+            <a href="/" class="link-primary {{ macro.get_menu_class(page_name == 'index') }}">Anton Sukhachev</a>
         </div>
         <div class="col text-end">
-            <a href="/articles/" class="link-primary {{ menu_article_class }}">Articles</a>
-            <a href="/projects/" class="link-primary {{ menu_project_class }}">Projects</a>
+            <a href="/articles/" class="link-primary {{ macro.get_menu_class(page_name == 'article') }}">Articles</a>
+            <a href="/projects/" class="link-primary {{ macro.get_menu_class(page_name == 'project') }}">Projects</a>
         </div>
     </div>
     <hr/>
 </div>
 
 <div class="content">
-    {{ content }}
+    {% block content %}{% endblock %}
 </div>
 
-<div class="footer" style="height: 40px"></div>
+<div class="footer">
+    {% block footer %}{% endblock %}
+</div>
 </body>
-{{ scripts }}
+{% block script %}{% endblock %}
 </html>
