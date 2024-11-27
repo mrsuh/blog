@@ -271,6 +271,12 @@ $projects = [
         '/projects/php-bison-skeleton/',
         ["php", "bison", "skeleton"],
     ),
+    Project::create(
+        'PHP var_sizeof()',
+        'Function to get the actual size of any PHP variable in bytes. It calculates the size of internal PHP structures along with any additional allocated memory.',
+        '/projects/php-var-sizeof/',
+        ["php", "sizeof", "var_sizeof"],
+    ),
 ];
 foreach ($projects as $project) {
 

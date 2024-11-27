@@ -145,8 +145,14 @@
         <priority>1</priority>
     </url>
     <url>
+        <loc>https://mrsuh.com/projects/php-var-sizeof/</loc>
+        <lastmod>2024-11-27</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
         <loc>https://mrsuh.com/projects/</loc>
-        <lastmod>2024-11-26</lastmod>
+        <lastmod>2024-11-27</lastmod>
         <changefreq>daily</changefreq>
         <priority>1</priority>
     </url>

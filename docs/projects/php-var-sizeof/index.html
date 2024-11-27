@@ -3,27 +3,27 @@
         <meta http-equiv="content-type" content="text/html; charset=utf-8">
         <meta name="author" content="Anton Sukhachev">
         <title>
-            AST parser with PHP and Bison
+            PHP var_sizeof()
         </title>
         <link rel="icon" href="/favicon.ico" sizes="any">
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
         <link rel="manifest" href="/site.webmanifest">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-        <meta name="description" content="Read this post if you don't know what Bison is. I already have the Bison AST parser, but this time I...">
-        <meta name="keywords" content="php, bison, ast">
+        <meta name="description" content="Function to get the actual size of any PHP variable in bytes. It calculates the size of internal PHP...">
+        <meta name="keywords" content="php, sizeof, var_sizeof">
         <meta property="og:type" content="website">
         <meta property="og:site_name" content="mrsuh.com">
-        <meta property="og:url" content="https://mrsuh.com/articles/2023/ast-parser-with-php-and-bison/">
-        <meta property="og:title" content="AST parser with PHP and Bison">
-        <meta property="og:description" content="Read this post if you don't know what Bison is. I already have the Bison AST parser, but this time I...">
+        <meta property="og:url" content="https://mrsuh.com/projects/php-var-sizeof/">
+        <meta property="og:title" content="PHP var_sizeof()">
+        <meta property="og:description" content="Function to get the actual size of any PHP variable in bytes. It calculates the size of internal PHP...">
         <meta property="og:image:type" content="image/png">
         <meta property="og:image:alt" content="Anton Sukhachev">
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:site" content="mrsuh.com">
-        <meta name="twitter:url" content="https://mrsuh.com/articles/2023/ast-parser-with-php-and-bison/">
-        <meta name="twitter:title" content="AST parser with PHP and Bison">
+        <meta name="twitter:url" content="https://mrsuh.com/projects/php-var-sizeof/">
+        <meta name="twitter:title" content="PHP var_sizeof()">
         <meta name="twitter:creator" content="@mrsuh6">
-        <meta name="twitter:description" content="Read this post if you don't know what Bison is. I already have the Bison AST parser, but this time I...">
+        <meta name="twitter:description" content="Function to get the actual size of any PHP variable in bytes. It calculates the size of internal PHP...">
         <meta name="twitter:image:alt" content="Anton Sukhachev">
         <link href="/bootstrap.min.css" rel="stylesheet">
         <link href="/style.css?v=1732688691" rel="stylesheet">
@@ -42,374 +42,464 @@
                     <a href="/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Anton Sukhachev</a>
                 </div>
                 <div class="col text-end">
-                    <a href="/articles/" class="link-primary link-underline-opacity-100">Articles</a> <a href="/projects/" class=
-                    "link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Projects</a>
+                    <a href="/articles/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Articles</a> <a href="/projects/" class=
+                    "link-primary link-underline-opacity-100">Projects</a>
                 </div>
             </div>
             <hr>
         </div>
         <div class="content">
             <h1>
-                AST parser with PHP and Bison
+                PHP var_sizeof()
             </h1>
-            <blockquote class="text-muted link-secondary quote">
-                <p>
-                    Read this <a href="/articles/2023/php-skeleton-for-bison/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">post</a> if you don't know what Bison is.
-                </p>
-            </blockquote>
             <p>
-                I already have the <a href="https://github.com/mrsuh/php-ast" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Bison AST parser</a>, but
-                this time I will do it without PHP FFI.
-            </p>
+                The <a href="https://github.com/mrsuh/php-var-sizeof" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">library</a> provides functions to
+                get the size of any PHP variable in bytes<br>
+                It should be a more accurate tool for calculating the total size of a PHP variable than <code>memory_get_usage()</code>, but it has <a href="#h2-limitations" class=
+                "link-primary link-underline-opacity-0 link-underline-opacity-100-hover">limitations</a>.
+            </p><a href="#h2-how-it-works" id="h2-how-it-works" class="text-decoration-none text-reset">
+            <h2>
+                How it works
+            </h2></a>
             <p>
-                First, we need to install the <a href="https://github.com/mrsuh/php-bison-skeleton" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">PHP
-                skeleton package</a> to build the parser and <a href="https://github.com/mrsuh/tree-printer" target="_blank" class=
-                "link-primary link-underline-opacity-0 link-underline-opacity-100-hover">tree printer package</a> to print <code>AST</code>.
-            </p>
-            <pre><code class="language-bash rounded">composer require --dev mrsuh/php-bison-skeleton
-composer require mrsuh/tree-printer</code></pre>
-            <p>
-                It will more readable if we separate code from <code>printer.php</code> to individual files.
-            </p>
-            <pre><code class="language-bash rounded">.
-├── /ast-parser
-    ├── /bin
-    │   └── parse.php # entry point for parser
-    ├── /lib
-    │   └── parser.php # generated file
-    ├── /src
-    │   ├── Lexer.php
-    │   └── Node.php # AST node
-    └── grammar.y       </code></pre>
-            <p>
-                To print <code>AST</code> with the tree printer package <code>Node</code> class must implement <code>Mrsuh\Tree\NodeInterface</code>.
-            </p>
-            <p>
-                <code>src/Node.php</code>
-            </p>
+                The <code>var_sizeof()</code> and <code>var_class_sizeof()</code> functions use FFI to access the internal structures of PHP variables.<br>
+                They calculate the size of internal structures like <code>zval</code>, <code>_zend_array</code>, <code>_zend_object</code>, etc., along with any additional allocated memory for these
+                structures.<br>
+                However, they do not account for the memory used by handlers, functions, or similar components.
+            </p><a href="#h2-requirements" id="h2-requirements" class="text-decoration-none text-reset">
+            <h2>
+                Requirements
+            </h2></a>
+            <ul>
+                <li>PHP &gt;= 7.4 (with FFI)
+                </li>
+                <li>Linux(x86_64/aarch64) / Darwin(x86_64/arm64)
+                </li>
+            </ul><a href="#h2-usage" id="h2-usage" class="text-decoration-none text-reset">
+            <h2>
+                Usage
+            </h2></a>
+            <pre><code class="language-bash rounded">composer require mrsuh/php-var-sizeof</code></pre>
             <pre><code class="language-php rounded">&lt;?php
 
-namespace App;
+require_once __DIR__ . '/vendor/autoload.php';
 
-use Mrsuh\Tree\NodeInterface;
+$int = 1;
+printf("variable \$int size: %d bytes\n", var_sizeof($int));
 
-class Node implements NodeInterface
-{
-    private string $name;
-    private string $value;
-    /** @var Node[] */
-    private array $children;
+$array = array_fill(0, 100, $a);
+printf("variable \$array size: %d bytes\n", var_sizeof($array));
 
-    public function __construct(string $name, string $value, array $children = [])
-    {
-        $this-&gt;name     = $name;
-        $this-&gt;value    = $value;
-        $this-&gt;children = $children;
-    }
-
-    public function getChildren(): array
-    {
-        return $this-&gt;children;
-    }
-
-    public function __toString(): string
-    {
-        $line = $this-&gt;name;
-        if (!empty($this-&gt;value)) {
-            $line .= sprintf(" '%s'", $this-&gt;value);
-        }
-
-        return $line;
-    }
-}</code></pre>
+$object = new \stdClass();
+printf("variable \$object size: %d bytes\n", var_sizeof($object));
+printf("class \$object size: %d bytes\n", var_class_sizeof($object));</code></pre><a href="#h2-var_sizeof-vs-memory_get_usage" id="h2-var_sizeof-vs-memory_get_usage" class=
+"text-decoration-none text-reset">
+            <h2>
+                var_sizeof vs memory_get_usage
+            </h2></a>
             <p>
-                <code>Lexer</code> is not modified from <a href="/articles/2023/php-skeleton-for-bison/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">previous
-                post</a>, but this time we will put it in a separate file <code>src/Lexer.php</code>.
-            </p>
-            <p>
-                <code>src/Lexer.php</code>
-            </p>
-            <pre><code class="language-php rounded">&lt;?php
-
-namespace App;
-
-class Lexer implements LexerInterface {
-
-    private array $words;
-    private int   $index = 0;
-    private int   $value = 0;
-
-    public function __construct($resource)
-    {
-        $this-&gt;words = explode(' ', trim(fgets($resource)));
-    }
-
-    public function yyerror(string $message): void
-    {
-        printf("%s\n", $message);
-    }
-
-    public function getLVal()
-    {
-        return $this-&gt;value;
-    }
-
-    public function yylex(): int
-    {
-        if ($this-&gt;index &gt;= count($this-&gt;words)) {
-            return LexerInterface::YYEOF;
-        }
-
-        $word = $this-&gt;words[$this-&gt;index++];
-        if (is_numeric($word)) {
-            $this-&gt;value = (int)$word;
-
-            return LexerInterface::T_NUMBER;
-        }
-
-        return ord($word);
-    }
-}</code></pre>
-            <p>
-                For example, <code>Lexer</code> will translate the expression <code>10 + 20 - 30</code> into this:
+                PHP 8.1.2 Linux(x86_64)
             </p>
             <table class="table table-bordered">
                 <thead class="table-secondary">
                     <tr>
                         <th>
-                            word
+                            type
                         </th>
                         <th>
-                            token
+                            var_sizeof(bytes)
                         </th>
                         <th>
-                            value
+                            memory_get_usage(bytes)
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>
-                            10
+                            NULL
                         </td>
                         <td>
-                            LexerInterface::T_NUMBER (258)
+                            16
                         </td>
                         <td>
-                            10
+                            0
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            +
+                            boolean(true)
                         </td>
                         <td>
-                            ASCII (43)
-                        </td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            20
+                            16
                         </td>
                         <td>
-                            LexerInterface::T_NUMBER (258)
-                        </td>
-                        <td>
-                            20
+                            0
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            -
+                            integer(1)
                         </td>
                         <td>
-                            ASCII (45)
+                            16
                         </td>
-                        <td></td>
+                        <td>
+                            0
+                        </td>
                     </tr>
                     <tr>
                         <td>
-                            30
+                            double(1.5)
                         </td>
                         <td>
-                            LexerInterface::T_NUMBER (258)
+                            16
                         </td>
                         <td>
-                            30
+                            0
                         </td>
                     </tr>
                     <tr>
-                        <td></td>
                         <td>
-                            LexerInterface::YYEOF (0)
+                            string(&quot;hello world&quot;)
                         </td>
-                        <td></td>
+                        <td>
+                            27
+                        </td>
+                        <td>
+                            40
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            resource
+                        </td>
+                        <td>
+                            48
+                        </td>
+                        <td>
+                            416
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            callable
+                        </td>
+                        <td>
+                            72
+                        </td>
+                        <td>
+                            384
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            array(count: 0, list: true)
+                        </td>
+                        <td>
+                            336
+                        </td>
+                        <td>
+                            0
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            array(count: 100, list: true)
+                        </td>
+                        <td>
+                            2,128
+                        </td>
+                        <td>
+                            8,248
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            array(count: 1,000, list: true)
+                        </td>
+                        <td>
+                            16,464
+                        </td>
+                        <td>
+                            36,920
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            array(count: 10,000, list: true)
+                        </td>
+                        <td>
+                            262,224
+                        </td>
+                        <td>
+                            528,440
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            array(count: 100, list: false)
+                        </td>
+                        <td>
+                            5,192
+                        </td>
+                        <td>
+                            8,248
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            array(count: 1,000, list: false)
+                        </td>
+                        <td>
+                            41,032
+                        </td>
+                        <td>
+                            41,016
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            array(count: 10,000, list: false)
+                        </td>
+                        <td>
+                            655,432
+                        </td>
+                        <td>
+                            655,416
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            EmptyClass{}
+                        </td>
+                        <td>
+                            72
+                        </td>
+                        <td>
+                            40
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            ClassWithArray{&quot;array(count: 0, list: true)&quot;}
+                        </td>
+                        <td>
+                            408
+                        </td>
+                        <td>
+                            56
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            ClassWithArray{&quot;array(count: 100, list: true)&quot;}
+                        </td>
+                        <td>
+                            2,200
+                        </td>
+                        <td>
+                            8,304
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            ClassWithArray{&quot;array(count: 1,000, list: true)&quot;}
+                        </td>
+                        <td>
+                            16,536
+                        </td>
+                        <td>
+                            36,976
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            ClassWithArray{&quot;array(count: 10,000, list: true)&quot;}
+                        </td>
+                        <td>
+                            262,296
+                        </td>
+                        <td>
+                            528,496
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            ClassWithObject{&quot;EmptyClass{}&quot;}
+                        </td>
+                        <td>
+                            144
+                        </td>
+                        <td>
+                            96
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            ArrayIterator{&quot;array(count: 100, list: true)&quot;}
+                        </td>
+                        <td>
+                            2,264
+                        </td>
+                        <td>
+                            8,376
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            ArrayIterator{&quot;array(count: 100, list: false)&quot;}
+                        </td>
+                        <td>
+                            5,328
+                        </td>
+                        <td>
+                            40,376
+                        </td>
                     </tr>
                 </tbody>
             </table>
-            <p>
-                It's time to create the <code>grammar.y</code> file and build <code>lib/parser.php</code><br>
-                You can define <code>%code</code> blocks, so Bison will render code as is in <code>printer.php</code>
-            </p>
-            <p>
-                <code>grammar.y</code>
-            </p>
-            <pre><code class="language-php rounded">%code imports { // code imports };
-%code parser  { // code parser }; 
-%code init    { // code init };           </code></pre>
-            <p>
-                <code>printer.php</code>
-            </p>
-            <pre><code class="language-php rounded">&lt;?php
-
-// code imports
-
-class Parser {
-    // code parser
-    public function __construct() {
-        // code init
-    }
-}</code></pre>
-            <p>
-                We will use block <code>%code parser</code> to define variables and methods to store <code>AST</code> into the <code>Parser</code> class.<br>
-                Bison has reserved the symbol <code>$</code> in grammar actions.<br>
-                It's very sad for PHP developers, but we can call the function <code>setAst()</code> with <code>self::setAst()</code> instead of <code>$this-&gt;setAst()</code>.
-            </p>
-            <p>
-                <code>grammar.y</code>
-            </p>
-            <pre><code class="language-php rounded">%define api.parser.class {Parser}
-%define api.namespace {App}
-%code parser {
-    private Node $ast;
-    public function setAst(Node $ast): void { $this-&gt;ast = $ast; }
-    public function getAst(): Node { return $this-&gt;ast; }
-}
-
-%token T_NUMBER
-
-%left '-' '+'
-
-%%
-start:
-  expression                 {  self::setAst($1); }
-;
-
-expression:
-  T_NUMBER                   { $$ = new Node('NUMBER', $1); }
-| expression '+' expression  { $$ = new Node('OPERATION_PLUS', '', [$1, $3]);  }
-| expression '-' expression  { $$ = new Node('OPERATION_MINUS', '', [$1, $3]);  }
-;</code></pre>
-            <pre><code class="language-bash rounded">bison -S vendor/mrsuh/php-bison-skeleton/src/php-skel.m4 -o lib/parser.php grammar.y</code></pre>
-            <p>
-                Command options:
-            </p>
+            <table class="table table-bordered">
+                <thead class="table-secondary">
+                    <tr>
+                        <th>
+                            type
+                        </th>
+                        <th>
+                            var_class_sizeof(bytes)
+                        </th>
+                        <th>
+                            var_sizeof(bytes)
+                        </th>
+                        <th>
+                            memory_get_usage(bytes)
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            EmptyClass{}
+                        </td>
+                        <td>
+                            1,362
+                        </td>
+                        <td>
+                            72
+                        </td>
+                        <td>
+                            40
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            ClassWithArray{&quot;array(count: 0, list: true)&quot;}
+                        </td>
+                        <td>
+                            1,494
+                        </td>
+                        <td>
+                            408
+                        </td>
+                        <td>
+                            56
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            ClassWithArray{&quot;array(count: 100, list: true)&quot;}
+                        </td>
+                        <td>
+                            1,494
+                        </td>
+                        <td>
+                            2,200
+                        </td>
+                        <td>
+                            8,304
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            ClassWithArray{&quot;array(count: 1,000, list: true)&quot;}
+                        </td>
+                        <td>
+                            1,494
+                        </td>
+                        <td>
+                            16,536
+                        </td>
+                        <td>
+                            36,976
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            ClassWithArray{&quot;array(count: 10,000, list: true)&quot;}
+                        </td>
+                        <td>
+                            1,494
+                        </td>
+                        <td>
+                            262,296
+                        </td>
+                        <td>
+                            528,496
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            ClassWithObject{&quot;EmptyClass{}&quot;}
+                        </td>
+                        <td>
+                            1,495
+                        </td>
+                        <td>
+                            144
+                        </td>
+                        <td>
+                            96
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            ArrayIterator{&quot;array(count: 100, list: true)&quot;}
+                        </td>
+                        <td>
+                            2,437
+                        </td>
+                        <td>
+                            2,264
+                        </td>
+                        <td>
+                            8,376
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            ArrayIterator{&quot;array(count: 100, list: false)&quot;}
+                        </td>
+                        <td>
+                            2,437
+                        </td>
+                        <td>
+                            5,328
+                        </td>
+                        <td>
+                            40,376
+                        </td>
+                    </tr>
+                </tbody>
+            </table><a href="#h2-limitations" id="h2-limitations" class="text-decoration-none text-reset">
+            <h2>
+                Limitations
+            </h2></a>
             <ul>
-                <li>
-                    <code>-S vendor/mrsuh/php-bison-skeleton/src/php-skel.m4</code> - path to <code>skeleton</code> file
+                <li>Works correctly only with userland objects and SPL \ArrayIterator
                 </li>
-                <li>
-                    <code>-o parser.php</code> - output parser file
+                <li>Does not handle complex structures like extensions, resources, callables, or functions accurately
                 </li>
-                <li>
-                    <code>grammar.y</code> - our grammar file
-                </li>
-            </ul>
-            <p>
-                And final PHP file is the entry point <code>bin/parse.php</code>.
-            </p>
-            <p>
-                <code>bin/parse.php</code>
-            </p>
-            <pre><code class="language-php rounded">&lt;?php
-
-require_once __DIR__ . '/../vendor/autoload.php';
-
-use App\Lexer;
-use App\Parser;
-use Mrsuh\Tree\Printer;
-
-$lexer  = new Lexer(STDIN);
-$parser = new Parser($lexer);
-if (!$parser-&gt;parse()) {
-    exit(1);
-}
-
-$printer = new Printer(STDOUT);
-$printer-&gt;print($parser-&gt;getAst());</code></pre>
-            <p>
-                We need to add a special autoload section to <code>composer.json</code> for generated <code>lib/parser.php</code> file.
-            </p>
-            <p>
-                <code>composer.json</code>
-            </p>
-            <pre><code class="language-json rounded">{
-    "autoload": {
-        "psr-4": {
-            "App\\": "src/"
-        },
-        "files": ["lib/parser.php"]
-    },
-    ...
-}</code></pre>
-            <p>
-                Ok. Our parser is ready and we can test it:
-            </p>
-            <pre><code class="language-bash rounded">php bin/parse.php &lt;&lt;&lt; "1 + 2 - 3"
-.
-├── OPERATION_MINUS
-    ├── OPERATION_PLUS
-    │   ├── NUMBER '1'
-    │   └── NUMBER '2'
-    └── NUMBER '3'</code></pre>
-            <p>
-                Try to parse big expression:
-            </p>
-            <pre><code class="language-bash rounded">php bin/parse.php &lt;&lt;&lt; "1 + 2 - 3 + 4 - 5 + 6 - 7 + 8 - 9 + 10"
-.
-├── OPERATION_PLUS
-    ├── OPERATION_MINUS
-    │   ├── OPERATION_PLUS
-    │   │   ├── OPERATION_MINUS
-    │   │   │   ├── OPERATION_PLUS
-    │   │   │   │   ├── OPERATION_MINUS
-    │   │   │   │   │   ├── OPERATION_PLUS
-    │   │   │   │   │   │   ├── OPERATION_MINUS
-    │   │   │   │   │   │   │   ├── OPERATION_PLUS
-    │   │   │   │   │   │   │   │   ├── NUMBER '1'
-    │   │   │   │   │   │   │   │   └── NUMBER '2'
-    │   │   │   │   │   │   │   └── NUMBER '3'
-    │   │   │   │   │   │   └── NUMBER '4'
-    │   │   │   │   │   └── NUMBER '5'
-    │   │   │   │   └── NUMBER '6'
-    │   │   │   └── NUMBER '7'
-    │   │   └── NUMBER '8'
-    │   └── NUMBER '9'
-    └── NUMBER '10'</code></pre>
-            <p>
-                Great!
-            </p>
-            <p>
-                You can get the parser source code <a href="https://github.com/mrsuh/php-bison-skeleton/tree/master/examples/calc-ast" target="_blank" class=
-                "link-primary link-underline-opacity-0 link-underline-opacity-100-hover">here</a> and test it by yourself.
-            </p>
-            <p>
-                Some useful links:
-            </p>
-            <ul>
-                <li>
-                    <a href="https://github.com/mrsuh/php-bison-skeleton/tree/master/examples" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">PHP
-                    skeleton library</a>
-                </li>
-                <li>more <a href="https://github.com/mrsuh/php-bison-skeleton/tree/master/examples" target="_blank" class=
-                "link-primary link-underline-opacity-0 link-underline-opacity-100-hover">examples</a>
-                </li>
-                <li>
-                    <a href="https://github.com/mrsuh/docker-bison" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Bison docker image</a>
-                </li>
-                <li>
-                    <a href="/articles/2022/parsing-with-php-bison-and-re2c/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Parsing with PHP, Bison, and re2c</a>
+                <li>To calculate the total size of an object, you need to use both <code>var_sizeof()</code> and <code>var_class_sizeof()</code>
                 </li>
             </ul>
         </div>
