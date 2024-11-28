@@ -10,13 +10,17 @@ use App\Markdown\Parser;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+$directory = __DIR__ . '/../docs';
+
 $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/../templates');
 $twig = new \Twig\Environment($loader, [
     'strict_variables' => true,
 ]);
-$twig->addGlobal('asset_version', time());
 
-$directory = __DIR__ . '/../docs';
+$twig->addGlobal(
+    'asset_version', 
+    filemtime($directory . '/style.css')
+);
 
 $generator = new Generator($directory, $twig);
 
@@ -272,15 +276,26 @@ $projects = [
         ["php", "bison", "skeleton"],
     ),
     Project::create(
+        'ESP8266 RC boat',
+        'RC boat powered by an ESP8266 microcontroller, featuring a Wi-Fi access point and controlled via WebSocket commands.',
+        '/projects/esp8266-rc-boat/',
+        ["php", "sizeof", "var_sizeof"],
+    ),
+    Project::create(
         'PHP var_sizeof()',
         'Function to get the actual size of any PHP variable in bytes. It calculates the size of internal PHP structures along with any additional allocated memory.',
         '/projects/php-var-sizeof/',
         ["php", "sizeof", "var_sizeof"],
     ),
 ];
+/** @var Project[] $projects */
 foreach ($projects as $project) {
 
     $projectFilePath = $directory . $project->url . 'index.md';
+    
+    if(!is_file($directory .  $project->url . 'images/' . $project->posterFileName)) {
+        $project->posterFileName = 'poster.jpeg';
+    }
 
     $generator->generate(
         $project->url . 'index.html',
