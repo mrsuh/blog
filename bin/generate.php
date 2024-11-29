@@ -196,7 +196,7 @@ $articles = [
         ),
         Article::create(
             'SonarQube. Checking code quality', 
-            'https://habr.com/ru/articles/259149', 
+            '/articles/2015/sonarqube-checking-code-quality/', 
             '2015-05-29',
         ),
         Article::create(
