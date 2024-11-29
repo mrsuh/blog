@@ -198,6 +198,7 @@ $articles = [
             'SonarQube. Checking code quality', 
             '/articles/2015/sonarqube-checking-code-quality/', 
             '2015-05-29',
+            ['php', 'sonarqube']
         ),
         Article::create(
             'Nginx + Lua + Redis. Efficiently processing sessions and delivering data', 
