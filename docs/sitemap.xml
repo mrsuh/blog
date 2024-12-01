@@ -163,8 +163,14 @@
         <priority>1</priority>
     </url>
     <url>
+        <loc>https://mrsuh.com/projects/socrent/</loc>
+        <lastmod>2024-12-01</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
         <loc>https://mrsuh.com/projects/</loc>
-        <lastmod>2024-11-29</lastmod>
+        <lastmod>2024-12-01</lastmod>
         <changefreq>daily</changefreq>
         <priority>1</priority>
     </url>

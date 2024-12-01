@@ -288,6 +288,12 @@ $projects = [
         '/projects/php-var-sizeof/',
         ["php", "sizeof", "var_sizeof"],
     ),
+    Project::create(
+        'SocRent',
+        'Service for parsing and classifying apartment rental ads.',
+        '/projects/socrent/',
+        ["socrent"],
+    ),
 ];
 /** @var Project[] $projects */
 foreach ($projects as $project) {
