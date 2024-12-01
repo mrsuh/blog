@@ -65,7 +65,7 @@
             </p>
             <p>
                 Inside each Page, SQLite performs a binary search among Cell values. After finding the closest match, it picks the left child of that Cell.<br>
-                If all Cell values on the Page are larger than the target, it selects the Page’s right child.
+                If all Cell values on the Page are smaller than the target, it selects the Page’s right child.
             </p>
             <p>
                 If we compile SQLite with <a href="https://www.sqlite.org/debugging.html" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">debugging</a>
