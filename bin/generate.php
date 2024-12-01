@@ -40,15 +40,14 @@ $articles = [
         Article::create(
             'SQLite Index Visualization: Search', 
             '/articles/2024/sqlite-index-visualization-search/', 
-            '2024-11-15', 
-            ["sqlite", "chart"],
-            active: false
+            '2024-12-01', 
+            ["sqlite", "chart", "index", "visualization"],
         ),
         Article::create(
             'SQLite Index Visualization: Structure', 
             '/articles/2024/sqlite-index-visualization-structure/', 
             '2024-11-05',
-            ["sqlite", "chart"]
+            ["sqlite", "chart", "index", "visualization"]
         ),
     ],
     2023 => [

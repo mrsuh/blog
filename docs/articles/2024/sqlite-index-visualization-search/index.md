@@ -8,7 +8,7 @@ This time, I'll try to show what a search inside an Index looks like.
 ![](./images/b-tree-sqlite-search.svg)
 
 Inside each Page, SQLite performs a binary search among Cell values. After finding the closest match, it picks the left child of that Cell. 
-If all Cell values on the Page are smaller than the target, it selects the Page’s right child.
+If all Cell values on the Page are larger than the target, it selects the Page’s right child.
 
 If we compile SQLite with [debugging](https://www.sqlite.org/debugging.html) enabled and turn it on for queries, we can get detailed information about how the query work internally.
 First, we should know that SQLite has a virtual machine. Even using a simple EXPLAIN command, we can view the virtual machine’s OPCODEs, its registers (p1, p2...), and comments. 
