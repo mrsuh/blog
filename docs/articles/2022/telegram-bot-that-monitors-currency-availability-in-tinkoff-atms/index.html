@@ -3,27 +3,27 @@
         <meta http-equiv="content-type" content="text/html; charset=utf-8">
         <meta name="author" content="Anton Sukhachev">
         <title>
-            ESP8266 RC boat
+            Telegram bot that monitors currency availability in Tinkoff ATMs
         </title>
         <link rel="icon" href="/favicon.ico" sizes="any">
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
         <link rel="manifest" href="/site.webmanifest">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-        <meta name="description" content="RC boat powered by an ESP8266 microcontroller, featuring a Wi-Fi access point and controlled via Web...">
-        <meta name="keywords" content="php, sizeof, var_sizeof">
+        <meta name="description" content="Recently, many people have faced issues withdrawing foreign currency from Tinkoff ATMs. I, too, regu...">
+        <meta name="keywords" content="bot">
         <meta property="og:type" content="website">
         <meta property="og:site_name" content="mrsuh.com">
-        <meta property="og:url" content="https://mrsuh.com/projects/esp8266-rc-boat/">
-        <meta property="og:title" content="ESP8266 RC boat">
-        <meta property="og:description" content="RC boat powered by an ESP8266 microcontroller, featuring a Wi-Fi access point and controlled via Web...">
+        <meta property="og:url" content="https://mrsuh.com/articles/2022/telegram-bot-that-monitors-currency-availability-in-tinkoff-atms/">
+        <meta property="og:title" content="Telegram bot that monitors currency availability in Tinkoff ATMs">
+        <meta property="og:description" content="Recently, many people have faced issues withdrawing foreign currency from Tinkoff ATMs. I, too, regu...">
         <meta property="og:image:type" content="image/png">
         <meta property="og:image:alt" content="Anton Sukhachev">
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:site" content="mrsuh.com">
-        <meta name="twitter:url" content="https://mrsuh.com/projects/esp8266-rc-boat/">
-        <meta name="twitter:title" content="ESP8266 RC boat">
+        <meta name="twitter:url" content="https://mrsuh.com/articles/2022/telegram-bot-that-monitors-currency-availability-in-tinkoff-atms/">
+        <meta name="twitter:title" content="Telegram bot that monitors currency availability in Tinkoff ATMs">
         <meta name="twitter:creator" content="@mrsuh6">
-        <meta name="twitter:description" content="RC boat powered by an ESP8266 microcontroller, featuring a Wi-Fi access point and controlled via Web...">
+        <meta name="twitter:description" content="Recently, many people have faced issues withdrawing foreign currency from Tinkoff ATMs. I, too, regu...">
         <meta name="twitter:image:alt" content="Anton Sukhachev">
         <link href="/bootstrap.min.css" rel="stylesheet">
         <link href="/style.css?v=1734468889" rel="stylesheet">
@@ -42,87 +42,38 @@
                     <a href="/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Anton Sukhachev</a>
                 </div>
                 <div class="col text-end">
-                    <a href="/articles/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Articles</a> <a href="/projects/" class=
-                    "link-primary link-underline-opacity-100">Projects</a>
+                    <a href="/articles/" class="link-primary link-underline-opacity-100">Articles</a> <a href="/projects/" class=
+                    "link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Projects</a>
                 </div>
             </div>
             <hr>
         </div>
         <div class="content">
             <h1>
-                ESP8266 RC boat
-            </h1><iframe class="rounded" src="https://www.youtube.com/embed/2OwbVLAE5oU?si=AvKhG8UcZBwuWP8w" title="YouTube video player" frameborder="0" allow=
-            "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-            <p>
-                <br>
-            </p><a href="#h2-materials:" id="h2-materials:" class="text-decoration-none text-reset">
-            <h2>
-                Materials:
-            </h2></a>
-            <ul>
-                <li>3D printed boat
-                </li>
-                <li>ESP8266 NodeMCU;
-                </li>
-                <li>SG90 servo motor for the rudder (simple and affordable);
-                </li>
-                <li>Brushless motor (fast and powerful);
-                </li>
-                <li>Batteries
-                </li>
-                <li>3 LEDs for debugging:
-                    <ul>
-                        <li>Power supply to the controller
-                        </li>
-                        <li>Client connection to the WebSocket server
-                        </li>
-                        <li>Command received from the client
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-            <p>
-                <a href="./images/image-68.jpeg"><img src="./images/image-68.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size"></a>
-            </p><a href="#h2-how-it-works" id="h2-how-it-works" class="text-decoration-none text-reset">
-            <h2>
-                How it works
-            </h2></a>
-            <p>
-                On the ESP8266, I configured the following:
-            </p>
-            <ul>
-                <li>A Wi-Fi access point with a static IP address, enabling smartphone connections.
-                </li>
-                <li>An HTTP server that served an HTML page with a user interface.
-                </li>
-                <li>A WebSocket server to handle requests from the UI controller.
-                </li>
-            </ul>
-            <p>
-                <a href="./images/image-3.png"><img src="./images/image-3.png" alt="" class="img-fluid mx-auto d-block rounded img-size"></a>
-            </p><a href="#h2-client-ui" id="h2-client-ui" class="text-decoration-none text-reset">
-            <h2>
-                Client UI
-            </h2></a>
-            <p>
-                <a href="./images/image-77.jpeg"><img src="./images/image-77.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size"></a>
-            </p>
-            <p>
-                <em>Direction control</em><br>
-                <a href="./images/image-78.gif"><img src="./images/image-78.gif" alt="" class="img-fluid mx-auto d-block rounded img-size"></a>
-            </p>
-            <p>
-                <em>Speed control</em><br>
-                <a href="./images/image-79.gif"><img src="./images/image-79.gif" alt="" class="img-fluid mx-auto d-block rounded img-size"></a>
-            </p>
-            <h1>
-                Final version
+                Telegram bot that monitors currency availability in Tinkoff ATMs
             </h1>
             <p>
-                You can read more in <a href="/articles/2020/rc-boat-with-esp8266-nodemcu/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">this article</a>
+                Recently, many people have faced issues withdrawing foreign currency from Tinkoff ATMs. I, too, regularly checked currency availability through the official app, but it didn’t help
+                much—by the time I reached the ATM, the money was already gone. So, I decided to monitor only a few nearby ATMs within walking distance. To make tracking currency availability easier,
+                I created a bot that can send notifications when the desired currency becomes available at a specific ATM.
             </p>
             <p>
-                <a href="./images/poster.jpeg"><img src="./images/poster.jpeg" alt="" class="img-fluid mx-auto d-block rounded img-size"></a>
+                Every ATM in the country has a unique identifier, which you can find on Tinkoff's official ATM map. Using this identifier, you can set up alerts. Once the specified amount of currency
+                becomes available at the ATM, you’ll receive a notification.
+            </p><iframe class="rounded" src="https://youtube.com/embed/QEqb0XdcW0Q?si=CJKqrTQS8sdYg2gM" title="YouTube video player" frameborder="0" allow=
+            "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            <p>
+                This bot has already helped me, so I decided to share it with others.
+            </p>
+            <p>
+                For now, I’m not planning to add more features or monetize it. If you'd like to create a similar bot, you can find the source code <a href="https://github.com/mrsuh/tinkoff-atm-bot"
+                target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">here</a>.<br>
+                Have a great day!
+            </p>
+            <p>
+                <strong>Update</strong>:<br>
+                Unfortunately, I had to stop the bot because Tinkoff blocked it. This wasn’t entirely unexpected — you shouldn’t rely on unofficial APIs.<br>
+                During its short period of operation, the bot sent 82 notifications and interacted with over 100 users! I hope it managed to help some of you.
             </p>
         </div>
         <div class="footer">

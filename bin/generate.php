@@ -103,8 +103,9 @@ $articles = [
         ),
         Article::create(
             'Telegram bot that monitors currency availability in Tinkoff ATMs', 
-            'https://vc.ru/u/585016-anton-suhachev/393167-telegram-bot-kotoryi-sledit-za-valyutoi-v-bankomatah-tinkoff', 
+            '/articles/2022/telegram-bot-that-monitors-currency-availability-in-tinkoff-atms/', 
             '2022-04-02',
+            ['bot']
         ),
         Article::create(
             'Parsing with PHP, Bison and re2c', 
