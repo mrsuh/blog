@@ -162,9 +162,10 @@ $articles = [
     ],
     2018 => [
         Article::create(
-            'Mafia with Go, Vanila JS and WebSockets', 
-            'https://habr.com/ru/articles/423821', 
+            'Mafia with Go, Vanila JS, and WebSockets', 
+            '/articles/2018/mafia-with-go-vanila-js-and-websockets/', 
             '2018-10-05',
+            ['go', 'javascript', 'websockets', 'gamedev']
         ),
     ],
     2017 => [
@@ -189,9 +190,10 @@ $articles = [
     ],
     2015 => [
         Article::create(
-            'Migration from Symfony 2.0 to 2.6', 
-            'https://habr.com/ru/articles/258403', 
+            'Migration from Symfony 2.0 to 2.6',
+            '/articles/2015/migration-from-symfony-2-0-to-2-6/',
             '2015-05-20',
+            ["php", "symfony"]
         ),
         Article::create(
             'SonarQube. Checking code quality', 
