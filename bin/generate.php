@@ -137,8 +137,9 @@ $articles = [
         ),
         Article::create(
             'Looking for the most interesting articles on the site', 
-            'https://vc.ru/dev/159230-ishem-samye-interesnye-stati-v-razdelah-na-saitah-vcru-tjournalru-i-dtfru',
+            '/articles/2020/looking-for-the-most-interesting-articles-on-the-site/',
             '2020-09-17',
+            ['research']
         ),
         Article::create(
             'RC car with ESP8266 NodeMCU and LEGO',
