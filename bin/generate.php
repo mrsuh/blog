@@ -297,15 +297,26 @@ $projects = [
         '/projects/socrent/',
         ["socrent"],
     ),
+    Project::create(
+        'ESP32 mouse bot',
+        'The bot emulates a Bluetooth mouse, allowing you to record macros and replay them multiple times.',
+        '/projects/esp32-bluetooth-mouse-bot/',
+        ["esp32", "bluetooth", "mouse", "clicker", "macros", "simulator"],
+    ),
 ];
 /** @var Project[] $projects */
 foreach ($projects as $project) {
 
     $projectFilePath = $directory . $project->url . 'index.md';
     
-    if(!is_file($directory .  $project->url . 'images/' . $project->posterFileName)) {
-        $project->posterFileName = 'poster.jpeg';
+    foreach(['png', 'jpg', 'jpeg', 'webp'] as $extension) {
+        $fileName = 'poster.' . $extension;
+        if(is_file($directory .  $project->url . 'images/' . $fileName)) {
+            $project->posterFileName = $fileName;
+            break;
+        }
     }
+    
 
     $generator->generate(
         $project->url . 'index.html',

@@ -8,7 +8,7 @@ class Project
     public string $description;
     public string $url;
     public array $keywords;
-    public string $posterFileName = 'poster.png';
+    public string $posterFileName = '';
 
     public static function create(
         string $title,
