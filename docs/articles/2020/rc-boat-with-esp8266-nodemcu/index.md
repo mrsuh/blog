@@ -1,5 +1,7 @@
 # RC Boat with ESP8266 NodeMCU
 
+[origin]https://habr.com/ru/articles/513482
+
 ![](./images/image-0.jpeg)
 
 I’ll share the entire development process from the very beginning: starting with a boat made of ceiling tiles, a gel pen, and a tin can, to a plastic model that’s good enough to give as a gift.

@@ -1,5 +1,7 @@
 # Parsing with PHP, Bison and re2c
 
+[origin]https://dev.to/mrsuh/parse-files-with-php-bison-and-re2c-1i6p
+
 The `PHP` engine uses `Bison` and `re2c` to parse code into `AST`.
 I'll show you how we can use these tools with and without `PHP` to parse any structured text.
 

@@ -1,5 +1,7 @@
 # Classifying housing ads: In search of the best solution
 
+[origin]https://habr.com/ru/articles/328282
+
 I’ll share how text classification helped me find an apartment, why I stopped using regular expressions and neural networks, and why I switched to a lexical analyzer.
 
 About a year ago, I needed to find an apartment to rent. Most private ads are posted on social networks, where ads are written in free form, and there are no filters for searching. Manually browsing posts in various groups was slow and inefficient.

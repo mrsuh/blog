@@ -1,6 +1,6 @@
 # How I Wrote PHP Skeleton For Bison
 
-<a href="https://devm.io/php/php-skeleton-bison-generics" class="link-secondary" target="_blank">devm.io/php/php-skeleton-bison-generics</a>
+[origin]https://devm.io/php/php-skeleton-bison-generics
 
 Do you dream of generics in PHP?<br>
 I wanted it so much - I made a library that brings generics in PHP.

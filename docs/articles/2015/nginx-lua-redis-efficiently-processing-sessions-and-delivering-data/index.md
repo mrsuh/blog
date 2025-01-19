@@ -1,5 +1,7 @@
 # Nginx + Lua + Redis. Efficiently processing sessions and delivering data 
 
+[origin]https://habr.com/ru/articles/270463
+
 Suppose you have data you want to cache and serve without using heavy languages like PHP, while still ensuring the user is authenticated and authorized to access the data. 
 Today, I’ll show you how to achieve this using Nginx, Lua, and Redis. This approach can offload the server and boost the response speed by several times.
 

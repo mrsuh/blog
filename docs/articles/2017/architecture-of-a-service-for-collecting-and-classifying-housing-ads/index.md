@@ -1,5 +1,7 @@
 # Architecture of a service for collecting and classifying housing ads
 
+[origin]https://habr.com/ru/articles/342220
+
 In this article, I will talk about how the service for finding rental ads from vk.com is designed and developed, why a service-oriented architecture (SOA) was chosen, and what technologies and solutions were used during development.
 The service has been running for over nine months.
 

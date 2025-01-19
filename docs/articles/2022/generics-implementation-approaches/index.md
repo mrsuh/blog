@@ -1,5 +1,7 @@
 # Generics implementation approaches
 
+[origin]https://dev.to/mrsuh/generics-implementation-approaches-3bf0
+
 I want to introduce you to generics implementation approaches with some simple examples everyone can understand.
 The description of each approach includes key features without details.
 Basic examples are written in PHP because I'm a PHP developer, but there are also Hack/Java/C++ examples.

@@ -1,5 +1,7 @@
 # AST parser with PHP and Bison
 
+[origin]https://dev.to/mrsuh/ast-parser-with-php-and-bison-l5h
+
 > Read this [post](/articles/2023/php-skeleton-for-bison/) if you don't know what Bison is.
 
 I already have the [Bison AST parser](https://github.com/mrsuh/php-ast), but this time I will do it without PHP FFI.

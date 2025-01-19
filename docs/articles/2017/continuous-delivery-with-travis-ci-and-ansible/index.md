@@ -1,5 +1,7 @@
 # Continuous delivery with Travis CI and Ansible
 
+[origin]https://habr.com/ru/articles/325438
+
 Setting up [continuous delivery](https://en.wikipedia.org/wiki/Continuous_delivery) for your project with github.com
 
 Requirements:

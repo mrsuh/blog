@@ -1,5 +1,7 @@
 # JSON parser with PHP and Bison
 
+[origin]https://dev.to/mrsuh/json-parser-with-php-and-bison-385n
+
 > Read this [post](/articles/2023/php-skeleton-for-bison/) if you don't know what Bison is.
 
 Today I'll try to parse JSON into AST and compare it with the native PHP function `json_decode()`.

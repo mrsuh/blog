@@ -1,5 +1,7 @@
 # Few steps to make your docker image smaller
 
+[origin]https://dev.to/mrsuh/few-steps-to-make-your-docker-image-smaller-4pc6
+
 I have some projects where I need [bison](https://www.gnu.org/software/bison/). I decided to build my image when I didn't find official or fresh unofficial docker images.
 
 To compile bison you need to install some apt dependencies and compile the last version of `autoconf` from the source code.

@@ -1,5 +1,7 @@
 # Comparing PHP Collections
 
+[origin]https://dev.to/mrsuh/comparing-php-collections-5cca
+
 Let's imagine that we want to store a `collection` of `Item` objects:
 ```php
 <?php

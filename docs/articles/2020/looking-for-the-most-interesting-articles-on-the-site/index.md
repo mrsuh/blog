@@ -1,5 +1,7 @@
 # Looking for the most interesting articles on the site
 
+[origin]https://vc.ru/dev/159230-ishem-samye-interesnye-stati-v-razdelah-na-saitah-vcru-tjournalru-i-dtfru
+
 How can you avoid getting lost in the sea of content on massive websites and quickly find the most valuable and impactful articles?
 
 Large information portals covering a wide range of topics and niches are becoming increasingly popular. As someone who loves browsing such websites, and as a fan of analytics due to my profession and personality, I’m always curious about which articles resonate the most with readers.

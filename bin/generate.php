@@ -232,7 +232,13 @@ foreach($articles as $year => $list) {
         $description = '';
         fgets($file);
         while (strlen($description) < 100) {
-            $line = trim(strip_tags($parser->text(fgets($file))));
+            $line = trim(strip_tags($parser->text(
+                $articleFileContent = preg_replace(
+                    '/\[origin\](\S+)/',
+                    '',
+                    fgets($file)
+                )
+            )));
             if (empty($line)) {
                 continue;
             }
@@ -241,6 +247,23 @@ foreach($articles as $year => $list) {
         }
         $description = substr($description, 0, 100) . '...';
         fclose($file);
+        
+        $articleFileContent = file_get_contents($articleFilePath);
+        preg_match('/\[origin\](\S+)/', $articleFileContent, $matches);
+        if(isset($matches[1])) {
+            $url = $matches[1];
+            $articleFileContent = preg_replace(
+                '/\[origin\](\S+)/',
+                sprintf(
+                    '<blockquote class="text-muted link-secondary quote">
+                            origin: <a href="%s" class="link-secondary" target="_blank">%s</a>
+                            </blockquote>',
+                    $url,
+                    str_replace('https://', '', $url)
+                ),
+                $articleFileContent
+            );
+        }
 
         $generator->generate(
             $article->url . 'index.html',
@@ -250,7 +273,7 @@ foreach($articles as $year => $list) {
                 'description' => $description,
                 'keywords' => $article->keywords,
                 'page_name' => 'article',
-                'content' => $parser->text(file_get_contents($articleFilePath)),
+                'content' => $parser->text($articleFileContent),
                 'path' => $article->url,
             ]
         );
@@ -301,6 +324,12 @@ $projects = [
         'ESP32 mouse bot',
         'The bot emulates a Bluetooth mouse, allowing you to record macros and replay them multiple times.',
         '/projects/esp32-bluetooth-mouse-bot/',
+        ["esp32", "bluetooth", "mouse", "clicker", "macros", "simulator"],
+    ),
+    Project::create(
+        'ESP32 cam watcher',
+        'The bot emulates a Bluetooth mouse, allowing you to record macros and replay them multiple times.',
+        '/projects/esp32-cam-watcher/',
         ["esp32", "bluetooth", "mouse", "clicker", "macros", "simulator"],
     ),
 ];

@@ -1,5 +1,7 @@
 # Migration from Symfony 2.0 to 2.6
 
+[origin]https://habr.com/ru/articles/258403
+
 This article explains the steps and challenges faced during the migration of a project from the outdated Symfony 2.0 to Symfony 2.6.
 
 ### Dependency Manager

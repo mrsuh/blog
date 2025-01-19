@@ -1,5 +1,7 @@
 # SonarQube. Checking code quality
 
+[origin]https://habr.com/ru/articles/259149
+
 **SonarQube** is a platform for analyzing code quality based on rules and standards. It supports over 20 programming languages.
 You can view the complete list of coding rules [here](http://nemo.sonarqube.org/coding_rules).
 

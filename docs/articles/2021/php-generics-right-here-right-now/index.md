@@ -1,5 +1,7 @@
 # PHP Generics. Right here. Right now.
 
+[origin]https://habr.com/ru/articles/577750
+
 Many PHP developers, including me, would like to see support for [generics](https://en.wikipedia.org/wiki/Generic_programming) in PHP. An [RFC](https://github.com/PHPGenerics/php-generics-rfc) for adding generics was created in 2016, but it hasn’t been finished yet. 
 I looked into different ways to add generics to PHP but couldn’t find a solution that works well for regular developers. So, I decided to create my own solution in PHP. If you want to try it, you can use this library [mrsuh/php-generics](https://github.com/mrsuh/php-generics) and check out the [repo](https://github.com/mrsuh/php-generics-example) to experiment with it.
 

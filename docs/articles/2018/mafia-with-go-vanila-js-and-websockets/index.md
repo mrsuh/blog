@@ -1,5 +1,7 @@
 # Mafia with Go, Vanila JS, and WebSockets
 
+[origin]https://habr.com/ru/articles/423821
+
 ![](./images/image-0.png)
 
 This is a web version of the popular card game [Mafia](https://en.wikipedia.org/wiki/Mafia_(party_game)). The project was created for fun and to learn more about making games. 

@@ -1,5 +1,7 @@
 # How I migrated my hobby project to k8s
 
+[origin]https://habr.com/ru/articles/484528
+
 In this article, I want to talk about my hobby project for searching and classifying apartment rental ads from the social network vk.com and my experience moving it to k8s.
 
 ## A bit about the project

@@ -1,5 +1,7 @@
 # Nginx parser with PHP and Bison
 
+[origin]https://dev.to/mrsuh/nginx-parser-with-php-and-bison-1k5
+
 > Read this [post](/articles/2023/php-skeleton-for-bison/) if you don't know what Bison is.
 
 Today I'll try to parse Nginx config into AST.
