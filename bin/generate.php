@@ -328,7 +328,7 @@ $projects = [
     ),
     Project::create(
         'ESP32 cam watcher',
-        'The bot emulates a Bluetooth mouse, allowing you to record macros and replay them multiple times.',
+        'This project helps me to observe my pot with pine\'s twig. I use ESP32 controller with a camera to take pictures and post it to Telegram channel.',
         '/projects/esp32-cam-watcher/',
         ["esp32", "bluetooth", "mouse", "clicker", "macros", "simulator"],
     ),

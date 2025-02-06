@@ -3,27 +3,27 @@
         <meta http-equiv="content-type" content="text/html; charset=utf-8">
         <meta name="author" content="Anton Sukhachev">
         <title>
-            Nginx + Lua + Redis. Efficiently processing sessions and delivering data
+            ESP32 cam watcher
         </title>
         <link rel="icon" href="/favicon.ico" sizes="any">
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
         <link rel="manifest" href="/site.webmanifest">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-        <meta name="description" content="Suppose you have data you want to cache and serve without using heavy languages like PHP, while stil...">
-        <meta name="keywords" content="nginx, lua, redis, php, session">
+        <meta name="description" content="This project helps me to observe my pot with pine's twig. I use ESP32 controller with a camera to ta...">
+        <meta name="keywords" content="esp32, bluetooth, mouse, clicker, macros, simulator">
         <meta property="og:type" content="website">
         <meta property="og:site_name" content="mrsuh.com">
-        <meta property="og:url" content="https://mrsuh.com/articles/2015/nginx-lua-redis-efficiently-processing-sessions-and-delivering-data/">
-        <meta property="og:title" content="Nginx + Lua + Redis. Efficiently processing sessions and delivering data">
-        <meta property="og:description" content="Suppose you have data you want to cache and serve without using heavy languages like PHP, while stil...">
+        <meta property="og:url" content="https://mrsuh.com/projects/esp32-cam-watcher/">
+        <meta property="og:title" content="ESP32 cam watcher">
+        <meta property="og:description" content="This project helps me to observe my pot with pine's twig. I use ESP32 controller with a camera to ta...">
         <meta property="og:image:type" content="image/png">
         <meta property="og:image:alt" content="Anton Sukhachev">
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:site" content="mrsuh.com">
-        <meta name="twitter:url" content="https://mrsuh.com/articles/2015/nginx-lua-redis-efficiently-processing-sessions-and-delivering-data/">
-        <meta name="twitter:title" content="Nginx + Lua + Redis. Efficiently processing sessions and delivering data">
+        <meta name="twitter:url" content="https://mrsuh.com/projects/esp32-cam-watcher/">
+        <meta name="twitter:title" content="ESP32 cam watcher">
         <meta name="twitter:creator" content="@mrsuh6">
-        <meta name="twitter:description" content="Suppose you have data you want to cache and serve without using heavy languages like PHP, while stil...">
+        <meta name="twitter:description" content="This project helps me to observe my pot with pine's twig. I use ESP32 controller with a camera to ta...">
         <meta name="twitter:image:alt" content="Anton Sukhachev">
         <link href="/bootstrap.min.css" rel="stylesheet">
         <link href="/style.css?v=1737294811" rel="stylesheet">
@@ -42,395 +42,187 @@
                     <a href="/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Anton Sukhachev</a>
                 </div>
                 <div class="col text-end">
-                    <a href="/articles/" class="link-primary link-underline-opacity-100">Articles</a> <a href="/projects/" class=
-                    "link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Projects</a>
+                    <a href="/articles/" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Articles</a> <a href="/projects/" class=
+                    "link-primary link-underline-opacity-100">Projects</a>
                 </div>
             </div>
             <hr>
         </div>
         <div class="content">
             <h1>
-                Nginx + Lua + Redis. Efficiently processing sessions and delivering data
+                ESP32 cam watcher
             </h1>
-            <blockquote class="text-muted link-secondary quote">
-                origin: <a href="https://habr.com/ru/articles/270463" class="link-secondary" target="_blank">habr.com/ru/articles/270463</a>
-            </blockquote>
             <p>
-                Suppose you have data you want to cache and serve without using heavy languages like PHP, while still ensuring the user is authenticated and authorized to access the data.<br>
-                Today, I’ll show you how to achieve this using Nginx, Lua, and Redis. This approach can offload the server and boost the response speed by several times.
-            </p>
-            <p>
-                First, you’ll need to build Nginx with the <code>nginx_lua_module</code>.
-            </p><a href="#h2-installation-guide" id="h2-installation-guide" class="text-decoration-none text-reset">
+                This project helps me to observe my pot with pine's twig. I use ESP32 controller with camera to take pictures and post it to telegram channel.<br>
+                You can find the source code for this watcher <a href="https://github.com/mrsuh/esp32-cam-watcher" target="_blank" class=
+                "link-primary link-underline-opacity-0 link-underline-opacity-100-hover">here</a>.
+            </p><a href="#h2-assembling" id="h2-assembling" class="text-decoration-none text-reset">
             <h2>
-                Installation Guide
+                Assembling
             </h2></a>
             <p>
-                Install the Lua compiler (version 2.0 or 2.1).
+                First versions of the watcher:
             </p>
+            <table class="table table-bordered">
+                <thead class="table-secondary">
+                    <tr>
+                        <th style="text-align: center;">
+                            version 1
+                        </th>
+                        <th style="text-align: center;">
+                            version 2
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="text-align: center;">
+                            <a href="./images/IMG_4481.webp"><img src="./images/IMG_4481.webp" alt="" class="img-fluid mx-auto d-block rounded img-size"></a>
+                        </td>
+                        <td style="text-align: center;">
+                            <a href="./images/IMG_5067.webp"><img src="./images/IMG_5067.webp" alt="" class="img-fluid mx-auto d-block rounded img-size"></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
             <p>
-                Download and build <a href="http://luajit.org/download.html" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">LuaJIT</a>
-            </p>
-            <pre><code class="language-bash rounded">make &amp;&amp; sudo make install</code></pre>
-            <p>
-                To compile Nginx with the Nginx devel kit, you’ll need the <code>http_rewrite_module</code>, which, in turn, requires the PCRE library. So, let’s install that first.
-            </p>
-            <pre><code class="language-bash rounded">sudo apt-get update
-sudo apt-get install libpcre3 libpcre3-dev</code></pre>
-            <p>
-                Download the required modules along with Nginx:
+                Although first versions worked pretty well they had several flows:
             </p>
             <ul>
-                <li>
-                    <a href="https://github.com/simpl/ngx_devel_kit/tags" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">nginx devel kit</a>
+                <li>They didn't have indicators of power and state
                 </li>
-                <li>
-                    <a href="https://github.com/openresty/lua-nginx-module/tags" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">nginx lua module</a>
+                <li>I couldn't switch states without uploading new code to controller
                 </li>
-                <li>
-                    <a href="http://nginx.org" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">nginx</a>
+                <li>I couldn't change camera position freely
                 </li>
             </ul>
             <p>
-                Let’s configure and install <code>Nginx</code>
+                To improve these flows I decided to add LEDs and buttons.<br>
+                First I assembled all the components with a plastic breadboard to test the idea:<br>
+                <a href="./images/IMG_5342.webp"><img src="./images/IMG_5342.webp" alt="" class="img-fluid mx-auto d-block rounded img-size"></a>
             </p>
-            <pre><code class="language-bash rounded">export LUAJIT_LIB=/usr/local/lib // path to  lua
-export LUAJIT_INC=/usr/local/include/luajit-2.1 // path to luaJit
-
-./configure
---prefix=/etc/nginx
---sbin-path=/usr/sbin/nginx
---conf-path=/etc/nginx/nginx.conf
---error-log-path=/var/log/nginx/error.log
---http-log-path=/var/log/nginx/access.log
---pid-path=/var/run/nginx.pid
---lock-path=/var/run/nginx.lock
---http-client-body-temp-path=/var/cache/nginx/client_temp
---http-proxy-temp-path=/var/cache/nginx/proxy_temp
---http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp
---http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp
---http-scgi-temp-path=/var/cache/nginx/scgi_temp
---user=nginx
---group=nginx  
---with-ld-opt="-Wl,-rpath,/path/to/lua/lib" // path to Lua library
---add-module=/path/to/ngx_devel_kit // path to nginx devel kit
---add-module=/path/to/lua-nginx-module // path to nginx lua module
---without-http_gzip_module
-
-make -j2
-sudo make install</code></pre>
             <p>
-                Download the Lua library for working with Redis from <a href="https://github.com/openresty/lua-resty-redis" target="_blank" class=
-                "link-primary link-underline-opacity-0 link-underline-opacity-100-hover">lua redis lib</a> and copy it to the Lua library folder using the command:
+                Then I soldered all the components:<br>
+                <a href="./images/IMG_5802.webp"><img src="./images/IMG_5802.webp" alt="" class="img-fluid mx-auto d-block rounded img-size"></a><br>
+                <a href="./images/IMG_5819.webp"><img src="./images/IMG_5819.webp" alt="" class="img-fluid mx-auto d-block rounded img-size"></a><br>
+                <a href="./images/IMG_5822.webp"><img src="./images/IMG_5822.webp" alt="" class="img-fluid mx-auto d-block rounded img-size"></a>
             </p>
-            <pre><code class="language-bash rounded">sudo make install</code></pre>
             <p>
-                Include the Lua Redis library in the Nginx configuration.
+                Schema of LEDs, buttons, and pins:<br>
+                <a href="./images/pins.svg"><img src="./images/pins.svg" alt="" class="img-fluid mx-auto d-block rounded img-size"></a>
             </p>
-            <pre><code class="language-bash rounded">http {
-...
-    lua_package_path lua_package_path "/path/to/lib/lua/resty/redis.lua;;"; // path to lua redis library
-...
-}</code></pre>
             <p>
-                That's it! Now you can write Lua scripts that are executed by Nginx.
-            </p><a href="#h2-lua-script" id="h2-lua-script" class="text-decoration-none text-reset">
+                Now the watcher has:
+            </p>
+            <ul>
+                <li>three LEDs to show power supply and state
+                </li>
+                <li>one button to switch between states
+                </li>
+                <li>several pins to power supply (VCC,GND) and debug controller (IO0,RX,TX)
+                </li>
+            </ul><a href="#h2-states" id="h2-states" class="text-decoration-none text-reset">
             <h2>
-                Lua script
+                States
             </h2></a>
             <p>
-                To quickly and efficiently serve cached data, we'll preload the most frequently used data into Redis during cache warming, while less frequently used data will be added on demand.
-                We'll use Lua on the Nginx side to serve the data. This approach eliminates the need for PHP, significantly speeding up data delivery and reducing server memory usage.
-            </p>
-            <p>
-                Here's how we'll write the Lua script for this.<br>
-                <em>search.lua</em>
-            </p>
-            <pre><code class="language-lua rounded">local string = ngx.var.arg_string
-if string == nil then
-    ngx.exec("/")
-end
-
-local path = "/?string=" .. string
-
-local redis = require "resty.redis"
-local red = redis:new()
-
-red:set_timeout(1000) -- 1 sec
-
-local ok, err = red:connect("127.0.0.1", 6379)
-if not ok then
-ngx.exec(path)
-end
-
-res, err = red:get("search:" .. string);
-
-if res == ngx.null then
-ngx.exec(path)
-else
-ngx.header.content_type = 'application/json'
-ngx.say(res)
-end</code></pre>
-            <p>
-                Include this file in nginx.conf and reload Nginx.
-            </p>
-            <pre><code class="language-bash rounded">location /search-by-string {
-   content_by_lua_file lua/search.lua;
-}</code></pre>
-            <p>
-                Now, when a request is made to <code>/search-by-string?string=smth</code>, Lua will connect to Redis and try to find data with the key search:smth. If no data is found, the request
-                will be handled by PHP. However, if the data is already cached in Redis, it will be immediately returned to the user.
-            </p>
-            <p>
-                What if we only want to serve data to authenticated users with a specific role?<br>
-                In that case, we can store the session in Redis and check the user's role based on the session data before serving the content.
-            </p>
-            <p>
-                Since I work with the Symfony2 framework, I created a small bundle, <a href="https://github.com/mrsuh/nginx-session-handler" target="_blank" class=
-                "link-primary link-underline-opacity-0 link-underline-opacity-100-hover">nginx-session-handler</a>, which allows storing sessions in Redis in a way that suits our needs.
-            </p>
-            <p>
-                In Redis, the session data will be stored as a hash value:
+                The watcher has 2 states:
             </p>
             <ul>
                 <li>
-                    <code>phpsession</code> - key prefix for the session;
+                    <code>setup</code>
                 </li>
                 <li>
-                    <code>php-session</code> - PHP session
-                </li>
-                <li>
-                    <code>user-role</code> - user's role
+                    <code>watcher</code>
                 </li>
             </ul>
             <p>
-                Now, we need to write a Lua script to handle this data:
+                In the <code>setup</code> state you can connect to a local HTTP server and get a picture from the camera online. I need it to set up the camera position.
             </p>
             <p>
-                <em>session.lua</em>
-            </p>
-            <pre><code class="language-lua rounded">local redis = require "resty.redis"
-local red = redis:new()
-
-red:set_timeout(1000) -- 1 sec
-
-local ok, err = red:connect("127.0.0.1", 6379)
-if not ok then
-  ngx.exit(ngx.HTTP_INTERNAL_SERVER_ERROR)
-end
-
-local phpsession = ngx.var.cookie_PHPSESSID
-local ROLE_ADMIN = "ROLE_ADMIN"
-
-if phpsession == ngx.null then
-  ngx.exit(ngx.HTTP_FORBIDDEN)
-end
-
-local res, err = red:hget("phpsession:" .. phpsession, "user-role")
-
-if res == ngx.null or res ~= ROLE_ADMIN then
-  ngx.exit(ngx.HTTP_FORBIDDEN)
-end</code></pre>
-            <p>
-                We retrieve the user's session ID from the cookie and attempt to get their role from Redis using the query <code>HGET phpsession:id user-role</code>. If the user's session has
-                expired, they are not authenticated, or they do not have the <code>ROLE_ADMIN</code> role, the server will return a 403 status code.<br>
-                We then add this session-handling script before our data retrieval script. This ensures that only authenticated users with the ROLE_ADMIN role can access the data.<br>
-                In practice, the session-handling script is required for multiple Nginx locations. To avoid duplicating code, we’ll include this script file wherever needed.
+                <a href="./images/screenshot.webp"><img src="./images/screenshot.webp" alt="" class="img-fluid mx-auto d-block rounded img-size"></a>
             </p>
             <p>
-                First, let’s slightly revise our session-handling script:
+                I bought a special stand to change the camera position freely:
+            </p>
+            <table class="table table-bordered">
+                <thead class="table-secondary">
+                    <tr>
+                        <th style="text-align: center;">
+                            front
+                        </th>
+                        <th style="text-align: center;">
+                            side
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="text-align: center;">
+                            <a href="./images/IMG_5828.webp"><img src="./images/IMG_5828.webp" alt="" class="img-fluid mx-auto d-block rounded img-size"></a>
+                        </td>
+                        <td style="text-align: center;">
+                            <a href="./images/IMG_5829.webp"><img src="./images/IMG_5829.webp" alt="" class="img-fluid mx-auto d-block rounded img-size"></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>
+                In the <code>watcher</code> state the camera gets an actual timestamp by NTP protocol from <code>pool.ntp.org</code>, takes a picture, and sends it to &quot;hourly&quot; and
+                &quot;daily&quot; telegram channels.<br>
+                The controller stores the last sent time in a persistent memory. As a result there are no problems with sending schedule even after power outage.
             </p>
             <p>
-                <em>session.lua</em>
-            </p>
-            <pre><code class="language-lua rounded">local _M = {}
-
-function _M.handle()
-
-    local redis = require "resty.redis"
-    local red = redis:new()
-
-    red:set_timeout(1000) -- 1 sec
-
-    local ok = red:connect("127.0.0.1", 6379)
-    if not ok then
-        ngx.exit(ngx.HTTP_INTERNAL_SERVER_ERROR)
-    end
-
-    local phpsession = ngx.var.cookie_PHPSESSID
-    local ROLE_ADMIN = "ROLE_ADMIN"
-
-    if phpsession == ngx.null then
-        ngx.exit(ngx.HTTP_FORBIDDEN)
-    end
-
-    local res = red:hget("phpsession:" .. phpsession, "user-role")
-
-    if res == ngx.null or res ~= ROLE_ADMIN then
-        ngx.exit(ngx.HTTP_FORBIDDEN)
-    end
-
-end
-
-return _M</code></pre>
-            <p>
-                Next, we need to compile the <code>session.lua</code> file into a <code>session.o</code> object file using the LuaJIT compiler and build Nginx with this file.
-            </p>
-            <p>
-                Compile the session.o file by running the Lua compiler command:
-            </p>
-            <pre><code class="language-bash rounded">/path/to/luajit/bin/luajit -bg session.lua session.o</code></pre>
-            <p>
-                Add the following line to the Nginx build configuration:
-            </p>
-            <pre><code class="language-bash rounded">--with-ld-opt="/path/to/session.o"</code></pre>
-            <p>
-                Build Nginx (refer to the steps above for building Nginx).
-            </p>
-            <p>
-                Once this is done, you can include the compiled file in any Lua script and call the <code>handle()</code> function to process the user's session.
-            </p>
-            <pre><code class="language-lua rounded">local session = require "session"
-session.handle()</code></pre><a href="#h2-tests" id="h2-tests" class="text-decoration-none text-reset">
+                <a href="./images/screenshot-2.webp"><img src="./images/screenshot-2.webp" alt="" class="img-fluid mx-auto d-block rounded img-size"></a>
+            </p><a href="#h2-debug" id="h2-debug" class="text-decoration-none text-reset">
             <h2>
-                Tests
+                Debug
             </h2></a>
             <p>
-                <em>Machine configuration</em><br>
-                Processor: Intel® Xeon(R) CPU X3440 @ 2.53GHz × 8<br>
-                Memory: 7.9 GiB
+                You can connect to the controller with debug pins and read logs. There are logs in the <code>setup</code> state:
+            </p>
+            <pre><code class="language-bash rounded">-&gt; Controller enabled
+-&gt; Camera initializing
+-&gt; Camera initialized
+-&gt; WiFi connecting
+-&gt; .
+-&gt; WiFi connected: 192.168.0.8
+-&gt; Controller initialized
+-&gt; State: setup 
+-&gt; HTTP client connected
+-&gt; HTTP request GET /
+-&gt; HTTP response sended
+-&gt; HTTP client disconnected
+-&gt; HTTP client connected
+-&gt; HTTP request GET /picture
+-&gt; HTTP response sended
+-&gt; HTTP client disconnected</code></pre>
+            <p>
+                There are logs in the <code>watcher</code> state:
+            </p>
+            <pre><code class="language-bash rounded">-&gt; State: watcher
+-&gt; Sending a photo to an hourly channel
+-&gt; Current: timestamp:1735989368 hours:28933156
+-&gt; Last sended: hours:28933148
+-&gt; Connecting to api.telegram.org
+-&gt; Connection successful
+-&gt; Sending HTTP request
+-&gt; ....
+-&gt; Sending HTTP request done
+-&gt; HTTP Response: {"ok":true,"result":{...}}</code></pre><a href="#h2-conclusion" id="h2-conclusion" class="text-decoration-none text-reset">
+            <h2>
+                Conclusion
+            </h2></a>
+            <p>
+                Currently, the camera is installed on the balcony and works pretty well.<br>
+                <a href="./images/IMG_5843.webp"><img src="./images/IMG_5843.webp" alt="" class="img-fluid mx-auto d-block rounded img-size"></a><br>
+                <a href="./images/IMG_5844.webp"><img src="./images/IMG_5844.webp" alt="" class="img-fluid mx-auto d-block rounded img-size"></a><br>
+                <a href="./images/IMG_5845.webp"><img src="./images/IMG_5845.webp" alt="" class="img-fluid mx-auto d-block rounded img-size"></a>
             </p>
             <p>
-                <em>ab -n 100 -c 100 php</em>
-            </p>
-            <pre><code class="language-bash rounded">Server Software:        nginx/1.9.4
-
-Concurrency Level:      100
-Time taken for tests:   3.869 seconds
-Complete requests:      100
-Failed requests:        0
-&lt;b&gt;Requests per second:    25.85 [#/sec] (mean)&lt;/b&gt;
-Time per request:       3868.776 [ms] (mean)
-Time per request:       38.688 [ms] (mean, across all concurrent requests)
-Transfer rate:          6.66 [Kbytes/sec] received
-
-Connection Times (ms)
-min  mean[+/-sd] median   max
-Connect:        1    3   1.1      3       5
-Processing:   155 2116 1053.7   2191    3863
-Waiting:      155 2116 1053.7   2191    3863
-Total:        160 2119 1052.6   2194    3864
-
-Percentage of the requests served within a certain time (ms)
-50%   2194
-66%   2697
-75%   3015
-80%   3159
-90%   3504
-95%   3684
-98%   3861
-99%   3864
-100%   3864 (longest request)</code></pre>
-            <p>
-                <em>ab -n 100 -c 100 lua</em>
-            </p>
-            <pre><code class="language-bash rounded">Server Software:        nginx/1.9.4
-
-Concurrency Level:      100
-Time taken for tests:   0.022 seconds
-Complete requests:      100
-Failed requests:        0
-&lt;b&gt;Requests per second:    4549.59 [#/sec] (mean)&lt;/b&gt;
-Time per request:       21.980 [ms] (mean)
-Time per request:       0.220 [ms] (mean, across all concurrent requests)
-Transfer rate:          688.66 [Kbytes/sec] received
-
-Connection Times (ms)
-min  mean[+/-sd] median   max
-Connect:        2    4   0.9      4       6
-Processing:     3   13   1.6     13      14
-Waiting:        3   13   1.6     13      14
-Total:          9   17   1.3     18      18
-
-Percentage of the requests served within a certain time (ms)
-50%     18
-66%     18
-75%     18
-80%     18
-90%     18
-95%     18
-98%     18
-99%     18
-100%     18 (longest request)
-&lt;/spoiler&gt;
-Разница "количества запросов в секунду" в 175 раз.
-
-Такой же тест с другими парметрами
-
-*ab -n 10000 -c 100 php*
-Server Software:        nginx/1.9.4
-
-Concurrency Level:      100
-Time taken for tests:   343.082 seconds
-Complete requests:      10000
-Failed requests:        0
-&lt;b&gt;Requests per second:    29.15 [#/sec] (mean)&lt;/b&gt;
-Time per request:       3430.821 [ms] (mean)
-Time per request:       34.308 [ms] (mean, across all concurrent requests)
-Transfer rate:          7.51 [Kbytes/sec] received
-
-Connection Times (ms)
-min  mean[+/-sd] median   max
-Connect:        0    0   0.3      0       4
-Processing:   167 3414 197.5   3408    4054
-Waiting:      167 3413 197.5   3408    4054
-Total:        171 3414 197.3   3408    4055
-
-Percentage of the requests served within a certain time (ms)
-50%   3408
-66%   3438
-75%   3458
-80%   3474
-90%   3533
-95%   3633
-98%   3714
-99%   3866
-100%   4055 (longest request)</code></pre>
-            <p>
-                <em>ab -n 10000 -c 100 lua</em>
-            </p>
-            <pre><code class="language-bash rounded">Server Software:        nginx/1.9.4
-
-Concurrency Level:      100
-Time taken for tests:   0.899 seconds
-Complete requests:      10000
-Failed requests:        0
-&lt;b&gt;Requests per second:    11118.29 [#/sec] (mean)&lt;/b&gt;
-Time per request:       8.994 [ms] (mean)
-Time per request:       0.090 [ms] (mean, across all concurrent requests)
-Transfer rate:          1682.94 [Kbytes/sec] received
-
-Connection Times (ms)
-min  mean[+/-sd] median   max
-Connect:        0    0   0.4      0       5
-Processing:     1    9   3.4      7      19
-Waiting:        1    9   3.5      7      18
-Total:          2    9   3.4      7      21
-
-Percentage of the requests served within a certain time (ms)
-50%      7
-66%     13
-75%     13
-80%     13
-90%     13
-95%     13
-98%     13
-99%     15
-100%     21 (longest request)</code></pre>
-            <p>
-                The difference in &quot;requests per second&quot; is 381 times.<br>
-                I hope my article was helpful. If you have any suggestions, comments, or know of any improvements, feel free to reach out.
-            </p>
+                Growing pine from a seed is very hard for me. It's my the 3rd attempt for now. You can watch video I assembled from my hourly channel's photos.
+            </p><iframe class="rounded" src="https://www.youtube.com/embed/7hh2q1jP7Ew" title="YouTube video player" frameborder="0" allow=
+            "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>
         <div class="footer">
             <div class="row" style="height: 80px">
