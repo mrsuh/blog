@@ -1,6 +1,6 @@
 # ESP32 cam watcher
 
-This project helps me to observe my pot with pine's twig. I use ESP32 controller with camera to take pictures and post it to Telegram channel.
+This project helps me to observe my pot with pine's twig. I use an ESP32 controller with a camera to take pictures and post it to Telegram channel.
 You can find the source code for this watcher [here](https://github.com/mrsuh/esp32-cam-watcher).
 
 ## Assembling
@@ -11,17 +11,18 @@ version 1 | version 2
 :---:|:---:
 ![](./images/IMG_4481.webp) | ![](./images/IMG_5067.webp)
 
-Although first versions worked pretty well they had several flows:
+Although the first versions worked pretty well they had several flaws:
 * They didn't have indicators of power and state
-* I couldn't switch states without uploading new code to controller
-* I couldn't change camera position freely
+* I couldn't switch states without uploading new code to the controller
+* I couldn't change the camera position freely
 
-To improve these flows I decided to add LEDs and buttons. 
+To improve these flaws I decided to add LEDs and buttons. 
 First I assembled all the components with a plastic breadboard to test the idea:
 ![](./images/IMG_5342.webp)
 
 Then I soldered all the components:
 ![](./images/IMG_5802.webp)
+![](./images/IMG_5819.webp)
 ![](./images/IMG_5819.webp)
 ![](./images/IMG_5822.webp)
 
@@ -39,7 +40,7 @@ The watcher has 2 states:
 * `setup`
 * `watcher`
 
-In the `setup` state you can connect to a local HTTP server and get a picture from the camera online. I need it to set up the camera position.
+In the `setup` state you can connect to a local HTTP server and get a picture from the camera online. In order to set up the camera position.
 
 ![](./images/screenshot.webp)
 
@@ -97,6 +98,6 @@ Currently, the camera is installed on the balcony and works pretty well.
 ![](./images/IMG_5844.webp)
 ![](./images/IMG_5845.webp)
 
-Growing pine from a seed is very hard for me. It's my the 3rd attempt for now. You can watch video I assembled from my hourly channel's photos.
+Growing a pine from a seed is very hard for me. It's my the 3rd attempt for now. You can watch the video I assembled from my hourly channel's photos.
 
 <iframe class="rounded" src="https://www.youtube.com/embed/7hh2q1jP7Ew" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>

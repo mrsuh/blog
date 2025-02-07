@@ -53,7 +53,7 @@
                 ESP32 cam watcher
             </h1>
             <p>
-                This project helps me to observe my pot with pine's twig. I use ESP32 controller with camera to take pictures and post it to telegram channel.<br>
+                This project helps me to observe my pot with pine's twig. I use an ESP32 controller with a camera to take pictures and post it to Telegram channel.<br>
                 You can find the source code for this watcher <a href="https://github.com/mrsuh/esp32-cam-watcher" target="_blank" class=
                 "link-primary link-underline-opacity-0 link-underline-opacity-100-hover">here</a>.
             </p><a href="#h2-assembling" id="h2-assembling" class="text-decoration-none text-reset">
@@ -86,24 +86,25 @@
                 </tbody>
             </table>
             <p>
-                Although first versions worked pretty well they had several flows:
+                Although the first versions worked pretty well they had several flaws:
             </p>
             <ul>
                 <li>They didn't have indicators of power and state
                 </li>
-                <li>I couldn't switch states without uploading new code to controller
+                <li>I couldn't switch states without uploading new code to the controller
                 </li>
-                <li>I couldn't change camera position freely
+                <li>I couldn't change the camera position freely
                 </li>
             </ul>
             <p>
-                To improve these flows I decided to add LEDs and buttons.<br>
+                To improve these flaws I decided to add LEDs and buttons.<br>
                 First I assembled all the components with a plastic breadboard to test the idea:<br>
                 <a href="./images/IMG_5342.webp"><img src="./images/IMG_5342.webp" alt="" class="img-fluid mx-auto d-block rounded img-size"></a>
             </p>
             <p>
                 Then I soldered all the components:<br>
                 <a href="./images/IMG_5802.webp"><img src="./images/IMG_5802.webp" alt="" class="img-fluid mx-auto d-block rounded img-size"></a><br>
+                <a href="./images/IMG_5819.webp"><img src="./images/IMG_5819.webp" alt="" class="img-fluid mx-auto d-block rounded img-size"></a><br>
                 <a href="./images/IMG_5819.webp"><img src="./images/IMG_5819.webp" alt="" class="img-fluid mx-auto d-block rounded img-size"></a><br>
                 <a href="./images/IMG_5822.webp"><img src="./images/IMG_5822.webp" alt="" class="img-fluid mx-auto d-block rounded img-size"></a>
             </p>
@@ -137,7 +138,7 @@
                 </li>
             </ul>
             <p>
-                In the <code>setup</code> state you can connect to a local HTTP server and get a picture from the camera online. I need it to set up the camera position.
+                In the <code>setup</code> state you can connect to a local HTTP server and get a picture from the camera online. In order to set up the camera position.
             </p>
             <p>
                 <a href="./images/screenshot.webp"><img src="./images/screenshot.webp" alt="" class="img-fluid mx-auto d-block rounded img-size"></a>
@@ -169,7 +170,7 @@
             </table>
             <p>
                 In the <code>watcher</code> state the camera gets an actual timestamp by NTP protocol from <code>pool.ntp.org</code>, takes a picture, and sends it to &quot;hourly&quot; and
-                &quot;daily&quot; telegram channels.<br>
+                &quot;daily&quot; Telegram channels.<br>
                 The controller stores the last sent time in a persistent memory. As a result there are no problems with sending schedule even after power outage.
             </p>
             <p>
@@ -220,7 +221,7 @@
                 <a href="./images/IMG_5845.webp"><img src="./images/IMG_5845.webp" alt="" class="img-fluid mx-auto d-block rounded img-size"></a>
             </p>
             <p>
-                Growing pine from a seed is very hard for me. It's my the 3rd attempt for now. You can watch video I assembled from my hourly channel's photos.
+                Growing a pine from a seed is very hard for me. It's my the 3rd attempt for now. You can watch the video I assembled from my hourly channel's photos.
             </p><iframe class="rounded" src="https://www.youtube.com/embed/7hh2q1jP7Ew" title="YouTube video player" frameborder="0" allow=
             "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>
