@@ -47,7 +47,7 @@ Run the Tests
 Navigate to your project’s root folder and execute the SonarQube Runner.
 If successful, a summary will appear.
 
-![](./images/image-1.png)
+![](./images/image-1.webp)
 
 Double-check your configuration file, especially paths to directories.
 If the JVM runs out of memory, increase the allocated memory for the SonarQube daemon.
@@ -68,7 +68,7 @@ After running the tests, visit the web interface to view results, including:
 http://localhost:9000/dashboard/index/runner
 ```
 
-![](./images/image-2.png)
+![](./images/image-2.webp)
 
 
 ## SonarQube Plugin for PhpStorm
@@ -78,16 +78,16 @@ Search for SonarQube, and install the plugin.
 Go to `File → Settings → Other Settings → SonarQube`.
 Add your SonarQube server configuration (click "Add" and input server details).
 
-![](./images/image-3.png)
+![](./images/image-3.webp)
 
 Click the green "+" icon.
 Refresh the project list by clicking Download Resources, then select and add your project.
 
-![](./images/image-4.png)
+![](./images/image-4.webp)
 
 Inspect your code in PhpStorm: `Code → Inspect Code → Whole Project`.
 Review and fix the errors detected based on SonarQube standards.
 
-![](./images/image-5.png)
+![](./images/image-5.webp)
 
 I hope this guide helps you improve your code quality with SonarQube and PhpStorm. Happy coding!

@@ -2,7 +2,7 @@
 
 [origin]https://habr.com/ru/articles/423821
 
-![](./images/image-0.png)
+![](./images/image-0.webp)
 
 This is a web version of the popular card game [Mafia](https://en.wikipedia.org/wiki/Mafia_(party_game)). The project was created for fun and to learn more about making games. 
 The first version was built in two weeks during free time, and then rewritten in another two weeks. A key feature is that the game works without a host.

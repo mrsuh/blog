@@ -15,7 +15,7 @@
     + Client connection to the WebSocket server
     + Command received from the client
 
-![](./images/image-68.jpeg)
+![](./images/image-68.webp)
 
 ## How it works
 
@@ -24,11 +24,11 @@ On the ESP8266, I configured the following:
 * An HTTP server that served an HTML page with a user interface.
 * A WebSocket server to handle requests from the UI controller.
 
-![](./images/image-3.png)
+![](./images/image-3.webp)
 
 ## Client UI
 
-![](./images/image-77.jpeg)
+![](./images/image-77.webp)
 
 *Direction control*
 ![](./images/image-78.gif)
@@ -40,4 +40,4 @@ On the ESP8266, I configured the following:
 
 You can read more in [this article](/articles/2020/rc-boat-with-esp8266-nodemcu/)
 
-![](./images/poster.jpeg)
+![](./images/poster.webp)

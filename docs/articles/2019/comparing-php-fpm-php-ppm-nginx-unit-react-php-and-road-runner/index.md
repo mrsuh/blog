@@ -407,11 +407,11 @@ phantom:
 | react-php-reboot   | 9.61          | 12.67      | 885.92            | 892.52         |
 
 ### Charts
-![](./images/chart_1_1.png)
+![](./images/chart_1_1.webp)
 Chart 1.1 Average Response Time per Second
-![](./images/chart_1_2.png)
+![](./images/chart_1_2.webp)
 Chart 1.2 Average CPU Load per Second
-![](./images/chart_1_3.png)
+![](./images/chart_1_3.webp)
 Chart 1.3 Average Memory Usage per Second
 
 ## 500 rps
@@ -457,11 +457,11 @@ phantom:
 | react-php-reboot   | 41.30         | 47.89      | 957.01            | 958.56         |
 
 ### Charts
-![](./images/chart_2_1.png)
+![](./images/chart_2_1.webp)
 Chart 2.1 Average Response Time per Second
-![](./images/chart_2_2.png)
+![](./images/chart_2_2.webp)
 Chart 2.2 Average CPU Load per Second
-![](./images/chart_2_3.png)
+![](./images/chart_2_3.webp)
 Chart 2.3 Average Memory Usage per Second
 
 ## 1000 rps
@@ -507,13 +507,13 @@ phantom:
 | react-php-reboot   | 72.11         | 81.81      | 911.28            | 961.62         |
 
 ### Charts
-![](./images/chart_3_1.png)
+![](./images/chart_3_1.webp)
 Chart 3.1 Average Response Time per Second
-![](./images/chart_3_2.png)
+![](./images/chart_3_2.webp)
 Chart 3.2 Average Response Time per Second (без php-fpm, php-ppm, road-runner-reboot)
-![](./images/chart_3_3.png)
+![](./images/chart_3_3.webp)
 Chart 3.3 Average CPU Load per Second
-![](./images/chart_3_4.png)
+![](./images/chart_3_4.webp)
 Chart 3.4 Average Memory Usage per Second
 
 ## 10000 rps
@@ -559,26 +559,26 @@ phantom:
 | react-php          | 73.76         | 82.18      | 1,101.71          | 1,105.06       |
 | react-php-reboot   | 85.77         | 91.92      | 975.85            | 978.42         |
 
-![](./images/chart_4_1.png)
+![](./images/chart_4_1.webp)
 Chart 4.1 Average Response Time per Second
-![](./images/chart_4_2.png)
+![](./images/chart_4_2.webp)
 Chart 4.2 Average Response Time per Second (без php-fpm, php-ppm)
-![](./images/chart_4_3.png)
+![](./images/chart_4_3.webp)
 Chart 4.3 Average CPU Load per Second
-![](./images/chart_4_4.png)
+![](./images/chart_4_4.webp)
 Chart 4.4 Average Memory Usage per Second
 
 ## Summary
 
 Here are the graphs showing how the performance characteristics of services change depending on the load. When viewing the graphs, keep in mind that not all services responded to 100% of the requests.
 
-![](./images/chart_5_1.png)
+![](./images/chart_5_1.webp)
 Chart 5.1 95% response time percentile
-![](./images/chart_5_2.png)
+![](./images/chart_5_2.webp)
 Chart 5.2 95% response time percentile (without php-fpm)
-![](./images/chart_5_3.png)
+![](./images/chart_5_3.webp)
 Chart 5.3 Maximum CPU load
-![](./images/chart_5_4.png)
+![](./images/chart_5_4.webp)
 Chart 5.4 Maximum memory usage
 
 In my opinion, the optimal solution (without changing the code) is the Nginx Unit process manager. It shows good performance in response times and has support from the company.

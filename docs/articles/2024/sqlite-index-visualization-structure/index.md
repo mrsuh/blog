@@ -132,11 +132,11 @@ The next step was to display everything visually — an easy part of the process
 I found a library called [d3-org-tree](https://github.com/benyasin/d3-org-tree) for visualizing index structures. 
 Here’s how it looked in the early stages:
 
-![](./images/test-tree-d3.png)
+![](./images/test-tree-d3.webp)
 
 However, there was a problem: I couldn’t adjust the spacing between Pages, so as the tree became deeper and more Pages were added at each level, the image became too large and hard to read.
 
-![](./images/test-tree-d3-wide.png)
+![](./images/test-tree-d3-wide.webp)
 
 I tried adjusting it with JavaScript and CSS, but it didn’t work well.
 After a few tries with d3-org-tree, I decided that using text to display the structure would be simpler.

@@ -84,7 +84,7 @@ All configurations can be found [here](https://github.com/mrsuh/rent-parser/tree
 In addition to classifying text, it also extracts facts like rent price, apartment size, metro station, and phone number.
 In the end, with a small test set and the need for high accuracy, it was better to write algorithms manually.
 
-![](./images/image-0.png)
+![](./images/image-0.webp)
 
 ## Service Development
 
@@ -117,13 +117,13 @@ CI is set up for all services using Travis-CI and Ansible. More details about au
 The service has been running for about two months for Saint-Petersburg and has collected over 8000 ads during this time. Here's some interesting data from the ads collected so far:
 
 On average, *131.2* ads (or texts classified as ads) are added daily.
-![](./images/image-1.png)
+![](./images/image-1.webp)
 
 The busiest hour for posting is 12 PM.
-![](./images/image-2.png)
+![](./images/image-2.webp)
 
 The most popular metro station is "Девяткино".
-![](./images/image-3.png)
+![](./images/image-3.webp)
 
 ## Conclusions
 

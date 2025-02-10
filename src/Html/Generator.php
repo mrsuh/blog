@@ -43,6 +43,6 @@ class Generator
 
         $html = $tidy->html();
 
-        return $html->value;
+        return '<!DOCTYPE html>' . PHP_EOL . $html->value;
     }
 }

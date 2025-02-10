@@ -53,7 +53,7 @@ class Test
 
 Every AST parser has a lexical analyzer, syntax analyzer, and AST builder. Usually, it grouped into Lexer and Parser.
 
-![](./images/ast-builder.png)
+![](./images/ast-builder.webp)
 
 You don't need to write Lexer and Parser from scratch.<br>
 To build Lexer you can use tools:
@@ -63,7 +63,7 @@ To build Lexer you can use tools:
 
 How do Lexers work?
 
-![](./images/lexer.png)
+![](./images/lexer.webp)
 
 Lexers help you to parse text into tokens.<br>
 For example PHP engine's Lexer use [re2c](https://re2c.org).
@@ -104,7 +104,7 @@ To build Parser you can use the tools:
 
 How do parser generators work?
 
-![](./images/parser-generator.png)
+![](./images/parser-generator.webp)
 
 A generator takes your `grammar.y` [BNF](https://en.wikipedia.org/wiki/Backus–Naur_form) file, parses it, extracts all definitions, and then constructs a bunch of tables like this:
 ```php
@@ -142,7 +142,7 @@ non_empty_statement:
 
 After all this information about parsers, we can summarize it on the scheme:
 
-![](./images/bison-kmyacc.png)
+![](./images/bison-kmyacc.webp)
 
 I had thought about replacing `KmYacc` with `Bison` in php-parser.<br>
 It is great for PHP engine and php-parser to use the same tools to make the same job.<br>
@@ -214,13 +214,13 @@ Time to compare PHP parser generated with `Bison` and `KmYacc`.<br>
 I had run tests with 3 different files sizes and different PHP versions (smaller is better):
 
 #### [PHP file 684 bytes](https://github.com/mrsuh/php-bison-skeleton/blob/master/examples/php/bin/parse-bison.php)
-![](./images/chart-little.png)
+![](./images/chart-little.webp)
 
 #### [PHP file 8.8 kilobytes](https://github.com/nikic/PHP-Parser/blob/4.x/lib/PhpParser/Lexer/Emulative.php)
-![](./images/chart-mid.png)
+![](./images/chart-mid.webp)
 
 #### [PHP file 329 kilobytes](https://github.com/mrsuh/php-bison-skeleton/blob/master/examples/php/lib/parser.php)
-![](./images/chart-big.png)
+![](./images/chart-big.webp)
 
 As you can see performance of the parser generated with `Bison` is slower than the parser generated with `KmYacc`.<br>
 I tried to optimize generated parser code, but it gave maximum  ~15 percent improvement. Not such much.<br>

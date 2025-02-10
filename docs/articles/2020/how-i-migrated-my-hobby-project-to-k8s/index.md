@@ -6,7 +6,7 @@ In this article, I want to talk about my hobby project for searching and classif
 
 ## A bit about the project
 
-![](./images/image-0.png)
+![](./images/image-0.webp)
 
 In March 2017, I launched a service for parsing and classifying apartment rental ads from vk.com.
 
@@ -113,7 +113,7 @@ I decided to stop using:
 ### Service сomponents
 
 After all the changes, the service now looks like this:
-![](./images/image-1.png)
+![](./images/image-1.webp)
 
 * view - searches and shows posts on the website (NodeJS).
 * parser - classifies posts (Go).
@@ -222,7 +222,7 @@ spec:
 A PersistentVolumeClaim is also used to store database data.
 Here’s the final structure (each block groups the Pods of one component):
 
-![](./images/image-2.png)                  
+![](./images/image-2.webp)                  
 
 ## Setting up the k8s Cluster
 

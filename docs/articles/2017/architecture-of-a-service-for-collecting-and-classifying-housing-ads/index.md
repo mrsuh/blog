@@ -28,13 +28,13 @@ As the database, I selected MongoDB. This document-oriented database was well-su
 
 Currently, the overall interaction scheme of the services looks like this:
 
-![](./images/image-0.png)
+![](./images/image-0.webp)
 
 ## Services
 
 #### Service for displaying and searching ads
 
-![](./images/image-1.png)
+![](./images/image-1.webp)
 
 https://github.com/mrsuh/rent-view
 
@@ -45,7 +45,7 @@ For the browser, scripts are written in pure JS, and styles are created with LES
 
 #### Ad Collection Service
 
-![](./images/image-2.png)
+![](./images/image-2.webp)
 
 https://github.com/mrsuh/rent-collector
 
@@ -70,7 +70,7 @@ You can read more about ad classification in [this article](/articles/2017/class
 
 #### Settings Management Service
 
-![](./images/image-3.png)
+![](./images/image-3.webp)
 
 https://github.com/mrsuh/rent-control
 
@@ -92,7 +92,7 @@ Originally, all parsing management data was stored in configuration files. Howev
 #### Notification service
 
 *Notification Example*
-![](./images/image-4.png)
+![](./images/image-4.webp)
 
 The Service is written in Golang
 
@@ -106,7 +106,7 @@ How it works:
 #### Code for the Shared Database in PHP
 
 *Shared Database Schema*
-![](./images/image-5.png)
+![](./images/image-5.webp)
 
 https://github.com/mrsuh/rent-schema
 

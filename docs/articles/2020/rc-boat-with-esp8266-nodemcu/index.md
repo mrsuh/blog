@@ -2,7 +2,7 @@
 
 [origin]https://habr.com/ru/articles/513482
 
-![](./images/image-0.jpeg)
+![](./images/image-0.webp)
 
 I’ll share the entire development process from the very beginning: starting with a boat made of ceiling tiles, a gel pen, and a tin can, to a plastic model that’s good enough to give as a gift.
 
@@ -50,10 +50,10 @@ On the ESP8266 NodeMCU, I set up:
   + Provided an API for controlling the car via the buttons on the HTML page.
 
 *Connection diagram*
-![Connection diagram](./images/image-1.png)
+![Connection diagram](./images/image-1.webp)
 
 *First prototype*
-![First prototype](./images/image-2.jpeg)
+![First prototype](./images/image-2.webp)
 
 *Great, it works!*
 <iframe class="rounded" src="https://www.youtube.com/embed/W_7frOsF96s?si=Pztkd3u-Ed5LrUQ5" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -64,10 +64,10 @@ Controlling with buttons wasn’t very convenient, so I redesigned the interface
 With this interface, frequent requests had to be sent to the server, so I added a WebSocket server on the ESP8266 NodeMCU to send commands over an established connection.
 
 *Connection diagram*
-![Connection diagram](./images/image-3.png)
+![Connection diagram](./images/image-3.webp)
 
 *Second prototype*
-![Second prototype](./images/image-4.jpeg)
+![Second prototype](./images/image-4.webp)
 
 *Control example*
 ![Control example](./images/image-5.gif)
@@ -81,7 +81,7 @@ Detailed instructions on how to build such a car can be found [here](https://vc.
 Before diving into the details of creating the boat, I should briefly explain its components.
 
 *Image taken from [here](http://sudomodeli.masteraero.ru/kater_model-8.php)*
-![](./images/image-6.png)
+![](./images/image-6.webp)
 
 The main parts that I will be discussing are highlighted in blue:
 1 - rudder;
@@ -105,9 +105,9 @@ Video course [how to make a rocket boat](https://www.youtube.com/watch?v=dFc1KUH
 
 To test the range of the control system, I built this device:
 
-![](./images/image-7.jpeg)
+![](./images/image-7.webp)
 
-![](./images/image-8.jpeg)
+![](./images/image-8.webp)
 
 On the client side, you can run a `ping/pong` test to the WebSocket server with response time measurement.
 The table displays the number of requests/responses and the response time percentiles.
@@ -116,7 +116,7 @@ After walking around the park with direct line of sight, I found that the maximu
 27 meters: 95th percentile ~ 48 milliseconds, 99th percentile ~ 283 milliseconds.
 
 *Client interface for testing reception range*
-![Client interface for testing reception range](./images/image-9.jpeg)
+![Client interface for testing reception range](./images/image-9.webp)
 
 [Here](https://github.com/mrsuh/esp8266-distance-test) is the link to get the code and run the experiment yourself.
 
@@ -145,7 +145,7 @@ I already had a working remote control scheme, so I could start working on the h
 To assemble the boat's hull, I used blueprints from an article by [Francisco Moliner](https://www.instructables.com/id/RC-Boat-2).
 I printed them, glued them together, and cut them out of ceiling tile.
 
-![](./images/image-10.jpeg)
+![](./images/image-10.webp)
 
 While I was assembling the hull and thinking about what to make the drive shaft from, my brushless motor A2212 1000KV arrived.
 
@@ -159,10 +159,10 @@ I think this was due to the low power of the power supply (the powerbank).
 In the end, I decided to switch to a more powerful brushed motor.
 
 *Trying in vain to set up stable motor operation*
-![Trying in vain to set up stable motor operation](./images/image-11.jpeg)
+![Trying in vain to set up stable motor operation](./images/image-11.webp)
 
 *Assembly is in full swing*
-![Assembly is in full swing](./images/image-12.jpeg)
+![Assembly is in full swing](./images/image-12.webp)
 
 First test launch
 <iframe class="rounded" src="https://www.youtube.com/embed/MnyuY5TDpVY?si=29HsVZbohLljlNK9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -195,18 +195,18 @@ After ten minutes, using a few branches taped together into one large one, we ma
 Here are the first photos of the boat, but after that swim:
 
 *Not the cleanest pond*
-![Not the cleanest pond](./images/image-13.jpeg)
+![Not the cleanest pond](./images/image-13.webp)
 
 *It's easy to see the positions of the rudder and the propeller*
-![It's easy to see the positions of the rudder and the propeller](./images/image-14.jpeg)
+![It's easy to see the positions of the rudder and the propeller](./images/image-14.webp)
 
 *You can see how the weeds tangled around the shaft*
-![You can see how the weeds tangled around the shaft](./images/image-15.jpeg)
+![You can see how the weeds tangled around the shaft](./images/image-15.webp)
 
 The boat still leaked a bit, so I had to search for the leak.
 
 *The blue goo is clearly visible on the white background*
-![The blue goo is clearly visible on the white background](./images/image-16.jpeg)
+![The blue goo is clearly visible on the white background](./images/image-16.webp)
 
 ## Version 1.2
 
@@ -216,13 +216,13 @@ Version features:
 * Changed the pond.
 
 *The boat, cleaned of dirt, looks much better*
-![The boat, cleaned of dirt, looks much better](./images/image-17.jpeg)
+![The boat, cleaned of dirt, looks much better](./images/image-17.webp)
 
 *The rudder surface area is increased*
-![The rudder surface area is increased](./images/image-18.jpeg)
+![The rudder surface area is increased](./images/image-18.webp)
 
 *Weed protection added*
-![Weed protection added](./images/image-19.jpeg)
+![Weed protection added](./images/image-19.webp)
 
 First successful launch:
 <iframe class="rounded" src="https://www.youtube.com/embed/NQefcdBtruM?si=b5vxgf6OLzmIPpVA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -262,30 +262,30 @@ Version features:
 The 3D printer arrived!
 
 *The package from China arrived in perfect condition*
-![The package from China arrived in perfect condition](./images/image-20.jpeg)
+![The package from China arrived in perfect condition](./images/image-20.webp)
 
 *The assembly process took about 6 hours*
-![The assembly process took about 6 hours](./images/image-21.jpeg)
+![The assembly process took about 6 hours](./images/image-21.webp)
 
 *Test print*
-![Test print](./images/image-22.jpeg)
+![Test print](./images/image-22.webp)
 
 *Printing the shaft and coupling*
-![Printing the shaft and coupling](./images/image-23.jpeg)
+![Printing the shaft and coupling](./images/image-23.webp)
 
-![](./images/image-24.jpeg)
+![](./images/image-24.webp)
 
 *The new hull looked neat*
-![The new hull looked neat](./images/image-25.jpeg)
+![The new hull looked neat](./images/image-25.webp)
 
 It works great!
 <iframe class="rounded" src="https://www.youtube.com/embed/awhC4guPnek?si=WvRaZom34xKZBmRd" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 It was unclear what to do with the hole where water was getting in:
 
-![](./images/image-26.jpeg)
+![](./images/image-26.webp)
 
-![](./images/image-27.jpeg)
+![](./images/image-27.webp)
 
 ## Version 3.0
 
@@ -307,63 +307,63 @@ Version features:
 
 Before this, I had only worked in Kompas 3D for modeling simple designs, but the principles in Fusion360 are quite similar. I had to spend a few weekends learning how to optimize modeling in this program. After a couple of weeks, the first usable version of the boat body model was ready!
 
-![](./images/image-28.png)
+![](./images/image-28.webp)
 
-![](./images/image-29.png)
+![](./images/image-29.webp)
 
-![](./images/image-30.png)
+![](./images/image-30.webp)
 
-![](./images/image-31.png)
+![](./images/image-31.webp)
 
 I divided the body into several parts and started printing. 
 I didn’t focus much on the printing settings, so the quality isn’t great.
 
-![](./images/image-32.jpeg)
+![](./images/image-32.webp)
 
 *Bow of the boat*
-![Bow of the boat](./images/image-33.jpeg)
+![Bow of the boat](./images/image-33.webp)
 
-![](./images/image-34.jpeg)
+![](./images/image-34.webp)
 
 *Stern of the boat*
-![Stern of the boat](./images/image-35.jpeg)
+![Stern of the boat](./images/image-35.webp)
 
-![](./images/image-36.jpeg)
+![](./images/image-36.webp)
 
 *Top of the boat*
-![Top of the boat](./images/image-37.jpeg)
+![Top of the boat](./images/image-37.webp)
 
 *Assembly process of the body*
-![Assembly process of the body](./images/image-38.jpeg)
+![Assembly process of the body](./images/image-38.webp)
 
-![](./images/image-39.jpeg)
+![](./images/image-39.webp)
 
 *Completed body*
-![Completed body](./images/image-40.jpeg)
+![Completed body](./images/image-40.webp)
 
 Additionally, I modeled and printed the rudder. I solved the issue with the hole for controlling the rudder (visible in the photo). As a result, water almost stopped entering the boat through it.
 
 *One of the final versions*
-![One of the final versions](./images/image-41.png)
+![One of the final versions](./images/image-41.webp)
 
-![](./images/image-42.jpeg)
+![](./images/image-42.webp)
 
-![](./images/image-43.jpeg)
+![](./images/image-43.webp)
 
-![](./images/image-44.jpeg)
+![](./images/image-44.webp)
 
 *Replaced one RGB LED with three different LEDs*
-![Replaced one RGB LED with three different LEDs](./images/image-45.jpeg)
+![Replaced one RGB LED with three different LEDs](./images/image-45.webp)
 
 The new motor occasionally didn't start on the first try, which was really frustrating. I thought this might be due to the power supply (powerbank), so I experimented with regular AA batteries, which seemed to improve things.
 
 *Experimenting with AA batteries*
-![Experimenting with AA batteries](./images/image-46.jpeg)
+![Experimenting with AA batteries](./images/image-46.webp)
 
 Then I suddenly realized that the powerbank probably contains multiple batteries, and I might be able to connect them in the way I need. So, I opened up the powerbank... but it turned out there was only one battery inside.
 
 *Only one battery inside the powerbank*
-![Only one battery inside the powerbank](./images/image-47.jpeg)
+![Only one battery inside the powerbank](./images/image-47.webp)
 
 So, I decided I needed to order some batteries.
 
@@ -375,17 +375,17 @@ Version features:
 * The motor now works reliably!
 
 Here are the new battery compartments:
-![](./images/image-48.png)
+![](./images/image-48.webp)
 
-![](./images/image-49.jpeg)
+![](./images/image-49.webp)
 
 *The contacts are still made from tin cans*
-![The contacts are still made from tin cans](./images/image-50.jpeg)
+![The contacts are still made from tin cans](./images/image-50.webp)
 
-![](./images/image-51.jpeg)
+![](./images/image-51.webp)
 
 *The compartments have been glued into the boat*
-![The compartments have been glued into the boat](./images/image-52.jpeg)
+![The compartments have been glued into the boat](./images/image-52.webp)
 
 Finally, everything is working smoothly!
 
@@ -396,12 +396,12 @@ Version features:
 
 Here are the updates:
 
-![](./images/image-53.jpeg)
+![](./images/image-53.webp)
 
-![](./images/image-54.jpeg)
+![](./images/image-54.webp)
 
 *It wasn't easy to replace the already glued-in drive leg*
-![It wasn't easy to replace the already glued-in drive leg](./images/image-55.jpeg)
+![It wasn't easy to replace the already glued-in drive leg](./images/image-55.webp)
 
 ## Version 3.3
 
@@ -410,19 +410,19 @@ Version features:
 * The L298N was reinstalled, as it should handle higher currents.
 
 *Part of the flexible coupling*
-![Part of the flexible coupling](./images/image-56.png)
+![Part of the flexible coupling](./images/image-56.webp)
 
-![](./images/image-57.jpeg)
+![](./images/image-57.webp)
 
-![](./images/image-58.jpeg)
+![](./images/image-58.webp)
 
 *Complete set of the new version*
-![Complete set of the new version](./images/image-59.jpeg)
+![Complete set of the new version](./images/image-59.webp)
 
-![](./images/image-60.jpeg)
+![](./images/image-60.webp)
 
 *All parts of the boat and main components are made from plastic!*
-![All parts of the boat and main components are made from plastic!](./images/image-61.jpeg)
+![All parts of the boat and main components are made from plastic!](./images/image-61.webp)
 
 First water test of version 3.x:
 <iframe class="rounded" src="https://www.youtube.com/embed/Si9PfFbOyKs?si=y_APvv91P5eQX43t" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -431,20 +431,20 @@ During real-life tests, it became clear that the distance at which a stable conn
 
 The brushless motor was reintroduced after trying it with 18650 batteries, and it worked as expected. However, since the brushless motor is designed for drones, it could not simply be mounted horizontally, as the motor rotates around its base. So, a custom mount was modeled and printed for it:
 
-![](./images/image-62.jpeg)
+![](./images/image-62.webp)
 
 *First version of the base*
-![First version of the base](./images/image-63.jpeg)
+![First version of the base](./images/image-63.webp)
 
 *The base fits perfectly*
-![The base fits perfectly](./images/image-64.jpeg)
+![The base fits perfectly](./images/image-64.webp)
 
 The first version of the motor mount fit the motor perfectly but didn't fit well inside the boat, so further adjustments were needed. After 2-3 iterations of printing, the final mount was created that fit perfectly inside the boat and allowed the motor to work without interference:
 
-![](./images/image-65.png)
+![](./images/image-65.webp)
 
 *The entire shaft assembly from motor to propeller*
-![The entire shaft assembly from motor to propeller](./images/image-66.jpeg)
+![The entire shaft assembly from motor to propeller](./images/image-66.webp)
 
 ## Version 3.4
 
@@ -453,19 +453,19 @@ Version features:
 * Modeled and printed a custom mount for the motor.
 
 *Glued the motor in and tested it separately*
-![Glued the motor in and tested it separately](./images/image-67.jpeg)
+![Glued the motor in and tested it separately](./images/image-67.webp)
 
 *Complete set of the new version*
-![Complete set of the new version](./images/image-68.jpeg)
+![Complete set of the new version](./images/image-68.webp)
 
-![](./images/image-69.jpeg)
+![](./images/image-69.webp)
 
 *Assembled version*
-![Assembled version](./images/image-70.jpeg)
+![Assembled version](./images/image-70.webp)
 
 Weighed the boat in full configuration:
 *The boat's full weight with all components is 626 grams*
-![The boat's full weight with all components is 626 grams](./images/image-71.jpeg)
+![The boat's full weight with all components is 626 grams](./images/image-71.webp)
 
 ## Version 3.5
 
@@ -474,25 +474,25 @@ Version features:
 * Added two more holes for screws in the lid, again to ensure a tight fit.
 * Secured the motor and battery mounting areas with super glue.
 
-![](./images/image-72.jpeg)
+![](./images/image-72.webp)
 
 *Glued the top with rubber bands*
-![Glued the top with rubber bands](./images/image-73.jpeg)
+![Glued the top with rubber bands](./images/image-73.webp)
 
 Final version:
 
-![](./images/image-74.jpeg)
+![](./images/image-74.webp)
 
-![](./images/image-75.jpeg)
+![](./images/image-75.webp)
 
-![](./images/image-76.jpeg)
+![](./images/image-76.webp)
 
 Final video of version 3.5
 <iframe class="rounded" src="https://www.youtube.com/embed/2OwbVLAE5oU?si=ojQu8Cci6axYGNkr" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <iframe class="rounded" src="https://www.youtube.com/embed/JPhXwM6JG8E?si=C2vpp5isUWBNnxxg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Client UI
-![](./images/image-77.jpeg)
+![](./images/image-77.webp)
 
 When the settings menu is collapsed, nearly the entire screen area is available for control.
 
@@ -517,9 +517,9 @@ All timeouts are sent to the server with each command, so they can be adjusted a
 The entire process took about six months. The model could have been refined and improved even further, but I decided to stop at the current result.
 My friend liked the gift, so I’m doubly satisfied!
 
-![](./images/image-80.jpeg)
+![](./images/image-80.webp)
 
-![](./images/image-81.jpeg)
+![](./images/image-81.webp)
 
 The source code for the 3D models and the boat code can be found [here](https://github.com/mrsuh/boat-esp8266). 
 The source code for the distance test is available [here](https://github.com/mrsuh/esp8266-distance-test).

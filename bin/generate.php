@@ -338,7 +338,7 @@ foreach ($projects as $project) {
 
     $projectFilePath = $directory . $project->url . 'index.md';
     
-    foreach(['png', 'jpg', 'jpeg', 'webp'] as $extension) {
+    foreach(['webp', 'png', 'jpg', 'jpeg'] as $extension) {
         $fileName = 'poster.' . $extension;
         if(is_file($directory .  $project->url . 'images/' . $fileName)) {
             $project->posterFileName = $fileName;

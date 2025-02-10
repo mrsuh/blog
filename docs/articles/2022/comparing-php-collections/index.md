@@ -265,9 +265,9 @@ If the tests are correct, the difference between a function argument with `class
 
 I have drawn some charts so you can compare all measurements in percentage. The results may vary slightly on different machines, but the percentage result should be the same
 
-![PHP type checking time](./images/time.png)
+![PHP type checking time](./images/time.webp)
 
-![PHP memory usage](./images/memory.png)
+![PHP memory usage](./images/memory.webp)
 
 If you are only using simple collections you can use `array` - it is very fast and requires little memory.
 PHP doesn't support generic syntax and IDE can't make hints about the type of objects in a collection (yet),

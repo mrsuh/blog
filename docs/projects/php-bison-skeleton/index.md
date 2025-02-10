@@ -34,7 +34,7 @@ By default, Bison works with C, C++, D, and Java. But you can use it with PHP by
 
 ## How It Works
 
-![](./images/flow.png)
+![](./images/flow.webp)
 
 * grammar.y: a file where you define the syntax using BNF (Backus-Naur Form)
 * skeleton.m4: a template file (written in M4) that helps create the parser
