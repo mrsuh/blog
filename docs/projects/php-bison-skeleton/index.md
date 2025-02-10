@@ -50,6 +50,6 @@ Bison reads your grammar.y file, processes it, and uses the skeleton.m4 file to 
 
 ## Examples
 
-* [Math parser](/articles/ast-parser-with-php-and-bison/)
+* [Math parser](/articles/2023/ast-parser-with-php-and-bison/)
 * [Nginx parser](/articles/2023/nginx-parser-with-php-and-bison/)
 * [JSON parser](/articles/2023/json-parser-with-php-and-bison/)
