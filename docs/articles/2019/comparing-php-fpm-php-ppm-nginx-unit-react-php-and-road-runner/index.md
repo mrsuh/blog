@@ -376,13 +376,13 @@ phantom:
 ```
 
 ### Here are the links to the detailed report
-* php-fpm https://overload.yandex.net/150666
-* php-ppm https://overload.yandex.net/150670
-* nginx-unit https://overload.yandex.net/150675
-* road-runner https://overload.yandex.net/150681
-* road-runner-reboot https://overload.yandex.net/151961
-* react-php https://overload.yandex.net/150697
-* react-php-reboot https://overload.yandex.net/152063
+* [php-fpm](./reports/150666.html)
+* [php-ppm](./reports/150670.html)
+* [nginx-unit](./reports/150675.html)
+* [road-runner](./reports/150681.html)
+* [road-runner-reboot](./reports/151961.html)
+* [react-php](./reports/150697.html)
+* [react-php-reboot](./reports/152063.html)
 
 ### Response Time Percentiles
 |                    | 95%(ms) | 90%(ms) | 80%(ms) | 50%(ms) | HTTP OK(%) | HTTP OK(count) |
@@ -424,13 +424,13 @@ phantom:
 ```
 
 ### Here are the links to the detailed report
-* php-fpm https://overload.yandex.net/150705
-* php-ppm https://overload.yandex.net/150710
-* nginx-unit https://overload.yandex.net/150711
-* road-runner https://overload.yandex.net/150715
-* road-runner-reboot https://overload.yandex.net/152011
-* react-php https://overload.yandex.net/150717
-* react-php-reboot https://overload.yandex.net/152064
+* [php-fpm](./reports/150705.html)
+* [php-ppm](./reports/150710.html)
+* [nginx-unit](./reports/150711.html)
+* [road-runner](./reports/150715.html)
+* [road-runner-reboot](./reports/152011.html)
+* [react-php](./reports/150717.html)
+* [react-php-reboot](./reports/152064.html)
 
 ### Response Time Percentiles
 
@@ -473,14 +473,14 @@ phantom:
         schedule: line(1, 1000, 60s) const(1000, 60s)
 ```
 ### Here are the links to the detailed report
-* php-fpm https://overload.yandex.net/150841
-* php-fpm-80 https://overload.yandex.net/153612
-* php-ppm https://overload.yandex.net/150842
-* nginx-unit https://overload.yandex.net/150843
-* road-runner https://overload.yandex.net/150844
-* road-runner-reboot https://overload.yandex.net/152068
-* react-php https://overload.yandex.net/150846
-* react-php-reboot https://overload.yandex.net/152065
+* [php-fpm](./reports/150841.html)
+* [php-fpm-80](./reports/153612.html)
+* [php-ppm](./reports/150842.html)
+* [nginx-unit](./reports/150843.html)
+* [road-runner](./reports/150844.html)
+* [road-runner-reboot](./reports/152068.html)
+* [react-php](./reports/150846.html)
+* [react-php-reboot](./reports/152065.html)
 
 ### Response Time Percentiles
 |                    | 95%(ms) | 90%(ms) | 80%(ms) | 50%(ms) | HTTP OK(%) | HTTP OK(count) |
@@ -526,14 +526,14 @@ phantom:
 ```
 
 ### Here are the links to the detailed report
-* php-fpm https://overload.yandex.net/150849
-* php-fpm-80 https://overload.yandex.net/153615
-* php-ppm https://overload.yandex.net/150874
-* nginx-unit https://overload.yandex.net/150876
-* road-runner https://overload.yandex.net/150881
-* road-runner-reboot https://overload.yandex.net/152069
-* react-php https://overload.yandex.net/150885
-* react-php-reboot https://overload.yandex.net/152066
+* [php-fpm](./reports/150849.html)
+* [php-fpm-80](./reports/153615.html)
+* [php-ppm](./reports/150874.html)
+* [nginx-unit](./reports/150876.html)
+* [road-runner](./reports/150881.html)
+* [road-runner-reboot](./reports/152069.html)
+* [react-php](./reports/150885.html)
+* [react-php-reboot](./reports/152066.html)
 
 ### Response Time Percentiles
 |                    | 95%(ms) | 90%(ms) | 80%(ms) | 50%(ms) | HTTP OK(%) | HTTP OK(count) |
