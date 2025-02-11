@@ -286,6 +286,52 @@ foreach($articles as $year => $list) {
             'https://mrsuh.com' . $article->url,
             date('Y-m-d', filemtime($articleFilePath))
         );
+
+        $reportDirectory = $directory . $article->url . 'reports';
+        if(is_dir($reportDirectory)) {
+            $headerFilePath = $reportDirectory . '/header.html';
+            foreach(scandir($reportDirectory) as $reportFileName) {
+                $reportFilePath = $reportDirectory . '/' . $reportFileName;
+                if(!is_file($reportFilePath)) {
+                    continue;
+                }
+                
+                if(!str_contains($reportFileName, '.md')) {
+                    continue;
+                }
+                
+                $title = str_replace('.md', '', $reportFileName);
+                $url = $article->url . 'reports/' . $title . '.html';
+                
+                $generator->generate(
+                    $url,
+                    'article/index.html.twig',
+                    [
+                        'title' => $article->title . ' / Report ' . $title,
+                        'description' => 'Report',
+                        'keywords' => $article->keywords,
+                        'page_name' => 'article',
+                        'content' => str_replace(
+                            '{{ content }}', 
+                            sprintf(
+                                '<a href="%s">%s</a> / Report %s<br><br>',
+                                $article->url,
+                                $article->title,
+                                $title
+                            ),
+                            file_get_contents($headerFilePath) . file_get_contents($reportFilePath)
+                        ),
+                        'path' => $url,
+                    ]
+                );
+
+                $sitemap[] = SiteMap::create(
+                    'https://mrsuh.com' . $url,
+                    date('Y-m-d', filemtime($articleFilePath))
+                );
+            }
+        }
+        
     }
 }
 

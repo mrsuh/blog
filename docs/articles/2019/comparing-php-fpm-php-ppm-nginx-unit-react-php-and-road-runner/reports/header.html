@@ -1,0 +1,289 @@
+{{ content }}
+
+<style type="text/css" media="all">
+
+   
+    .overview_container {
+        background-color: #eef1f8;
+        padding: 5mm;
+        border-radius: 5mm;
+        display: block;
+    }
+    .overview_container tr td {
+        vertical-align: top;
+    }
+    h2.overview {
+        padding-top: 0px;
+        margin-top: 0px;
+    }
+    .overview_data {
+        padding-left: 3ex;
+        padding-right: 3ex;
+        column-count: 2;
+        column-gap: 10px;
+        width: 100%;
+    }
+    .overview_item {
+        break-inside: avoid;
+        margin-top: 6px;
+        margin-bottom: 7px;
+    }
+    .overview_title {
+        display: inline;
+        color: #909090;
+    }
+    .overview_value {
+        display: inline;
+        padding-left: 1ex;
+    }
+
+    div.tables_container {
+    }
+    div.table {
+        display: inline-block;
+        break-inside: avoid;
+        padding-right: 2em;
+    }
+    .table {
+        border-spacing: 0px;
+        border-collapse: collapse;
+    }
+    .table_heading {
+        font-weight: bold;
+        border-bottom: #5282ff solid 1px;
+        color: #5282ff;
+        text-align: left;
+    }
+    .table_heading_caption {
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+    .table_heading_case {
+        padding-left: 1ex;
+        padding-right: 1ex;
+    }
+    .table_row {
+        padding-top: 1px;
+        padding-bottom: 1px;
+    }
+    .table_index_test_id {
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+    .table_index_test_id_empty {
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+    .table_index_case {
+        border-bottom: #e0e0e0 solid 1px;
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+    .table_value {
+        border-bottom: #e0e0e0 solid 1px;
+        padding-left: 1ex;
+        padding-right: 1ex;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        font-family: monospace;
+    }
+
+    .parts_container {
+        padding-left: 2px;
+        font-weight: bold;
+    }
+    .parts_list {
+        font-weight: normal;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+    .parts_item {
+    }
+
+    .cases_list_title {
+        text-align: left;
+        text-transform: uppercase;
+        font-weight: bold;
+        padding-top: 1em;
+    }
+    .cases_list_item {
+        text-align: left;
+        text-transform: uppercase;
+    }
+
+    .case_title {
+        text-align: left;
+        text-transform: uppercase;
+        font-weight: bold;
+        padding-top: 1em;
+    }
+    .case_figures {
+        display: grid;
+        justify-content: space-around;
+        break-inside: auto;
+    }
+    .figure {
+        break-inside: avoid;
+        margin-top: 1.5em;
+    }
+    .figure_title {
+        text-align: left;
+        font-weight: bold;
+        padding-top: 0;
+    }
+    .figure_image {
+        text-align: center;
+        padding-top: 1em;
+    }
+    .figure_legend {
+        text-align: center;
+        padding-top: 0;
+        font-size: small;
+        color: #808080;
+    }
+    .legend_item {
+        display: inline-block;
+    }
+    .legend_box {
+        width: 1.5ex;
+        height: 1.5ex;
+        display: inline-block;
+        margin-left: 1ex;
+    }
+
+    pre.config {
+        border-radius: 1ex;
+        background-color: #f2f2f2;
+        padding: 1em;
+    }
+
+    .term_name {
+        display: block;
+        font-weight: bold;
+        break-after: avoid;
+    }
+    .term_desc {
+        display: block;
+        text-align: left;
+        padding-bottom: 2em;
+    }
+</style>
+<style type="text/css" media="print">
+    @page {
+        size: A4 portrait;
+        margin-top: 18mm;
+        margin-left: 0cm;
+        margin-bottom: 18mm;
+        margin-right: 0cm;
+
+        @bottom-right {
+            content: counter(page);
+            margin-right: 15mm;
+            font-family: 'YS Text', sans-serif;
+            font-size: 3mm;
+        }
+    }
+    @page :first {
+        margin-top: 0cm;
+    }
+
+    @page :first {
+        @bottom-right {
+            content: '';
+        }
+    }
+
+    div.content {
+        margin-left: 15mm;
+        margin-right: 15mm;
+        max-width: 19cm;
+    }
+    body {
+        font-family: 'YS Text', sans-serif;
+        font-size: 3mm;
+    }
+    h1 {
+        display: block;
+        break-before: page;
+    }
+    h1.top_title {
+        background-position: 120% top;
+        break-before: auto;
+    }
+    h2, h3, h4, h5, h6 {
+        display: block;
+        break-after: avoid;
+    }
+    table, figure, img, svg {
+        break-inside: avoid;
+    }
+
+    .overview_data {
+        padding-left: 1cm;
+        padding-right: 1cm;
+    }
+    .overview_value {
+        padding-left: 1mm;
+    }
+
+    .case_figures {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .figure_image {
+        text-align: left;
+    }
+    .figure_image img {
+        width: 85mm;
+        height: 42mm;
+    }
+    .figure_image svg {
+        width: 85mm;
+        height: 42mm;
+    }
+    .legend_item {
+        font-size: 2.1mm;
+    }
+    .legend_box {
+        width: 2.1mm;
+        height: 2.1mm;
+        margin-left: 1.5mm;
+    }
+
+    .table_heading_case {
+        padding-left: 1mm;
+        padding-right: 1mm;
+    }
+    .table_value {
+        padding-left: 1mm;
+        padding-right: 1mm;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        font-size: 2.8mm;
+    }
+
+    pre.config {
+        border-radius: 5mm;
+    }
+
+    .term_desc {
+        max-width: 145mm;
+    }
+</style>
+<style type="text/css" media="screen">
+    @media (min-width: 500px) {
+        .overview_data {
+            column-count: 1;
+        }
+        .case_figures {
+            grid-template-columns: repeat(1, 1fr);
+        }
+    }
+    @media (min-width: 1000px) {
+        .overview_data {
+            column-count: 2;
+        }
+        .case_figures {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+</style>
