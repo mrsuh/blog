@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Html;
+namespace App\Generator;
 
-class Generator
+class Html
 {
     public function __construct(private string $directory, private \Twig\Environment $twig)
     {

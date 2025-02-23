@@ -1,6 +1,7 @@
 # ESP32 bluetooth mouse bot
 
-This bot emulates a Bluetooth mouse, allowing you to record macros and replay them multiple times.
+This project showcases a bot that emulates a Bluetooth mouse using an ESP32 controller. 
+It allows users to record and replay macros, automating repetitive tasks and enhancing user interaction through customizable input sequences.
 You can find the source code for this bot [here](https://github.com/mrsuh/esp32-bluetooth-mouse-bot).
 
 ![](./images/image-2.webp)

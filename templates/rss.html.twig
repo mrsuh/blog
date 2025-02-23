@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>{{ title }}</title>
+        <description>{{ description }}</description>
+        <link>https://mrsuh.com/</link>
+        {% for item in list %}
+    <item>
+                <title>{{ item.title }}</title>
+                <link>{{ item.url }}</link>
+                <pubDate>{{ item.date|date(constant('\DateTimeInterface::RFC2822')) }}</pubDate>
+                <description>{{ item.description }}</description>
+            </item>
+        {% endfor %}
+    </channel>
+</rss>

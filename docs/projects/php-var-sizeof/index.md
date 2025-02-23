@@ -1,6 +1,7 @@
 # PHP var_sizeof()
 
-The [library](https://github.com/mrsuh/php-var-sizeof) provides functions to get the size of any PHP variable in bytes
+This library provides functions to accurately determine the size of any PHP variable in bytes. 
+By accessing internal PHP structures through FFI, it calculates the memory footprint of variables, aiding developers in efficient memory usage analysis and optimization.
 It should be a more accurate tool for calculating the total size of a PHP variable than `memory_get_usage()`, but it has [limitations](#h2-limitations).
 
 ## How it works

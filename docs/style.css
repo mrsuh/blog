@@ -7,7 +7,16 @@ hr.list {
 }
 
 h1 {
-    margin-bottom: 30px;
+    margin-bottom: 1rem;
+}
+
+.header-info-block {
+    margin-bottom: 3rem;
+    font-size: 1rem;
+}
+
+.header-info-block blockquote {
+    margin-bottom: 0.5rem;
 }
 
 .img-size {
@@ -22,7 +31,7 @@ h1 {
 
 .quote {
     border-left: 4px solid var(--bs-secondary-color);
-    padding-left: 20px;
+    padding-left: 0.5rem;
 }
 
 iframe {

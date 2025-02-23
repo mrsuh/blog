@@ -2,7 +2,7 @@
 
 ![](./images/image-0.webp)
 
-In March 2017, I launched a service for parsing and classifying apartment rental ads from vk.com.
+Launched in March 2017, SocRent is a service designed to parse and classify apartment rental advertisements from vk.com.
 You can read more [here](/articles/2017/classifying-housing-ads-in-search-of-the-best-solution/) about how I experimented with different methods to classify ads and ultimately chose the Yandex Tomita Parser as a lexical parser.
 Developing the first version of the service took about a year.
 

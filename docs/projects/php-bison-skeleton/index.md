@@ -1,5 +1,8 @@
 # PHP Skeleton for Bison
 
+This initiative extends the Bison parser generator to support PHP, enabling the creation of Abstract Syntax Tree (AST) parsers for languages like PHP, JSON, and SQL. 
+By integrating a PHP skeleton, developers can seamlessly generate parsers that integrate into PHP projects, enhancing parsing capabilities.
+
 [Bison](https://en.wikipedia.org/wiki/GNU_Bison) is a parser generator.
 You can extend it with [PHP Skeleton](https://github.com/mrsuh/php-bison-skeleton) to generate PHP parsers.
 For example, the PHP parser that can parse Nginx config:

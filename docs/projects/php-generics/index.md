@@ -1,5 +1,8 @@
 # PHP Generics
 
+This project introduces real generics in PHP, utilizing RFC-style syntax `Class<T>` with runtime type checking. 
+It enhances code flexibility and type safety by generating concrete classes from generic ones, facilitating more robust and maintainable PHP applications.
+
 Here’s an example of how the [PHP Generics library](https://github.com/mrsuh/php-generics) works:
 
 ```php

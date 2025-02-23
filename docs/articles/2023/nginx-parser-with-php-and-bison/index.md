@@ -183,7 +183,7 @@ class Lexer extends AbstractLexer implements LexerInterface
 ```
 
 For example, `Lexer` will translate the Nginx config below
-```nginx
+```php
 server {
     server_name domain.tld www.domain.tld;
     root /var/www/project/public;

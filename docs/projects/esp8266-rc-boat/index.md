@@ -1,5 +1,8 @@
 # ESP8266 RC boat
 
+This project details the construction of a remote-controlled boat powered by an ESP8266 microcontroller. 
+The boat establishes a Wi-Fi access point and is controlled via WebSocket commands, offering an engaging exploration into IoT and robotics applications.
+
 <iframe class="rounded" src="https://www.youtube.com/embed/2OwbVLAE5oU?si=AvKhG8UcZBwuWP8w" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <br>
 

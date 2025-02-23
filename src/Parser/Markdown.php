@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Markdown;
+namespace App\Parser;
 
-class Parser extends \Parsedown
+class Markdown extends \Parsedown
 {
     protected function inlineImage($Excerpt)
     {

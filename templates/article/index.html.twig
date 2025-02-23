@@ -1,6 +1,22 @@
 {% extends 'layout/base.html.twig' %}
 
 {% block content -%}
+    <h1>{{ title }}</h1>
+    <div class="header-info-block">
+        <blockquote class="text-muted quote">
+            Published: {{ date|date('d F Y') }}
+        </blockquote>
+        {% if origin %}
+        <blockquote class="text-muted quote">
+            Origin: <a href="{{ origin }}" class="link-secondary" target="_blank">{{ origin|replace({'https://': ''}) }}</a>
+        </blockquote>
+        {% endif %}
+        {% if quote %}
+            <blockquote class="text-muted link-secondary quote">
+                {{- quote|raw -}}
+            </blockquote>
+        {% endif %}
+    </div>
     {{- content|raw -}}
 {%- endblock %}
 
