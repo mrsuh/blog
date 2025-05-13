@@ -11,6 +11,14 @@ class Article
     public array $keywords;
     public bool $active;
 
+    /** @var Repost[] */
+    public array $reposts;
+
+    /** @var Mention */
+    public array $mentions;
+
+    public int $views = 0;
+
     public static function create(
         string $title,
         string $description,
@@ -18,6 +26,9 @@ class Article
         string $date,
         array  $keywords = [],
         bool   $active = true,
+        array  $reposts = [],
+        array  $mentions = [],
+        int    $views = 0,
     ): self
     {
         $self = new self();
@@ -27,6 +38,9 @@ class Article
         $self->date = \DateTimeImmutable::createFromFormat('Y-m-d', $date);
         $self->keywords = $keywords;
         $self->active = $active;
+        $self->reposts = $reposts;
+        $self->mentions = $mentions;
+        $self->views = $views;
 
         return $self;
     }
