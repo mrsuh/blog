@@ -12,10 +12,14 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 $directory = __DIR__ . '/../docs';
 
-$hash = new Hash(
-    $directory,
-    __DIR__ . '/../hash.json'
-);
+$hashFilePath = __DIR__ . '/../hash.json';
+if(!in_array('--cache', $argv)) {
+    if(is_file($hashFilePath)) {
+        unlink($hashFilePath);
+    }
+}
+
+$hash = new Hash($directory, $hashFilePath);
 $hash->load();
 
 $views = json_decode(file_get_contents(__DIR__ . '/../views.json'), true);
@@ -26,7 +30,7 @@ $twig = new \Twig\Environment($loader, [
 ]);
 
 $twig->addGlobal(
-    'asset_version', 
+    'asset_version',
     filemtime($directory . '/style.css')
 );
 
@@ -160,7 +164,7 @@ foreach($articles as $year => $list) {
                 
                 $generator->generate(
                     $url,
-                    'article/index.html.twig',
+                    'report/index.html.twig',
                     [
                         'title' => $article->title . ' / Report ' . $title,
                         'description' => 'Report',
