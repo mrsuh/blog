@@ -30,7 +30,7 @@ class ArticleDataset
                     views: 0,
                     pdfVersion: true,
                     abstract: 'This article explains how SQLite searches for data inside an index and shows the process step by step with visualizations. It describes how SQLite performs binary searches within index pages and how debugging mode can reveal detailed information about page reads, cell comparisons, and search operations. Custom code was added to track and display the pages and cells accessed during each search, creating clear visual diagrams of index activity. The article demonstrates different types of queries, including equality, range, expression-based, and multi-column searches, and compares how ascending and descending indexes work. The results help developers understand how SQLite navigates indexes and how query structure and index order affect performance.',
-                    doi: 'https://doi.org/10.5281/zenodo.17408905'
+                    doi: 'https://doi.org/10.5281/zenodo.17408904'
                 ),
                 Article::create(
                     'SQLite Index Visualization: Structure',
@@ -56,7 +56,7 @@ Anton Sukhachev explore en profondeur la structure des index dans SQLite. Il exa
                     views: 0,
                     pdfVersion: true,
                     abstract: 'This article explores how SQLite stores and organizes index data on disk and in memory. It explains the structure of pages and cells inside a B-Tree, the main data structure used for indexes in SQLite. To better understand how indexes work, the author created custom C functions to extract and visualize index data, showing how pages and cells are linked and how data grows as records increase from 1 to 1,000,000. The article compares different index types - ascending, descending, expression-based, unique, partial, and multi-column - and shows how commands like VACUUM and REINDEX optimize storage. The visualizations help developers clearly see how index structures evolve and how SQLite efficiently manages data internally.',
-                    doi: 'https://doi.org/10.5281/zenodo.17408835'
+                    doi: 'https://doi.org/10.5281/zenodo.17408834'
                 ),
             ],
             2023 => [
@@ -119,7 +119,7 @@ Anton Sukhachev explore en profondeur la structure des index dans SQLite. Il exa
                     views: 923,
                     pdfVersion: true,
                     abstract: 'This article explains the main ways to implement generics in programming languages, using simple PHP, Hack, Java, and C++ examples. It describes three common approaches - type erasure, reification, and monomorphization - and compares how they handle type checking and reflection during static analysis, compile time, and runtime. The article also provides visibility tables to show what type information is available in each stage. Real examples demonstrate how Java uses type erasure, Hack supports reified generics, and C++ templates represent monomorphization. The author also introduces a PHP library that brings monomorphic generics to PHP.',
-                    doi: 'https://doi.org/10.5281/zenodo.17408649'
+                    doi: 'https://doi.org/10.5281/zenodo.17408648'
                 ),
                 Article::create(
                     'Comparing PHP Collections',
@@ -130,7 +130,7 @@ Anton Sukhachev explore en profondeur la structure des index dans SQLite. Il exa
                     views: 1_425,
                     pdfVersion: true,
                     abstract: 'This article compares different ways to create and use collections in PHP: arrays, Psalm annotation templates, monomorphic generics, and type-erased generics. Each approach is tested for type safety, IDE support, static analysis, memory usage, and performance. The results show that arrays use the least memory and are the fastest, but they do not provide type checks at runtime. The Psalm annotations help static analysis and IDE hints but still rely on documentation rather than real type checks. Monomorphic generics, implemented using the mrsuh/php-generics library, allow real type checking but lack IDE and static analysis support. The article concludes that arrays with annotations are best for simple cases, while Psalm annotations are more suitable for complex data structures.',
-                    doi: 'https://doi.org/10.5281/zenodo.17408584'
+                    doi: 'https://doi.org/10.5281/zenodo.17408583'
                 ),
                 Article::create(
                     'Telegram bot that monitors currency availability in Tinkoff ATMs',
@@ -160,7 +160,7 @@ Anton Sukhachev explore en profondeur la structure des index dans SQLite. Il exa
                     views: 2_302,
                     pdfVersion: true,
                     abstract: 'This article explains how the PHP engine builds an Abstract Syntax Tree (AST) from PHP code. It describes how the lexer and parser work together inside the Zend Engine. The lexer is generated with re2c, and the parser is created with Bison using grammar rules written in BNF. The post shows how tokens are recognized, how they are converted into AST nodes, and how the functions zendlex, zendparse, and zend_compile_string_to_ast are connected. It also includes examples of getting and printing the real PHP AST through FFI. The article helps developers understand how PHP translates code into an internal structure before execution.',
-                    doi: 'https://doi.org/10.5281/zenodo.17408509'
+                    doi: 'https://doi.org/10.5281/zenodo.17408508'
                 ),
             ],
             2021 => [
@@ -220,7 +220,7 @@ Anton Sukhachev explore en profondeur la structure des index dans SQLite. Il exa
                     views: 52_000,
                     pdfVersion: true,
                     abstract: 'This article compares the performance of several PHP application servers: PHP FPM, PHP PPM, Nginx Unit, ReactPHP, and RoadRunner. Tests were made with Symfony 4 and PHP 7.2 using Yandex Tank under different loads — 100, 500, 1000, and 10,000 requests per second. Each service was run in Docker containers with the same environment to get fair results. The study measured response time, CPU load, and memory usage. The results show that RoadRunner and ReactPHP give the fastest responses, while Nginx Unit offers a good balance between speed, stability, and easy setup. The article also provides detailed test configurations, performance charts, and recommendations for choosing the right PHP server for high-load projects.',
-                    doi: 'https://doi.org/10.5281/zenodo.17408286'
+                    doi: 'https://doi.org/10.5281/zenodo.17408285'
                 ),
             ],
             2018 => [
@@ -251,7 +251,7 @@ Anton Sukhachev explore en profondeur la structure des index dans SQLite. Il exa
                     views: 12_000,
                     pdfVersion: true,
                     abstract: 'This article presents a practical exploration of text classification techniques applied to real-world housing advertisements. The author describes three successive approaches to classifying rental listings: regular expressions, neural networks, and lexical (syntax) analysis. Each method was tested on a dataset of approximately 8,000 ads collected from social networks. The regular expression approach achieved 72.61% accuracy, while a neural network based on n-grams reached 77.13%. The final method, using the Tomita parser for lexical analysis, achieved 93.40% accuracy and additionally extracted structured information such as price, location, and contact details. The study demonstrates that for small datasets and high-accuracy requirements, custom lexical analyzers can outperform machine learning models. The article also describes the supporting infrastructure, including services for data collection, classification, and visualization, built with PHP, Go, and Node.js.',
-                    doi: 'https://doi.org/10.5281/zenodo.17392704'
+                    doi: 'https://doi.org/10.5281/zenodo.17392703'
                 ),
                 Article::create(
                     'Architecture of a service for collecting and classifying housing ads',
