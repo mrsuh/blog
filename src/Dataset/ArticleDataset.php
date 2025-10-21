@@ -20,7 +20,7 @@ class ArticleDataset
                     'Visualizes SQLite B-Tree index search operations, detailing internal navigation and data retrieval processes',
                     '/articles/2024/sqlite-index-visualization-search/',
                     '2024-12-01',
-                    ["SQLite", "index search", "B-Tree", "query performance", "data locality", "database internals", "chart", "visualization"],
+                    ["SQLite", "index search", "B-Tree", "query performance", "database internals", "chart", "visualization"],
                     reposts: [
                         Repost::create('https://news.ycombinator.com/item?id=42294315'),
                         Repost::create('https://www.linkedin.com/feed/update/urn:li:share:7269268321370316800/'),
@@ -29,14 +29,15 @@ class ArticleDataset
                     ],
                     views: 0,
                     pdfVersion: true,
-                    abstract: 'This article presents an in-depth analysis of how the SQLite database engine performs index-based searches. A custom visualization tool was developed to trace B-Tree traversal, key comparisons, and page reads during query execution. The work demonstrates how data locality, key ordering, and index depth influence search performance. Results are shown through visual diagrams and step-by-step query logs that highlight the internal behavior of SQLite indexes. The study concludes that visualization of query execution significantly improves understanding of index efficiency and can guide optimization in real-world database workloads.'
+                    abstract: 'This article explains how SQLite searches for data inside an index and shows the process step by step with visualizations. It describes how SQLite performs binary searches within index pages and how debugging mode can reveal detailed information about page reads, cell comparisons, and search operations. Custom code was added to track and display the pages and cells accessed during each search, creating clear visual diagrams of index activity. The article demonstrates different types of queries, including equality, range, expression-based, and multi-column searches, and compares how ascending and descending indexes work. The results help developers understand how SQLite navigates indexes and how query structure and index order affect performance.',
+                    doi: 'https://doi.org/10.5281/zenodo.17408905'
                 ),
                 Article::create(
                     'SQLite Index Visualization: Structure',
                     'Explores SQLite B-Tree index structure with visualizations, explaining on-disk and in-memory storage mechanisms',
                     '/articles/2024/sqlite-index-visualization-structure/',
                     '2024-11-05',
-                    ["SQLite", "chart", "index structure", "B-Tree", "data storage", "page layout", "visualization"],
+                    ["SQLite", "chart", "index structure", "B-Tree", "data storage", "visualization"],
                     reposts: [
                         Repost::create('https://news.ycombinator.com/item?id=42134964'),
                         Repost::create('https://www.linkedin.com/feed/update/urn:li:share:7262817103374602240/'),
@@ -54,7 +55,8 @@ Anton Sukhachev explore en profondeur la structure des index dans SQLite. Il exa
                     ],
                     views: 0,
                     pdfVersion: true,
-                    abstract: 'This work explores the internal structure of SQLite indexes at both the logical and physical levels. It visualizes B-Tree organization, page layout, and cell arrangement on disk to reveal how data is stored and navigated. The study uses experimental scripts and visual outputs to illustrate key and pointer organization within index pages. Findings show that even small variations in page structure affect read performance and space efficiency. The results provide a foundation for further educational and optimization research in database internals.'
+                    abstract: 'This article explores how SQLite stores and organizes index data on disk and in memory. It explains the structure of pages and cells inside a B-Tree, the main data structure used for indexes in SQLite. To better understand how indexes work, the author created custom C functions to extract and visualize index data, showing how pages and cells are linked and how data grows as records increase from 1 to 1,000,000. The article compares different index types - ascending, descending, expression-based, unique, partial, and multi-column - and shows how commands like VACUUM and REINDEX optimize storage. The visualizations help developers clearly see how index structures evolve and how SQLite efficiently manages data internally.',
+                    doi: 'https://doi.org/10.5281/zenodo.17408835'
                 ),
             ],
             2023 => [
@@ -113,10 +115,11 @@ Anton Sukhachev explore en profondeur la structure des index dans SQLite. Il exa
                     'Discusses various methods for implementing generics in programming, providing simple examples for clarity',
                     '/articles/2022/generics-implementation-approaches/',
                     '2022-02-08',
-                    ["generics", "type system", "monomorphization", "reification", "type erasure", "programming languages", "PHP", "Java", "C++"],
+                    ["PHP", "Java", "Hack", "C++", "generics", "type system", "monomorphization", "reification", "type erasure"],
                     views: 923,
                     pdfVersion: true,
-                    abstract: 'The paper surveys different implementation approaches to programming-language generics, including type erasure, reification, and monomorphization. Each technique is analyzed in terms of runtime behavior, memory usage, and compiler design complexity. Comparisons are drawn across languages such as C++, Java, and PHP. The study concludes that monomorphization offers the best trade-off for performance and type safety in dynamic languages like PHP, while maintaining readability and low runtime overhead.'
+                    abstract: 'This article explains the main ways to implement generics in programming languages, using simple PHP, Hack, Java, and C++ examples. It describes three common approaches - type erasure, reification, and monomorphization - and compares how they handle type checking and reflection during static analysis, compile time, and runtime. The article also provides visibility tables to show what type information is available in each stage. Real examples demonstrate how Java uses type erasure, Hack supports reified generics, and C++ templates represent monomorphization. The author also introduces a PHP library that brings monomorphic generics to PHP.',
+                    doi: 'https://doi.org/10.5281/zenodo.17408649'
                 ),
                 Article::create(
                     'Comparing PHP Collections',
@@ -126,7 +129,8 @@ Anton Sukhachev explore en profondeur la structure des index dans SQLite. Il exa
                     ["PHP", "collections library", "data structures", "performance comparison", "collections", "generics"],
                     views: 1_425,
                     pdfVersion: true,
-                    abstract: 'This article compares several PHP collection libraries and their design patterns. It evaluates syntax, immutability, and runtime performance across practical examples. The analysis shows that library design strongly affects developer experience and memory usage, and highlights the trade-offs between simplicity and flexibility in data handling. The conclusions provide practical guidance for PHP developers choosing modern collection frameworks.'
+                    abstract: 'This article compares different ways to create and use collections in PHP: arrays, Psalm annotation templates, monomorphic generics, and type-erased generics. Each approach is tested for type safety, IDE support, static analysis, memory usage, and performance. The results show that arrays use the least memory and are the fastest, but they do not provide type checks at runtime. The Psalm annotations help static analysis and IDE hints but still rely on documentation rather than real type checks. Monomorphic generics, implemented using the mrsuh/php-generics library, allow real type checking but lack IDE and static analysis support. The article concludes that arrays with annotations are best for simple cases, while Psalm annotations are more suitable for complex data structures.',
+                    doi: 'https://doi.org/10.5281/zenodo.17408584'
                 ),
                 Article::create(
                     'Telegram bot that monitors currency availability in Tinkoff ATMs',
@@ -149,13 +153,14 @@ Anton Sukhachev explore en profondeur la structure des index dans SQLite. Il exa
                     'Delves into the PHP engine\'s process of constructing Abstract Syntax Trees during code compilation',
                     '/articles/2022/how-php-engine-builds-ast/',
                     '2022-09-05',
-                    ["php", "engine", "ast", "PHP engine", "AST", "Zend Engine", "parsing pipeline", "compiler internals"],
+                    ["PHP", "PHP engine", "Zend Engine", "AST", "parsing pipeline", "compiler internals"],
                     reposts: [
                         Repost::create('https://news.ycombinator.com/item?id=32725170'),
                     ],
                     views: 2_302,
                     pdfVersion: true,
-                    abstract: 'This study describes how the PHP engine parses source code and constructs its Abstract Syntax Tree (AST). It details lexical analysis, grammar parsing, and node creation within the Zend Engine. Annotated code fragments illustrate how syntax errors are detected and converted into structured nodes. The research concludes that understanding AST construction is critical for building efficient static analyzers, refactoring tools, and language extensions that interact with PHP internals.'
+                    abstract: 'This article explains how the PHP engine builds an Abstract Syntax Tree (AST) from PHP code. It describes how the lexer and parser work together inside the Zend Engine. The lexer is generated with re2c, and the parser is created with Bison using grammar rules written in BNF. The post shows how tokens are recognized, how they are converted into AST nodes, and how the functions zendlex, zendparse, and zend_compile_string_to_ast are connected. It also includes examples of getting and printing the real PHP AST through FFI. The article helps developers understand how PHP translates code into an internal structure before execution.',
+                    doi: 'https://doi.org/10.5281/zenodo.17408509'
                 ),
             ],
             2021 => [
@@ -211,10 +216,11 @@ Anton Sukhachev explore en profondeur la structure des index dans SQLite. Il exa
                     'Evaluates various PHP process managers and servers, comparing performance and features',
                     '/articles/2019/comparing-php-fpm-php-ppm-nginx-unit-react-php-and-road-runner/',
                     '2019-01-14',
-                    ["PHP", "runtime performance", "PHP-FPM", "PHP-PPM", "Nginx Unit", "React PHP", "RoadRunner", "benchmark", "concurrency"],
+                    ["PHP", "PHP-FPM", "PHP-PPM", "Nginx Unit", "ReactPHP", "RoadRunner", "runtime performance", "benchmark", "concurrency"],
                     views: 52_000,
                     pdfVersion: true,
-                    abstract: 'This paper compares six PHP execution environments—PHP-FPM, PHP-PPM, Nginx Unit, ReactPHP, and RoadRunner—under identical test conditions. Benchmarks measure throughput, latency, and memory consumption using reproducible workloads. Results are summarized in detailed graphs and tables showing clear differences between synchronous and asynchronous runtimes. The study finds that event-driven frameworks significantly outperform traditional process-based models in concurrency and resource efficiency, offering a strong case for adopting asynchronous architectures in modern PHP applications.'
+                    abstract: 'This article compares the performance of several PHP application servers: PHP FPM, PHP PPM, Nginx Unit, ReactPHP, and RoadRunner. Tests were made with Symfony 4 and PHP 7.2 using Yandex Tank under different loads — 100, 500, 1000, and 10,000 requests per second. Each service was run in Docker containers with the same environment to get fair results. The study measured response time, CPU load, and memory usage. The results show that RoadRunner and ReactPHP give the fastest responses, while Nginx Unit offers a good balance between speed, stability, and easy setup. The article also provides detailed test configurations, performance charts, and recommendations for choosing the right PHP server for high-load projects.',
+                    doi: 'https://doi.org/10.5281/zenodo.17408286'
                 ),
             ],
             2018 => [

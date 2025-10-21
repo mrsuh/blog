@@ -36,6 +36,11 @@
             Origin: <a href="{{ origin }}" class="link-secondary" target="_blank">{{ origin|replace({'https://': ''}) }}</a>
         </blockquote>
         {% endif %}
+        {% if doi %}
+        <blockquote class="text-muted quote">
+           DOI: <a href="{{ doi }}" class="link-secondary" target="_blank">{{ doi }}</a>
+        </blockquote>             
+        {% endif %}
         {% if quote %}
             <blockquote class="text-muted link-secondary quote">
                 {{- quote|raw -}}

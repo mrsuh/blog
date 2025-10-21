@@ -19,6 +19,9 @@ if(!in_array('--cache', $argv)) {
     if(is_file($hashFilePath)) {
         unlink($hashFilePath);
     }
+    echo 'Cache removed' . PHP_EOL;
+} else {
+    echo 'Using cache' . PHP_EOL;
 }
 
 $generatePdf = in_array('--pdf', $argv);
@@ -130,6 +133,8 @@ foreach($articles as $year => $list) {
                 'doi' => $article->doi,
             ]
         );
+        
+        echo '* ' . $article->url . 'index.html' . PHP_EOL;
 
         if($generatePdf && $article->pdfVersion) {
 
@@ -151,6 +156,8 @@ foreach($articles as $year => $list) {
                 $directory  . $article->url,
                 $html
             );
+            
+            echo $directory  . $article->url . 'index.pdf' . PHP_EOL;
         }
         
         if(count($indexArticles) < 2) {
