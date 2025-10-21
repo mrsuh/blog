@@ -10,6 +10,8 @@ This time, I'll try to show what a search inside an Index looks like.
 Inside each Page, SQLite performs a binary search among Cell values. After finding the closest match, it picks the left child of that Cell. 
 If all Cell values on the Page are smaller than the target, it selects the Page’s right child.
 
+[pagebreak]
+
 If we compile SQLite with [debugging](https://www.sqlite.org/debugging.html) enabled and turn it on for queries, we can get detailed information about how the query work internally.
 First, we should know that SQLite has a virtual machine. Even using a simple EXPLAIN command, we can view the virtual machine’s OPCODEs, its registers (p1, p2...), and comments. 
 You can learn more about its internals [here](https://www.sqlite.org/opcode.html).
@@ -48,6 +50,8 @@ SELECT rowId, column1 FROM table_test INDEXED BY idx WHERE column1 = 1;
 1
 ```
 
+[pagebreak]
+
 We can't get more detailed information about pages and cells from the EXPLAIN output.
 I dug into the code and [added](https://github.com/mrsuh/sqlite-index/blob/main/sqlite.patch) functions to track all the Pages and Cells read during the search.
 Example of code:
@@ -79,6 +83,8 @@ sqlite3DebugResultRow:
 1|1
 ```
 
+[pagebreak]
+
 This provides a detailed trace of the Pages and Cells used in the search, letting us count the basic operations and compare them to the expected complexity of the algorithm. 
 Then, I updated the Index visualization code, and here’s the result:
 
@@ -101,6 +107,8 @@ SELECT * FROM table WHERE column = 10;
 ```
 In this query, SQLite first finds the cell with the value 10, then checks the following cells since they could also have the value 10. 
 So, instead of performing more searching, it reads the next cells to filter them. This means that for simple queries, there’s usually at least one filtering step.
+
+[pagebreak]
 
 To create this image, we’ll need dumps of both the Index and the search. 
 We can get these with the following commands:
@@ -136,6 +144,8 @@ rowid  column1
 Let’s experiment!
 Before each Index image, I'll show the table's data structure, the way the Index was made, and how the table was filled with data.
 
+[pagebreak]
+
 ## Query with a single column and equality condition
 
 ```sql
@@ -157,6 +167,8 @@ We read 3 Pages, compared 19 Cells, and filtered out one Cell. In this example, 
 O(log2(n)) -> O(log2(1.000.000)) -> 19.93
 ```
 
+[pagebreak]
+
 ## Query with multiple values in IN()
 
 ```sql
@@ -174,6 +186,8 @@ rowid    column1
 ![](./images/search-range-1000000.webp)
 
 For each value in the `IN()` list, SQLite performs a separate search in the Index. Sometimes, optimizations can reduce the number of searches, but generally, the database will go through the Index from the root to the target value for each item in the `IN()` list.
+
+[pagebreak]
 
 ## Comparing searches in ASC/DESC Indexes
 ```sql
@@ -195,6 +209,8 @@ rowid    column1
 
 Here, three values are being searched, and each one requires an Index lookup. There are fewer filters than lookups because no filtering is needed after the last value.
 
+[pagebreak]
+
 ## Descending order search
 
 ```sql
@@ -209,6 +225,8 @@ rowid    column1
 ![](./images/search-order-desc.webp)
 
 As shown, searching in a DESC Index works the same as searching in an ASC Index in general cases.
+
+[pagebreak]
 
 ## Range searches
 
@@ -232,6 +250,8 @@ rowid   column1
 
 In this query, the target value was found after 20 comparisons, with 0 filtering. This is because the search was done on an ascending (ASC) Index with a `>=` comparison. 
 SQLite just read the next several values, and no further comparisons were needed since the data in the Index was already sorted in the required order.
+
+[pagebreak]
 
 ## Expression-based searches
 
@@ -283,6 +303,8 @@ rowid  column1
 
 This query does not differ from an Index without NULL values in terms of the number of Cells read.
 
+[pagebreak]
+
 ## Searching in an Index without NULL values
 
 We modified the Index slightly, and now it has no NULL values.
@@ -301,6 +323,8 @@ rowid  column1
 ![](./images/search-partial.webp)
 
 Now, the Index has only the needed values, and the query runs very fast!
+
+[pagebreak]
 
 ## Searching in a two-column Index
 
@@ -321,6 +345,8 @@ rowid  column1  column2
 The only difference from an Index with one column is the slightly more complex comparison process.
 First, the first column is checked. If it matches the target value, then the second column is checked. If the first column doesn’t match, the second column is skipped.
 In this case, 19 Cells were read, and 20 comparisons were made. The first 18 Cells were filtered out after the first comparison, and in the 19th Cell, two comparisons were made.
+
+[pagebreak]
 
 ## Searching in Index with different data cardinality
 
@@ -414,6 +440,8 @@ If there are no other matching rows, SQLite knows this after just 2 comparisons.
 
 For a query with only one result row, it’s better to use an Index where the high-cardinality column is placed first.
 For a query with many result rows, it’s better to use an Index with the range column at the end, regardless of the column's cardinality.
+
+[pagebreak]
 
 ## Conclusion
 

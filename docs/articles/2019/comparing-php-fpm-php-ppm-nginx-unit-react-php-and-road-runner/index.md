@@ -88,6 +88,8 @@ Each docker-compose setup includes three main containers:
 
 Request handling is limited to two application instances (equal to the number of CPU cores).
 
+[pagebreak]
+
 ## Services
 
 ### PHP FPM
@@ -335,6 +337,8 @@ Command to run the application with docker-compose:
 cd docker/road-runner && docker-compose up -d
 ```
 
+[pagebreak]
+
 ## Testing
 
 The testing was conducted using Yandex Tank. The application and Yandex Tank were on different virtual servers.
@@ -365,6 +369,8 @@ pm.max_children = 80
 
 Yandex Tank decides beforehand how many times it needs to hit the target and doesn't stop until it runs out of "ammo." Depending on how quickly the service responds, the test may take longer than the time specified in the configuration. As a result, the graphs for different services may have different lengths. The slower the service responds, the longer its graph will be.
 For each service and configuration, Yandex Tank ran only one test. So, the numbers may not be exact. The goal was to compare the performance of the services against each other.
+
+[pagebreak]
 
 ## 100 rps
 ### Phantom Yandex Tank configuration
@@ -406,6 +412,8 @@ phantom:
 | react-php          | 4.53          | 6.58       | 1,004.68          | 1,009.91       |
 | react-php-reboot   | 9.61          | 12.67      | 885.92            | 892.52         |
 
+[pagebreak]
+
 ### Charts
 ![](./images/chart_1_1.webp)
 Chart 1.1 Average Response Time per Second
@@ -413,6 +421,8 @@ Chart 1.1 Average Response Time per Second
 Chart 1.2 Average CPU Load per Second
 ![](./images/chart_1_3.webp)
 Chart 1.3 Average Memory Usage per Second
+
+[pagebreak]
 
 ## 500 rps
 ### Phantom Yandex Tank configuration
@@ -456,6 +466,8 @@ phantom:
 | react-php          | 19.57         | 23.42      | 1,049.83          | 1,060.26       |
 | react-php-reboot   | 41.30         | 47.89      | 957.01            | 958.56         |
 
+[pagebreak]
+
 ### Charts
 ![](./images/chart_2_1.webp)
 Chart 2.1 Average Response Time per Second
@@ -463,6 +475,8 @@ Chart 2.1 Average Response Time per Second
 Chart 2.2 Average CPU Load per Second
 ![](./images/chart_2_3.webp)
 Chart 2.3 Average Memory Usage per Second
+
+[pagebreak]
 
 ## 1000 rps
 ### Phantom Yandex Tank configuration
@@ -506,6 +520,8 @@ phantom:
 | react-php          | 36.39         | 46.31      | 1,018.03          | 1,088.23       |
 | react-php-reboot   | 72.11         | 81.81      | 911.28            | 961.62         |
 
+[pagebreak]
+
 ### Charts
 ![](./images/chart_3_1.webp)
 Chart 3.1 Average Response Time per Second
@@ -515,6 +531,8 @@ Chart 3.2 Average Response Time per Second (без php-fpm, php-ppm, road-runner
 Chart 3.3 Average CPU Load per Second
 ![](./images/chart_3_4.webp)
 Chart 3.4 Average Memory Usage per Second
+
+[pagebreak]
 
 ## 10000 rps
 ### Phantom Yandex Tank configuration
@@ -559,6 +577,9 @@ phantom:
 | react-php          | 73.76         | 82.18      | 1,101.71          | 1,105.06       |
 | react-php-reboot   | 85.77         | 91.92      | 975.85            | 978.42         |
 
+[pagebreak]
+
+### Charts
 ![](./images/chart_4_1.webp)
 Chart 4.1 Average Response Time per Second
 ![](./images/chart_4_2.webp)
@@ -567,6 +588,8 @@ Chart 4.2 Average Response Time per Second (без php-fpm, php-ppm)
 Chart 4.3 Average CPU Load per Second
 ![](./images/chart_4_4.webp)
 Chart 4.4 Average Memory Usage per Second
+
+[pagebreak]
 
 ## Summary
 

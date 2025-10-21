@@ -43,6 +43,8 @@ $a = 1;
 echo $a;
 ```
 
+[pagebreak]
+
 `lexer.php` output:
 ```bash
 php lexer.php test.php
@@ -143,6 +145,8 @@ ZEND_API zend_ast *zend_ast_create(zend_ast_kind kind, ...)
 
 `zend_ast_create` is one of several functions that help create an `AST` node.
 
+[pagebreak]
+
 PHP represents the `AST` node as a `_zend_ast` structure for simple nodes, and several more complex structures for other nodes.
 [zend_ast.h](https://github.com/php/php-src/blob/66aed3a86f2b9368888e22c30784286b3eeb24ad/Zend/zend_ast.h#L180)
 ```c
@@ -189,6 +193,8 @@ In the final, we have a chain of calls:
 zend_compile_string_to_ast() -> zendparse() -> zendlex() -> lex_scan()
 ```
 
+[pagebreak]
+
 Now we can call the `zend_compile_string_to_ast` function and get the real PHP `AST`.
 I wrote a `get_ast` function to get the `AST` from `zend_compile_string_to_ast`, parse it and store it in a simple structure `_node_ast ` so we can easily export it to PHP using [FFI](https://www.php.net/manual/en/class.ffi.php).
 [mrsuh/ast.c](https://github.com/mrsuh/php-ast/blob/890891ddef2f7c22611162254ccf51f44f751640/library/ast.c#L952)
@@ -230,6 +236,8 @@ node_ast *get_ast(char *input);
 ",
 __DIR__ . "ast_linux.so");
 ```
+
+[pagebreak]
 
 and translated the `C` structure into a PHP `Node` class.
 [mrsuh/Node.php](https://github.com/mrsuh/php-ast/blob/main/src/Node.php)
@@ -276,6 +284,8 @@ CODE;
 $node = Parser::parse($code);
 Printer::print($node);
 ```
+
+[pagebreak]
 
 `mrsuh/parse.php` output:
 ```bash
@@ -324,6 +334,8 @@ echo $a;
 [005]         ZEND_AST_ZVAL "a"
 ```
 
+[pagebreak]
+
 [nikic/php-ast](https://github.com/nikic/php-ast)
 ```bash
 AST_STMT_LIST
@@ -360,6 +372,8 @@ array(
 ```
 
 As for me, it looks very similar.
+
+[pagebreak]
 
 There are additional resources if you want to know more:
 * https://www.codeproject.com/Articles/1035799/Generating-a-High-Speed-Parser-Part-re-c

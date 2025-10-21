@@ -150,6 +150,7 @@ class Parser {
 ```
 
 We will use block `%code parser` to define variables and methods to store `AST` into the `Parser` class.
+[pagebreak]
 Bison has reserved the symbol `$` in grammar actions.
 It's very sad for PHP developers, but we can call the function `setAst()` with `self::setAst()` instead of `$this->setAst()`.
 
@@ -186,6 +187,8 @@ Command options:
 * `-S vendor/mrsuh/php-bison-skeleton/src/php-skel.m4` - path to `skeleton` file
 * `-o parser.php` - output parser file
 * `grammar.y` - our grammar file
+
+[pagebreak]
 
 And final PHP file is the entry point `bin/parse.php`.
 
@@ -235,6 +238,8 @@ php bin/parse.php <<< "1 + 2 - 3"
     └── NUMBER '3'
 ```
 
+[pagebreak]
+
 Try to parse big expression:
 ```bash
 php bin/parse.php <<< "1 + 2 - 3 + 4 - 5 + 6 - 7 + 8 - 9 + 10"
@@ -262,6 +267,8 @@ php bin/parse.php <<< "1 + 2 - 3 + 4 - 5 + 6 - 7 + 8 - 9 + 10"
 Great!
 
 You can get the parser source code [here](https://github.com/mrsuh/php-bison-skeleton/tree/master/examples/calc-ast) and test it by yourself.
+
+[pagebreak]
 
 Some useful links:
 * [PHP skeleton library](https://github.com/mrsuh/php-bison-skeleton/tree/master/examples)

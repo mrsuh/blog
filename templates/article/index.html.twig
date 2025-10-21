@@ -1,5 +1,30 @@
 {% extends 'layout/base.html.twig' %}
 
+{% block header %}
+    {% set ld_header = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "author": {
+            "@type": "Person",
+            "name": "Anton Sukhachev",
+            "identifier": orcid_url
+        },
+        "headline": title,
+        "description": description,
+        "inLanguage": "en",
+        "datePublished": date|date('Y-m-d'),
+        "isAccessibleForFree": true,
+        "keywords": keywords,
+        "url": "https://mrsuh.com" ~ path,
+    } %}
+    {% if doi %}
+        {% set ld_header = ld_header|merge({'identifier': doi}) %}
+    {% endif %}
+    <script type="application/ld+json">
+        {{- ld_header|json_encode( constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES') )|raw -}}
+    </script>
+{% endblock %}
+
 {% block content -%}
     <h1>{{ title }}</h1>
     <div class="header-info-block">

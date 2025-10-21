@@ -10,6 +10,8 @@ use App\Parser\Markdown;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+ini_set('pcre.backtrack_limit', '50000000');
+
 $directory = __DIR__ . '/../docs';
 
 $hashFilePath = __DIR__ . '/../hash.json';
@@ -18,6 +20,8 @@ if(!in_array('--cache', $argv)) {
         unlink($hashFilePath);
     }
 }
+
+$generatePdf = in_array('--pdf', $argv);
 
 $hash = new Hash($directory, $hashFilePath);
 $hash->load();
@@ -29,12 +33,11 @@ $twig = new \Twig\Environment($loader, [
     'strict_variables' => true,
 ]);
 
-$twig->addGlobal(
-    'asset_version',
-    filemtime($directory . '/style.css')
-);
+$twig->addGlobal('asset_version', filemtime($directory . '/style.css'));
+$twig->addGlobal('orcid_url', 'https://orcid.org/0009-0005-3209-1773');
 
 $generator = new Html($directory, $twig);
+$pdfGenerator = new \App\Generator\Pdf($directory . '/pdf.css');
 
 $indexProjects = [];
 $indexArticles = [];
@@ -102,7 +105,13 @@ foreach($articles as $year => $list) {
             break;
         }
 
-        $articleFileContent = trim(implode(PHP_EOL, $lines));
+        $articleFileContentForPdf = trim(implode(PHP_EOL, $lines));
+        foreach($lines as $i => $line) {
+            if($line === '[pagebreak]') {
+                unset($lines[$i]);
+            }
+        }
+        $articleFileContentForHtml = trim(implode(PHP_EOL, $lines));
 
         $generator->generate(
             $article->url . 'index.html',
@@ -115,11 +124,34 @@ foreach($articles as $year => $list) {
                 'description' => $article->description,
                 'keywords' => $article->keywords,
                 'page_name' => 'article',
-                'content' => $parser->text($articleFileContent),
+                'content' => $parser->text($articleFileContentForHtml),
                 'path' => $article->url,
                 'views' => $article->views,
+                'doi' => $article->doi,
             ]
         );
+
+        if($generatePdf && $article->pdfVersion) {
+
+            $html = $generator->generateToString(
+                'pdf/title.html.twig',
+                [
+                    'title' => $article->title,
+                    'abstract' => $article->abstract,
+                    'keywords' => $article->keywords,
+                ]
+            );
+            
+            $html .= '<pagebreak orientation="portrait">';
+            
+            $html .= $parser->text($articleFileContentForPdf);
+
+            $pdfGenerator->generate(
+                $directory  . $article->url . 'index.pdf',
+                $directory  . $article->url,
+                $html
+            );
+        }
         
         if(count($indexArticles) < 2) {
             $indexArticles[] = $article;
@@ -162,6 +194,8 @@ foreach($articles as $year => $list) {
                 }
                 $hash->set($reportFilePath);
                 
+                $reportContent = file_get_contents($headerFilePath) . file_get_contents($reportFilePath);
+                
                 $generator->generate(
                     $url,
                     'report/index.html.twig',
@@ -171,21 +205,32 @@ foreach($articles as $year => $list) {
                         'keywords' => $article->keywords,
                         'page_name' => 'article',
                         'content' => str_replace(
-                            '{{ content }}', 
+                            '{{ content }}',
                             sprintf(
                                 '<a href="%s">%s</a> / Report %s<br><br>',
                                 $article->url,
                                 $article->title,
                                 $title
                             ),
-                            file_get_contents($headerFilePath) . file_get_contents($reportFilePath)
+                            $reportContent
                         ),
                         'path' => $url,
                     ]
                 );
+
+                if($generatePdf && $article->pdfVersion) {
+                    $pdfGenerator->generate(
+                        $reportDirectory  . '/report-' . str_replace('.md', '.pdf', $reportFileName),
+                        $directory  . $article->url,
+                        str_replace(
+                            '{{ content }}',
+                            sprintf('<h1>Report %s</h1><br><br>', $title),
+                            $reportContent
+                        )
+                    );
+                }
             }
         }
-        
     }
 }
 

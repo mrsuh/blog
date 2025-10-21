@@ -51,6 +51,8 @@ function test(array $collection): array {}
 **cons**
 * PHP doesn't check types
 
+[pagebreak]
+
 ### Psalm annotations
 ```php
 <?php
@@ -101,6 +103,8 @@ function test(Collection $data): Collection {}
 **cons**
 * PHP doesn't check types
 
+[pagebreak]
+
 ### Monomorphic generics
 
 ```php
@@ -144,6 +148,8 @@ function test(Collection<Item> $data): Collection<Item> {}
 * static analyses tool can't find type errors
 * IDE doesn't make hints about the type of `Item` objects in a collection
 
+[pagebreak]
+
 ### Type erased generics
 
 ```php
@@ -184,6 +190,8 @@ function test(Collection<Item> $data): Collection<Item> {}
 * PHP doesn't check types
 * static analyses tool can't find type errors
 * IDE doesn't make hints about the type of `Item` objects in a collection
+
+[pagebreak]
 
 ## Memory
 
@@ -230,6 +238,8 @@ For measurement I use [var_sizeof()](https://github.com/mrsuh/php-var-sizeof) an
 It's not surprising an `array` requires the least amount of memory.
 Other approaches have roughly the same internal structure and require the same amount of memory.
 
+[pagebreak]
+
 ## Performance
 
 I used [phpbench](https://github.com/phpbench/phpbench) to measure performance.
@@ -260,6 +270,8 @@ Subjects: 4, Assertions: 0, Failures: 0, Errors: 0
 ```
 
 If the tests are correct, the difference between a function argument with `class` type and a function argument without a type is ~20%.
+
+[pagebreak]
 
 ## Conclusions
 

@@ -18,6 +18,12 @@ class Article
     public array $mentions;
 
     public int $views = 0;
+    
+    public bool $pdfVersion = false;
+    
+    public string $abstract = '';
+    
+    public string $doi = '';
 
     public static function create(
         string $title,
@@ -29,6 +35,9 @@ class Article
         array  $reposts = [],
         array  $mentions = [],
         int    $views = 0,
+        bool   $pdfVersion = false,
+        string $abstract = '',
+        string $doi = '',
     ): self
     {
         $self = new self();
@@ -41,6 +50,9 @@ class Article
         $self->reposts = $reposts;
         $self->mentions = $mentions;
         $self->views = $views;
+        $self->pdfVersion = $pdfVersion;
+        $self->abstract = $abstract;
+        $self->doi = $doi;
 
         return $self;
     }

@@ -5,7 +5,8 @@
         "twig/twig": "^3.0",
         "symfony/http-client": "^7.2",
         "symfony/process": "^7.2",
-        "symfony/filesystem": "^7.2"
+        "symfony/filesystem": "^7.2",
+        "mpdf/mpdf": "^8.2"
     },
     "autoload": {
         "psr-4": {

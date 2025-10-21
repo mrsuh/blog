@@ -9,11 +9,17 @@ class Html
         $this->directory = rtrim($this->directory, DIRECTORY_SEPARATOR);
     }
 
-    public function generate(string $filePath, string $template, array $context): void
+    public function generateToString(string $template, array $context): string
     {
         $template = $this->twig->load($template);
-        $render = $template->render($context);
-
+        
+        return $template->render($context);
+    }
+    
+    public function generate(string $filePath, string $template, array $context): void
+    {
+        $render = $this->generateToString($template, $context);
+        
         $isHtml = str_contains($filePath, '.html');
         file_put_contents(
             $this->directory . DIRECTORY_SEPARATOR . ltrim($filePath, DIRECTORY_SEPARATOR),

@@ -34,6 +34,8 @@ As regular expressions and result processing became more complex, it got harder 
 
 This method gave **72.61%.** correct answers on the test set.
 
+[pagebreak]
+
 ### Second Attempt (Neural Networks)
 
 Recently, using machine learning for almost anything has become very popular. After training, it’s hard or even impossible to explain why a neural network makes certain decisions, but this doesn’t stop it from being successful in text classification. For the tests, I used a multilayer perceptron with backpropagation learning.
@@ -62,6 +64,8 @@ This method gave **77.13%** correct answers on the test set (but tests were done
 
 I’m sure that with a much larger dataset and using recurrent neural networks, it would be possible to get much better results.
 
+[pagebreak]
+
 ### Third Attempt (Syntax Analyzer)
 
 At the same time, I started reading more articles about [natural language processing](https://en.wikipedia.org/wiki/Natural_language_processing) and found a great parser called [Tomita](https://tech.yandex.ru/tomita). Its main advantage over other similar tools is that it supports the Russian language and has clear documentation. You can even use regular expressions in the configuration, which was useful because I already had some written.
@@ -85,6 +89,8 @@ In addition to classifying text, it also extracts facts like rent price, apartme
 In the end, with a small test set and the need for high accuracy, it was better to write algorithms manually.
 
 ![](./images/image-0.webp)
+
+[pagebreak]
 
 ## Service Development
 
@@ -112,6 +118,8 @@ Features:
 
 CI is set up for all services using Travis-CI and Ansible. More details about automated deployment can be found in [this article](https://mrsuh.com/articles/2017/continuous-delivery-with-travis-ci-and-ansible/).
 
+[pagebreak]
+
 ## Statistics
 
 The service has been running for about two months for Saint-Petersburg and has collected over 8000 ads during this time. Here's some interesting data from the ads collected so far:
@@ -124,6 +132,8 @@ The busiest hour for posting is 12 PM.
 
 The most popular metro station is "Девяткино".
 ![](./images/image-3.webp)
+
+[pagebreak]
 
 ## Conclusions
 

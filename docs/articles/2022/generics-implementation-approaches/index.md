@@ -42,6 +42,8 @@ class Container {
 $intContainer = new Container(1);
 ```
 
+[pagebreak]
+
 You can't do that because it doesn't make sense after `type erasure`:
 ```php
 <?php
@@ -82,6 +84,8 @@ PHP Psalm annotations visibility table:
 | type reflection | yes                  | no           | no      |
 | type checking   | yes                  | no           | no      |
 
+[pagebreak]
+
 Let's look at a real example of type erasure generics in `Java`:
 
 test.java
@@ -118,6 +122,8 @@ test.java:13: error: incompatible types: String cannot be converted to Integer
         intContainer.set("hello");
                          ^
 ```
+
+[pagebreak]
 
 ## Reification
 
@@ -156,6 +162,8 @@ If you try to pass `string "hello"` to `$intContainer->set()` you will get a `co
 Fatal error: Uncaught TypeError: Argument 1 passed to MyContainer::set() must be an instance of int, string given in /app/test.hack:6
 ```
 
+[pagebreak]
+
 At `runtime`, there is only one class `MyContainer` with many generic types.
 Let's look inside the `$stringContainer` variable by `var_dump()`:
 ```bash
@@ -185,6 +193,8 @@ Nikita Popov already had an [attempt](https://github.com/PHPGenerics/php-generic
 | type reflection | yes                  | yes          | yes     |
 | type checking   | yes                  | yes          | yes     |
 
+
+[pagebreak]
 
 ## Monomorphization
 
@@ -232,6 +242,8 @@ PHP doesn't support native generics, but you can test `monomorphic` generics wit
 | type reflection | yes                  | yes              | no       |
 | type checking   | yes                  | yes              | yes      |
 
+[pagebreak]
+
 `C++` templates are a real example of `monomorphization`:
 
 test.cpp
@@ -278,6 +290,8 @@ test.cpp:8:17: note:   initializing argument 1 of 'void MyContainer<T>::set(T) [
 ```
 
 This approach increases `compile time`, but improves performance `runtime`.
+
+[pagebreak]
 
 I hope it was helpful to you.
 Play around with the examples above - it's a really interesting process!

@@ -41,6 +41,8 @@ There is software that uses Bison:
 | PostgreSQL | https://github.com/postgres/postgres/blob/master/src/backend/parser/gram.y     |
 | CMake      | https://github.com/Kitware/CMake/blob/master/Source/LexerParser/cmExprParser.y |
 
+[pagebreak]
+
 ## How Bison works?
 
 ![Bison](./images/diagram.svg)
@@ -69,6 +71,8 @@ First, we must install [PHP skeleton package](https://github.com/mrsuh/php-bison
 ```bash
 composer require --dev mrsuh/php-bison-skeleton
 ```
+
+[pagebreak]
 
 Then we define a simple grammar file.
 
@@ -118,6 +122,8 @@ interface LexerInterface
 ...
 ```
 
+[pagebreak]
+
 Interface contains constants with our tokens from `grammar.y` file and some special values for the end of file or errors.
 With this interface, we can write our class `Lexer` to parse calculation expressions into tokens.
 
@@ -160,6 +166,7 @@ class Lexer implements LexerInterface {
 ```
 
 Every time we call the function `Lexer::yylex()`, it will return the token's identifier and store the word into the `value` property.
+[pagebreak]
 For example, the expression `10 + 20 - 30` will translate into this:
 
 | word | token                          | value |
@@ -259,6 +266,8 @@ php parser.php <<< "1 + 2 - 3 + 4 - 5 + 6 - 7 + 8 - 9 + 10"
 ```
 
 It works!
+
+[pagebreak]
 
 Some useful links:
 * [PHP skeleton library](https://github.com/mrsuh/php-bison-skeleton/tree/master/examples)
