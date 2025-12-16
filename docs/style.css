@@ -48,10 +48,15 @@ iframe {
     margin-bottom: 5px;
 }
 
+.contacts {
+    text-align: center;
+}
+
 .contacts .contact {
     display: inline-block;
     width: 2rem;
     height: 2rem;
+    margin-bottom: 0.5rem;
 }
 
 .contacts svg {
