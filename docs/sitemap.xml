@@ -13,6 +13,12 @@
         <priority>1</priority>
     </url>
     <url>
+        <loc>https://mrsuh.com/articles/2025/and-gate-with-transistors/</loc>
+        <lastmod>2025-12-08</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
         <loc>https://mrsuh.com/articles/2024/sqlite-index-visualization-search/</loc>
         <lastmod>2025-10-19</lastmod>
         <changefreq>weekly</changefreq>
@@ -392,7 +398,7 @@
     </url>
     <url>
         <loc>https://mrsuh.com/projects/</loc>
-        <lastmod>2025-10-22</lastmod>
+        <lastmod>2025-12-15</lastmod>
         <changefreq>daily</changefreq>
         <priority>1</priority>
     </url>
