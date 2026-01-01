@@ -14,6 +14,20 @@ class ArticleDataset
     public static function get(): array
     {
         return [
+            2026 => [
+                Article::create(
+                    'AND Gate using transistors',
+                    'AND Gate using transistors with truth table, schematic, and practical implementation',
+                    '/articles/2026/and-gate-using-transistors/',
+                    '2026-01-01',
+                    ["AND gate", "AND logic gate", "digital logic gate", "transistor AND gate", "boolean logic", "2N222A transistor", "truth table", "digital electronics", "discrete logic circuit", "electronics basics"],
+                    active: true,
+                    reposts: [],
+                    views: 0,
+                    pdfVersion: false,
+                    abstract: '',
+                ),
+            ],
             2024 => [
                 Article::create(
                     'SQLite Index Visualization: Search',

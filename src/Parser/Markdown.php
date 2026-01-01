@@ -52,13 +52,26 @@ class Markdown extends \Parsedown
             return;
         }
 
-        $data['element']['attributes'] = [
-            'class' => 'table table-bordered'
-        ];
+        if($Block['element']['text'] === '|') {
 
-        $data['element']['text'][0]['attributes'] = [
-            'class' => 'table-secondary'
-        ];
+            $data['element']['attributes'] = [
+                'class' => 'table table-borderless'
+            ];
+            
+            $data['element']['text'][0]['attributes'] = [
+                'class' => 'd-none'
+            ];
+        } else {
+
+            $data['element']['attributes'] = [
+                'class' => 'table table-bordered'
+            ];
+            
+            $data['element']['text'][0]['attributes'] = [
+                'class' => 'table-secondary'
+            ];    
+        }
+        
 
         return $data;
     }
