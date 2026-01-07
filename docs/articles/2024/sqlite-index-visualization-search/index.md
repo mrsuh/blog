@@ -429,10 +429,10 @@ Query details:
 |--------------|-------------------|---------------------------------------|
 | ...          | ...               | 39 comparisons on column1 and column2 |
 | 2            | 500000            | 2 comparisons on column1 and column2  |
-| 2            | 500002            | 1 comparison on column1               |
-| 2            | 500004            | 1 comparison on column1               |
-| 2            | 500006            | 1 comparison on column1               |
-| 2            | 500008            | 1 comparison on column1               |
+| 2            | 500002            | filter: 1 comparison on column1       |
+| 2            | 500004            | filter: 1 comparison on column1       |
+| 2            | 500006            | filter: 1 comparison on column1       |
+| 2            | 500008            | filter: 1 comparison on column1       |
 | ...          | ...               |                                       |
 
 When the low-cardinality column is placed first, it takes more comparisons to find the first match, but SQLite can quickly filter any remaining rows. 
