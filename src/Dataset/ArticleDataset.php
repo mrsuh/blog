@@ -16,6 +16,18 @@ class ArticleDataset
         return [
             2026 => [
                 Article::create(
+                    'NAND Gate using transistors',
+                    'NAND Gate using transistors with truth table, schematic, and practical implementation',
+                    '/articles/2026/nand-gate-using-transistors/',
+                    '2026-01-15',
+                    ["NAND gate", "NAND logic gate", "digital logic gate", "transistor NAND gate", "boolean logic", "2N222A transistor", "truth table", "digital electronics", "discrete logic circuit", "electronics basics"],
+                    active: true,
+                    reposts: [],
+                    views: 0,
+                    pdfVersion: false,
+                    abstract: '',
+                ),
+                Article::create(
                     'AND Gate using transistors',
                     'AND Gate using transistors with truth table, schematic, and practical implementation',
                     '/articles/2026/and-gate-using-transistors/',
@@ -75,36 +87,12 @@ Anton Sukhachev explore en profondeur la structure des index dans SQLite. Il exa
             ],
             2023 => [
                 Article::create(
-                    'Few steps to make your docker image smaller',
-                    'Offers practical tips for reducing Docker image size, enhancing container efficiency and performance',
-                    '/articles/2023/few-steps-to-make-your-docker-image-smaller/',
-                    '2023-02-20',
-                    ["PHP", "Docker", "container image size", "optimization", "multi-stage build", "devops best practices"],
-                    views: 170
-                ),
-                Article::create(
-                    'PHP Skeleton for Bison',
-                    'Introduces a PHP skeleton for Bison parser generator, facilitating seamless parser integration into PHP projects',
-                    '/articles/2023/php-skeleton-for-bison/',
-                    '2023-03-13',
-                    ["PHP", "Bison", "parser generator", "language tooling", "scaffolding", "software architecture", "skeleton"],
-                    views: 2_771,
-                ),
-                Article::create(
-                    'AST parser with PHP and Bison',
-                    'Guides on building an Abstract Syntax Tree (AST) parser using PHP and Bison, aiding in code analysis and manipulation',
-                    '/articles/2023/ast-parser-with-php-and-bison/',
-                    '2023-03-19',
-                    ["PHP", "AST", "AST parser", "Bison", "syntax tree", "compiler construction", "language internals"],
-                    views: 1_218,
-                ),
-                Article::create(
-                    'Nginx parser with PHP and Bison',
-                    'Details creating an Nginx configuration parser with PHP and Bison, improving server configuration management',
-                    '/articles/2023/nginx-parser-with-php-and-bison/',
-                    '2023-03-27',
-                    ["Nginx", "PHP", "Bison", "parser", "web server configuration", "software tooling"],
-                    views: 1_043,
+                    'How I Wrote PHP Skeleton For Bison',
+                    'Shares insights into developing a PHP skeleton for Bison, offering a behind-the-scenes look at the process',
+                    '/articles/2023/how-i-wrote-php-skeleton-for-bison/',
+                    '2023-09-15',
+                    ["PHP", "Bison"],
+                    views: -1,
                 ),
                 Article::create(
                     'JSON parser with PHP and Bison',
@@ -115,53 +103,39 @@ Anton Sukhachev explore en profondeur la structure des index dans SQLite. Il exa
                     views: 788,
                 ),
                 Article::create(
-                    'How I Wrote PHP Skeleton For Bison',
-                    'Shares insights into developing a PHP skeleton for Bison, offering a behind-the-scenes look at the process',
-                    '/articles/2023/how-i-wrote-php-skeleton-for-bison/',
-                    '2023-09-15',
-                    ["PHP", "Bison"],
-                    views: -1,
+                    'Nginx parser with PHP and Bison',
+                    'Details creating an Nginx configuration parser with PHP and Bison, improving server configuration management',
+                    '/articles/2023/nginx-parser-with-php-and-bison/',
+                    '2023-03-27',
+                    ["Nginx", "PHP", "Bison", "parser", "web server configuration", "software tooling"],
+                    views: 1_043,
+                ),
+                Article::create(
+                    'AST parser with PHP and Bison',
+                    'Guides on building an Abstract Syntax Tree (AST) parser using PHP and Bison, aiding in code analysis and manipulation',
+                    '/articles/2023/ast-parser-with-php-and-bison/',
+                    '2023-03-19',
+                    ["PHP", "AST", "AST parser", "Bison", "syntax tree", "compiler construction", "language internals"],
+                    views: 1_218,
+                ),
+                Article::create(
+                    'PHP Skeleton for Bison',
+                    'Introduces a PHP skeleton for Bison parser generator, facilitating seamless parser integration into PHP projects',
+                    '/articles/2023/php-skeleton-for-bison/',
+                    '2023-03-13',
+                    ["PHP", "Bison", "parser generator", "language tooling", "scaffolding", "software architecture", "skeleton"],
+                    views: 2_771,
+                ),
+                Article::create(
+                    'Few steps to make your docker image smaller',
+                    'Offers practical tips for reducing Docker image size, enhancing container efficiency and performance',
+                    '/articles/2023/few-steps-to-make-your-docker-image-smaller/',
+                    '2023-02-20',
+                    ["PHP", "Docker", "container image size", "optimization", "multi-stage build", "devops best practices"],
+                    views: 170
                 ),
             ],
             2022 => [
-                Article::create(
-                    'Generics implementation approaches',
-                    'Discusses various methods for implementing generics in programming, providing simple examples for clarity',
-                    '/articles/2022/generics-implementation-approaches/',
-                    '2022-02-08',
-                    ["PHP", "Java", "Hack", "C++", "generics", "type system", "monomorphization", "reification", "type erasure"],
-                    views: 923,
-                    pdfVersion: true,
-                    abstract: 'This article explains the main ways to implement generics in programming languages, using simple PHP, Hack, Java, and C++ examples. It describes three common approaches - type erasure, reification, and monomorphization - and compares how they handle type checking and reflection during static analysis, compile time, and runtime. The article also provides visibility tables to show what type information is available in each stage. Real examples demonstrate how Java uses type erasure, Hack supports reified generics, and C++ templates represent monomorphization. The author also introduces a PHP library that brings monomorphic generics to PHP.',
-                    doi: 'https://doi.org/10.5281/zenodo.17408648'
-                ),
-                Article::create(
-                    'Comparing PHP Collections',
-                    'Compares different approaches to handling collections in PHP, evaluating type safety, IDE support, and performance',
-                    '/articles/2022/comparing-php-collections/',
-                    '2022-03-22',
-                    ["PHP", "collections library", "data structures", "performance comparison", "collections", "generics"],
-                    views: 1_425,
-                    pdfVersion: true,
-                    abstract: 'This article compares different ways to create and use collections in PHP: arrays, Psalm annotation templates, monomorphic generics, and type-erased generics. Each approach is tested for type safety, IDE support, static analysis, memory usage, and performance. The results show that arrays use the least memory and are the fastest, but they do not provide type checks at runtime. The Psalm annotations help static analysis and IDE hints but still rely on documentation rather than real type checks. Monomorphic generics, implemented using the mrsuh/php-generics library, allow real type checking but lack IDE and static analysis support. The article concludes that arrays with annotations are best for simple cases, while Psalm annotations are more suitable for complex data structures.',
-                    doi: 'https://doi.org/10.5281/zenodo.17408583'
-                ),
-                Article::create(
-                    'Telegram bot that monitors currency availability in Tinkoff ATMs',
-                    'Describes creating a Telegram bot that tracks currency availability in Tinkoff ATMs, enhancing user convenience',
-                    '/articles/2022/telegram-bot-that-monitors-currency-availability-in-tinkoff-atms/',
-                    '2022-04-02',
-                    ["Telegram bot", "automation", "currency monitoring", "fintech", "PHP", "API"],
-                    views: 5_600
-                ),
-                Article::create(
-                    'Parsing with PHP, Bison and re2c',
-                    'Explores parsing techniques using PHP, Bison, and re2c, demonstrating how to build efficient parsers',
-                    '/articles/2022/parsing-with-php-bison-and-re2c/',
-                    '2022-08-26',
-                    ["Parsing", "PHP", "Bison", "re2c", "compiler tools", "language processing"],
-                    views: 1_132,
-                ),
                 Article::create(
                     'How PHP engine builds AST',
                     'Delves into the PHP engine\'s process of constructing Abstract Syntax Trees during code compilation',
@@ -176,6 +150,44 @@ Anton Sukhachev explore en profondeur la structure des index dans SQLite. Il exa
                     abstract: 'This article explains how the PHP engine builds an Abstract Syntax Tree (AST) from PHP code. It describes how the lexer and parser work together inside the Zend Engine. The lexer is generated with re2c, and the parser is created with Bison using grammar rules written in BNF. The post shows how tokens are recognized, how they are converted into AST nodes, and how the functions zendlex, zendparse, and zend_compile_string_to_ast are connected. It also includes examples of getting and printing the real PHP AST through FFI. The article helps developers understand how PHP translates code into an internal structure before execution.',
                     doi: 'https://doi.org/10.5281/zenodo.17408508'
                 ),
+                Article::create(
+                    'Parsing with PHP, Bison and re2c',
+                    'Explores parsing techniques using PHP, Bison, and re2c, demonstrating how to build efficient parsers',
+                    '/articles/2022/parsing-with-php-bison-and-re2c/',
+                    '2022-08-26',
+                    ["Parsing", "PHP", "Bison", "re2c", "compiler tools", "language processing"],
+                    views: 1_132,
+                ),
+                Article::create(
+                    'Telegram bot that monitors currency availability in Tinkoff ATMs',
+                    'Describes creating a Telegram bot that tracks currency availability in Tinkoff ATMs, enhancing user convenience',
+                    '/articles/2022/telegram-bot-that-monitors-currency-availability-in-tinkoff-atms/',
+                    '2022-04-02',
+                    ["Telegram bot", "automation", "currency monitoring", "fintech", "PHP", "API"],
+                    views: 5_600
+                ),
+                Article::create(
+                    'Comparing PHP Collections',
+                    'Compares different approaches to handling collections in PHP, evaluating type safety, IDE support, and performance',
+                    '/articles/2022/comparing-php-collections/',
+                    '2022-03-22',
+                    ["PHP", "collections library", "data structures", "performance comparison", "collections", "generics"],
+                    views: 1_425,
+                    pdfVersion: true,
+                    abstract: 'This article compares different ways to create and use collections in PHP: arrays, Psalm annotation templates, monomorphic generics, and type-erased generics. Each approach is tested for type safety, IDE support, static analysis, memory usage, and performance. The results show that arrays use the least memory and are the fastest, but they do not provide type checks at runtime. The Psalm annotations help static analysis and IDE hints but still rely on documentation rather than real type checks. Monomorphic generics, implemented using the mrsuh/php-generics library, allow real type checking but lack IDE and static analysis support. The article concludes that arrays with annotations are best for simple cases, while Psalm annotations are more suitable for complex data structures.',
+                    doi: 'https://doi.org/10.5281/zenodo.17408583'
+                ),
+                Article::create(
+                    'Generics implementation approaches',
+                    'Discusses various methods for implementing generics in programming, providing simple examples for clarity',
+                    '/articles/2022/generics-implementation-approaches/',
+                    '2022-02-08',
+                    ["PHP", "Java", "Hack", "C++", "generics", "type system", "monomorphization", "reification", "type erasure"],
+                    views: 923,
+                    pdfVersion: true,
+                    abstract: 'This article explains the main ways to implement generics in programming languages, using simple PHP, Hack, Java, and C++ examples. It describes three common approaches - type erasure, reification, and monomorphization - and compares how they handle type checking and reflection during static analysis, compile time, and runtime. The article also provides visibility tables to show what type information is available in each stage. Real examples demonstrate how Java uses type erasure, Hack supports reified generics, and C++ templates represent monomorphization. The author also introduces a PHP library that brings monomorphic generics to PHP.',
+                    doi: 'https://doi.org/10.5281/zenodo.17408648'
+                ),
             ],
             2021 => [
                 Article::create(
@@ -189,20 +201,15 @@ Anton Sukhachev explore en profondeur la structure des index dans SQLite. Il exa
             ],
             2020 => [
                 Article::create(
-                    'How I migrated my hobby project to k8s',
-                    'Shares the experience of migrating a personal project to Kubernetes (k8s), highlighting challenges and solutions',
-                    '/articles/2020/how-i-migrated-my-hobby-project-to-k8s/',
-                    '2020-01-21',
-                    ["Kubernetes", "docker", "migration", "devops", "hobby project", "container orchestration"],
-                    views: 8_700
-                ),
-                Article::create(
-                    'Looking for the most interesting articles on the site',
-                    'Curates a list of engaging articles available on the website, spanning various topics',
-                    '/articles/2020/looking-for-the-most-interesting-articles-on-the-site/',
-                    '2020-09-17',
-                    ['research'],
-                    views: 1_300
+                    'RC boat with ESP8266 NodeMCU',
+                    'Chronicles developing a remote-controlled boat powered by ESP8266 NodeMCU, from prototype to final model',
+                    '/articles/2020/rc-boat-with-esp8266-nodemcu/',
+                    '2020-11-03',
+                    ["RC boat", "ESP8266", "NodeMCU", "IoT", "embedded project", "DIY"],
+                    reposts: [
+                        Repost::create('https://www.reddit.com/r/esp8266/comments/1gsieks/rc_boat_with_esp8266/'),
+                    ],
+                    views: 19_000
                 ),
                 Article::create(
                     'RC car with ESP8266 NodeMCU and LEGO',
@@ -213,15 +220,20 @@ Anton Sukhachev explore en profondeur la structure des index dans SQLite. Il exa
                     views: 6_200
                 ),
                 Article::create(
-                    'RC boat with ESP8266 NodeMCU',
-                    'Chronicles developing a remote-controlled boat powered by ESP8266 NodeMCU, from prototype to final model',
-                    '/articles/2020/rc-boat-with-esp8266-nodemcu/',
-                    '2020-11-03',
-                    ["RC boat", "ESP8266", "NodeMCU", "IoT", "embedded project", "DIY"],
-                    reposts: [
-                        Repost::create('https://www.reddit.com/r/esp8266/comments/1gsieks/rc_boat_with_esp8266/'),
-                    ],
-                    views: 19_000
+                    'Looking for the most interesting articles on the site',
+                    'Curates a list of engaging articles available on the website, spanning various topics',
+                    '/articles/2020/looking-for-the-most-interesting-articles-on-the-site/',
+                    '2020-09-17',
+                    ['research'],
+                    views: 1_300
+                ),
+                Article::create(
+                    'How I migrated my hobby project to k8s',
+                    'Shares the experience of migrating a personal project to Kubernetes (k8s), highlighting challenges and solutions',
+                    '/articles/2020/how-i-migrated-my-hobby-project-to-k8s/',
+                    '2020-01-21',
+                    ["Kubernetes", "docker", "migration", "devops", "hobby project", "container orchestration"],
+                    views: 8_700
                 ),
             ],
             2019 => [
@@ -249,12 +261,12 @@ Anton Sukhachev explore en profondeur la structure des index dans SQLite. Il exa
             ],
             2017 => [
                 Article::create(
-                    'Continuous delivery with Travis CI and Ansible',
-                    'Explains setting up continuous delivery pipelines using Travis CI and Ansible for automated deployments',
-                    '/articles/2017/continuous-delivery-with-travis-ci-and-ansible/',
-                    '2017-04-03',
-                    ["Continuous delivery", "Travis CI", "Ansible", "devops", "automation"],
-                    views: 11_000
+                    'Architecture of a service for collecting and classifying housing ads',
+                    'Details designing and implementing a service dedicated to aggregating and categorizing housing ads',
+                    '/articles/2017/architecture-of-a-service-for-collecting-and-classifying-housing-ads/',
+                    '2017-12-04',
+                    ["Service architecture", "data collection", "real-estate ads", "machine learning", "software engineering"],
+                    views: 9_300,
                 ),
                 Article::create(
                     'Classifying housing ads: In search of the best solution',
@@ -268,22 +280,22 @@ Anton Sukhachev explore en profondeur la structure des index dans SQLite. Il exa
                     doi: 'https://doi.org/10.5281/zenodo.17392703'
                 ),
                 Article::create(
-                    'Architecture of a service for collecting and classifying housing ads',
-                    'Details designing and implementing a service dedicated to aggregating and categorizing housing ads',
-                    '/articles/2017/architecture-of-a-service-for-collecting-and-classifying-housing-ads/',
-                    '2017-12-04',
-                    ["Service architecture", "data collection", "real-estate ads", "machine learning", "software engineering"],
-                    views: 9_300,
+                    'Continuous delivery with Travis CI and Ansible',
+                    'Explains setting up continuous delivery pipelines using Travis CI and Ansible for automated deployments',
+                    '/articles/2017/continuous-delivery-with-travis-ci-and-ansible/',
+                    '2017-04-03',
+                    ["Continuous delivery", "Travis CI", "Ansible", "devops", "automation"],
+                    views: 11_000
                 ),
             ],
             2015 => [
                 Article::create(
-                    'Migration from Symfony 2.0 to 2.6',
-                    'Shares the process and challenges encountered while upgrading a project from Symfony 2.0 to 2.6',
-                    '/articles/2015/migration-from-symfony-2-0-to-2-6/',
-                    '2015-05-20',
-                    ["Symfony", "migration", "PHP", "framework upgrade", "software maintenance"],
-                    views: 5_400
+                    'Nginx + Lua + Redis. Efficiently processing sessions and delivering data',
+                    'Discusses combining Nginx, Lua, and Redis to handle sessions and data delivery efficiently',
+                    '/articles/2015/nginx-lua-redis-efficiently-processing-sessions-and-delivering-data/',
+                    '2015-11-11',
+                    ["Nginx", "Lua", "Redis", "session processing", "high-performance web", "embedded scripting"],
+                    views: 38_000
                 ),
                 Article::create(
                     'SonarQube. Checking code quality',
@@ -294,12 +306,12 @@ Anton Sukhachev explore en profondeur la structure des index dans SQLite. Il exa
                     views: 98_000
                 ),
                 Article::create(
-                    'Nginx + Lua + Redis. Efficiently processing sessions and delivering data',
-                    'Discusses combining Nginx, Lua, and Redis to handle sessions and data delivery efficiently',
-                    '/articles/2015/nginx-lua-redis-efficiently-processing-sessions-and-delivering-data/',
-                    '2015-11-11',
-                    ["Nginx", "Lua", "Redis", "session processing", "high-performance web", "embedded scripting"],
-                    views: 38_000
+                    'Migration from Symfony 2.0 to 2.6',
+                    'Shares the process and challenges encountered while upgrading a project from Symfony 2.0 to 2.6',
+                    '/articles/2015/migration-from-symfony-2-0-to-2-6/',
+                    '2015-05-20',
+                    ["Symfony", "migration", "PHP", "framework upgrade", "software maintenance"],
+                    views: 5_400
                 ),
             ]
         ];
