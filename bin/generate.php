@@ -171,7 +171,7 @@ foreach($articles as $year => $list) {
 
         $rss[] = Rss::create(
             'https://mrsuh.com' . $article->url,
-            $article->date,
+            $article->date->setTime(0,0,0),
             $article->title,
             $article->description
         );

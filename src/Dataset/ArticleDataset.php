@@ -16,6 +16,18 @@ class ArticleDataset
         return [
             2026 => [
                 Article::create(
+                    'OR Gate using transistors',
+                    'OR Gate using transistors with truth table, schematic, and practical implementation',
+                    '/articles/2026/or-gate-using-transistors/',
+                    '2026-01-29',
+                    ["OR gate", "OR logic gate", "digital logic gate", "transistor OR gate", "boolean logic", "2N222A transistor", "truth table", "digital electronics", "discrete logic circuit", "electronics basics"],
+                    active: true,
+                    reposts: [],
+                    views: 0,
+                    pdfVersion: false,
+                    abstract: '',
+                ),
+                Article::create(
                     'NAND Gate using transistors',
                     'NAND Gate using transistors with truth table, schematic, and practical implementation',
                     '/articles/2026/nand-gate-using-transistors/',

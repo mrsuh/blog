@@ -8,10 +8,6 @@
         Experienced in leading backend development projects, with a focus on optimizing processes and tools.
     </p>
 
-    {% include 'layout/contacts.html.twig' %}
-
-    </br>
-
     <h4>Recent Articles</h4>
     <div class="row">
         {% for item in articles %}
@@ -25,4 +21,9 @@
     {% for item in projects %}
         {%- include 'project/item.html.twig' with {item: item} -%}
     {% endfor %}
+
+    <br>
+    
+    {% include 'layout/contacts.html.twig' %}
+    
 {%- endblock %}
