@@ -279,7 +279,7 @@ foreach ($projects as $project) {
 
 $sitemap[] = SiteMap::create(
     'https://mrsuh.com/projects/',
-    date('Y-m-d', filemtime($directory . '/projects/index.html')),
+    '2026-01-29',
     'daily'
 );
 
