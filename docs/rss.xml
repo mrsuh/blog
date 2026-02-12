@@ -5,6 +5,12 @@
         <description>Personal page</description>
         <link>https://mrsuh.com/</link>
             <item>
+                <title>XOR Gate using transistors</title>
+                <link>https://mrsuh.com/articles/2026/xor-gate-using-transistors/</link>
+                <pubDate>Thu, 12 Feb 2026 00:00:00 +0000</pubDate>
+                <description>XOR Gate using transistors with truth table, schematic, and practical implementation</description>
+            </item>
+            <item>
                 <title>OR Gate using transistors</title>
                 <link>https://mrsuh.com/articles/2026/or-gate-using-transistors/</link>
                 <pubDate>Thu, 29 Jan 2026 00:00:00 +0000</pubDate>
