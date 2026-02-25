@@ -4,29 +4,28 @@
         <meta http-equiv="content-type" content="text/html; charset=utf-8">
         <meta name="author" content="Anton Sukhachev">
         <title>
-            NAND Gate using transistors
+            Half Adder using transistors
         </title>
         <link rel="icon" href="/favicon.ico" sizes="any">
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
         <link rel="manifest" href="/site.webmanifest">
-        <link rel="canonical" href="https://mrsuh.com/articles/2026/nand-gate-using-transistors/">
+        <link rel="canonical" href="https://mrsuh.com/articles/2026/half-adder-using-transistors/">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-        <meta name="description" content="NAND Gate using transistors with truth table, schematic, and practical implementation">
-        <meta name="keywords" content=
-        "NAND gate, NAND logic gate, digital logic gate, transistor NAND gate, boolean logic, 2N2222A transistor, truth table, digital electronics, discrete logic circuit, electronics basics">
+        <meta name="description" content="">
+        <meta name="keywords" content="Half Adder, 2N2222A, Transistor Logic, XOR Gate, AND Gate, Binary Addition, truth table, digital electronics, discrete logic circuit, electronics basics">
         <meta property="og:type" content="website">
         <meta property="og:site_name" content="mrsuh.com">
-        <meta property="og:url" content="https://mrsuh.com/articles/2026/nand-gate-using-transistors/">
-        <meta property="og:title" content="NAND Gate using transistors">
-        <meta property="og:description" content="NAND Gate using transistors with truth table, schematic, and practical implementation">
+        <meta property="og:url" content="https://mrsuh.com/articles/2026/half-adder-using-transistors/">
+        <meta property="og:title" content="Half Adder using transistors">
+        <meta property="og:description" content="">
         <meta property="og:image:type" content="image/png">
         <meta property="og:image:alt" content="Anton Sukhachev">
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:site" content="mrsuh.com">
-        <meta name="twitter:url" content="https://mrsuh.com/articles/2026/nand-gate-using-transistors/">
-        <meta name="twitter:title" content="NAND Gate using transistors">
+        <meta name="twitter:url" content="https://mrsuh.com/articles/2026/half-adder-using-transistors/">
+        <meta name="twitter:title" content="Half Adder using transistors">
         <meta name="twitter:creator" content="@mrsuh6">
-        <meta name="twitter:description" content="NAND Gate using transistors with truth table, schematic, and practical implementation">
+        <meta name="twitter:description" content="">
         <meta name="twitter:image:alt" content="Anton Sukhachev">
         <link href="/bootstrap.min.css" rel="stylesheet">
         <link href="/style.css?v=1765906725" rel="stylesheet">
@@ -45,24 +44,24 @@
         "name": "Anton Sukhachev",
         "identifier": "https://orcid.org/0009-0005-3209-1773"
         },
-        "headline": "NAND Gate using transistors",
-        "description": "NAND Gate using transistors with truth table, schematic, and practical implementation",
+        "headline": "Half Adder using transistors",
+        "description": "",
         "inLanguage": "en",
-        "datePublished": "2026-01-15",
+        "datePublished": "2026-02-25",
         "isAccessibleForFree": true,
         "keywords": [
-        "NAND gate",
-        "NAND logic gate",
-        "digital logic gate",
-        "transistor NAND gate",
-        "boolean logic",
-        "2N2222A transistor",
+        "Half Adder",
+        "2N2222A",
+        "Transistor Logic",
+        "XOR Gate",
+        "AND Gate",
+        "Binary Addition",
         "truth table",
         "digital electronics",
         "discrete logic circuit",
         "electronics basics"
         ],
-        "url": "https://mrsuh.com/articles/2026/nand-gate-using-transistors/"
+        "url": "https://mrsuh.com/articles/2026/half-adder-using-transistors/"
         }
         </script>
     </head>
@@ -81,17 +80,21 @@
         </div>
         <div class="content">
             <h1>
-                NAND Gate using transistors
+                Half Adder using transistors
             </h1>
             <div class="header-info-block">
                 <blockquote class="text-muted quote">
-                    Published: 15 January 2026
+                    Published: 25 February 2026
                 </blockquote>
             </div>
             <p>
-                The <a href="https://en.wikipedia.org/wiki/NAND_gate" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">NAND Gate</a> is a basic digital
-                logic gate that implements the logical <strong>NOT AND</strong> function. It has two inputs and one output.<br>
-                The output is low only when both inputs are high. The full truth table showing all input and output states can be found below. Each row represents a physical state of the circuit.
+                The <a href="https://en.wikipedia.org/wiki/Adder_(electronics)#Half_adder" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Half
+                Adder</a> is a digital circuit that adds two single binary digits. It has two inputs and two outputs (sum and carry). The carry signal represents an overflow into the next digit in a
+                multi-digit addition.<br>
+                The XOR gate can be built using a combination of <a href="/articles/2026/xor-gate-using-transistors/" class=
+                "link-primary link-underline-opacity-0 link-underline-opacity-100-hover">XOR</a> and <a href="/articles/2026/and-gate-using-transistors/" class=
+                "link-primary link-underline-opacity-0 link-underline-opacity-100-hover">AND</a> gates.<br>
+                The full truth table, showing all input and output states, can be found below. Each row represents a physical state of the circuit.
             </p><a href="#h3-truth-table" id="h3-truth-table" class="text-decoration-none text-reset">
             <h3>
                 Truth table
@@ -106,7 +109,10 @@
                             Input B
                         </th>
                         <th>
-                            Output
+                            Sum S
+                        </th>
+                        <th>
+                            Carry C
                         </th>
                     </tr>
                 </thead>
@@ -119,7 +125,10 @@
                             0
                         </td>
                         <td>
-                            1
+                            0
+                        </td>
+                        <td>
+                            0
                         </td>
                     </tr>
                     <tr>
@@ -132,6 +141,9 @@
                         <td>
                             1
                         </td>
+                        <td>
+                            0
+                        </td>
                     </tr>
                     <tr>
                         <td>
@@ -143,6 +155,9 @@
                         <td>
                             1
                         </td>
+                        <td>
+                            0
+                        </td>
                     </tr>
                     <tr>
                         <td>
@@ -153,18 +168,21 @@
                         </td>
                         <td>
                             0
+                        </td>
+                        <td>
+                            1
                         </td>
                     </tr>
                 </tbody>
-            </table><a href="#h3-circuit-scheme" id="h3-circuit-scheme" class="text-decoration-none text-reset">
+            </table><a href="#h3-logic-scheme" id="h3-logic-scheme" class="text-decoration-none text-reset">
             <h3>
-                Circuit scheme
+                Logic scheme
             </h3></a>
             <p>
-                The inputs and output in the schematic correspond to the truth table headers.
+                The inputs and outputs in the scheme correspond to the truth table headers.
             </p>
             <p>
-                <a href="./images/scheme.webp"><img src="./images/scheme.webp" alt="" class="img-fluid mx-auto d-block rounded img-size"></a>
+                <a href="./images/scheme.svg"><img src="./images/scheme.svg" alt="" class="img-fluid mx-auto d-block rounded img-size"></a>
             </p><a href="#h3-implementation" id="h3-implementation" class="text-decoration-none text-reset">
             <h3>
                 Implementation
@@ -192,10 +210,6 @@
                     </tr>
                 </tbody>
             </table>
-            <p>
-                The video demonstrates the circuit behavior for all input states.
-            </p><iframe class="rounded" src="https://youtube.com/embed/1PMesY9_m-8" title="YouTube video player" frameborder="0" allow=
-            "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>
         <div class="footer">
             <div class="row" style="height: 80px">
