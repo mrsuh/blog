@@ -14,7 +14,7 @@ class ProjectDataset
         return [
             Project::create(
                 'PHP Generics',
-                'Real PHP generics implemented in PHP with RFC-style syntax <b>Class&lt;T&gt;</b> and runtime type checking.',
+                'PHP Generics implementation with RFC-style syntax and runtime type checking.',
                 '/projects/php-generics/',
                 ["php", "generics"],
             ),

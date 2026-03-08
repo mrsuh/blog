@@ -309,6 +309,61 @@ $generator->generate(
     ]
 );
 
+$talks = \App\Dataset\TalkDataset::get();
+foreach ($talks as $talk) {
+
+    $talkFilePath = $directory . $talk->url . 'index.md';
+
+    foreach(['webp', 'png', 'jpg', 'jpeg'] as $extension) {
+        $fileName = 'poster.' . $extension;
+        if(is_file($directory .  $talk->url . 'images/' . $fileName)) {
+            $talk->posterFileName = $fileName;
+            break;
+        }
+    }
+
+    $generator->generate(
+        $talk->url . 'index.html',
+        'talk/index.html.twig',
+        [
+            'title' => $talk->title,
+            'description' => $talk->description,
+            'keywords' => $talk->keywords,
+            'page_name' => 'talk',
+            'content' => $parser->text(file_get_contents($talkFilePath)),
+            'path' => $talk->url,
+            'url' => $talk->url,
+            'posterFileName' => $talk->posterFileName,
+            'presentationUrl' => $talk->presentationUrl,
+            'date' => $talk->date,
+        ]
+    );
+
+    echo '* ' . $talk->url . 'index.html' . PHP_EOL;
+
+    $sitemap[] = SiteMap::create(
+        'https://mrsuh.com' . $talk->url,
+        date('Y-m-d', filemtime($talkFilePath))
+    );
+}
+
+$generator->generate(
+    'talks/index.html',
+    'talk/list.html.twig',
+    [
+        'title' => 'Talks',
+        'keywords' => ['anton sukhachev', 'mrsuh', 'blog', 'articles', 'posts', 'projects', 'talks'],
+        'page_name' => 'talk',
+        'list' => $talks,
+        'path' => '/talks/',
+    ]
+);
+
+$sitemap[] = SiteMap::create(
+    'https://mrsuh.com/talks/',
+    date('Y-m-d', filemtime($directory . '/talks/index.html'))
+);
+
 $generator->generate(
     'articles/index.html',
     'article/list.html.twig', 
