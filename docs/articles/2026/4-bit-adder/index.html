@@ -4,28 +4,28 @@
         <meta http-equiv="content-type" content="text/html; charset=utf-8">
         <meta name="author" content="Anton Sukhachev">
         <title>
-            Half Adder using transistors
+            4 Bit Adder
         </title>
         <link rel="icon" href="/favicon.ico" sizes="any">
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
         <link rel="manifest" href="/site.webmanifest">
-        <link rel="canonical" href="https://mrsuh.com/articles/2026/half-adder-using-transistors/">
+        <link rel="canonical" href="https://mrsuh.com/articles/2026/4-bit-adder/">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-        <meta name="description" content="Half Adder using transistors with truth table, and practical implementation">
-        <meta name="keywords" content="Half Adder, 2N2222A, Transistor Logic, XOR Gate, AND Gate, Binary Addition, truth table, digital electronics, discrete logic circuit, electronics basics">
+        <meta name="description" content="4 Bit Adder with implementation">
+        <meta name="keywords" content="Adder, 4-bit Adder, Binary Addition, truth table, digital electronics, discrete logic circuit, electronics basics">
         <meta property="og:type" content="website">
         <meta property="og:site_name" content="mrsuh.com">
-        <meta property="og:url" content="https://mrsuh.com/articles/2026/half-adder-using-transistors/">
-        <meta property="og:title" content="Half Adder using transistors">
-        <meta property="og:description" content="Half Adder using transistors with truth table, and practical implementation">
+        <meta property="og:url" content="https://mrsuh.com/articles/2026/4-bit-adder/">
+        <meta property="og:title" content="4 Bit Adder">
+        <meta property="og:description" content="4 Bit Adder with implementation">
         <meta property="og:image:type" content="image/png">
         <meta property="og:image:alt" content="Anton Sukhachev">
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:site" content="mrsuh.com">
-        <meta name="twitter:url" content="https://mrsuh.com/articles/2026/half-adder-using-transistors/">
-        <meta name="twitter:title" content="Half Adder using transistors">
+        <meta name="twitter:url" content="https://mrsuh.com/articles/2026/4-bit-adder/">
+        <meta name="twitter:title" content="4 Bit Adder">
         <meta name="twitter:creator" content="@mrsuh6">
-        <meta name="twitter:description" content="Half Adder using transistors with truth table, and practical implementation">
+        <meta name="twitter:description" content="4 Bit Adder with implementation">
         <meta name="twitter:image:alt" content="Anton Sukhachev">
         <link href="/bootstrap.min.css" rel="stylesheet">
         <link href="/style.css?v=1765906725" rel="stylesheet">
@@ -44,24 +44,21 @@
         "name": "Anton Sukhachev",
         "identifier": "https://orcid.org/0009-0005-3209-1773"
         },
-        "headline": "Half Adder using transistors",
-        "description": "Half Adder using transistors with truth table, and practical implementation",
+        "headline": "4 Bit Adder",
+        "description": "4 Bit Adder with implementation",
         "inLanguage": "en",
-        "datePublished": "2026-02-25",
+        "datePublished": "2026-03-11",
         "isAccessibleForFree": true,
         "keywords": [
-        "Half Adder",
-        "2N2222A",
-        "Transistor Logic",
-        "XOR Gate",
-        "AND Gate",
+        "Adder",
+        "4-bit Adder",
         "Binary Addition",
         "truth table",
         "digital electronics",
         "discrete logic circuit",
         "electronics basics"
         ],
-        "url": "https://mrsuh.com/articles/2026/half-adder-using-transistors/"
+        "url": "https://mrsuh.com/articles/2026/4-bit-adder/"
         }
         </script>
     </head>
@@ -81,115 +78,24 @@
         </div>
         <div class="content">
             <h1>
-                Half Adder using transistors
+                4 Bit Adder
             </h1>
             <div class="header-info-block">
                 <blockquote class="text-muted quote">
-                    Published: 25 February 2026
+                    Published: 11 March 2026
                 </blockquote>
             </div>
             <p>
-                The <a href="https://en.wikipedia.org/wiki/Adder_(electronics)#Half_adder" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Half
-                Adder</a> is a digital circuit that adds two single binary digits. It has two inputs and two outputs (sum and carry). The carry signal represents an overflow into the next digit in a
-                multi-digit addition.<br>
-                The XOR gate can be built using a combination of <a href="/articles/2026/xor-gate-using-transistors/" class=
-                "link-primary link-underline-opacity-0 link-underline-opacity-100-hover">XOR</a> and <a href="/articles/2026/and-gate-using-transistors/" class=
-                "link-primary link-underline-opacity-0 link-underline-opacity-100-hover">AND</a> gates.<br>
-                The full truth table, showing all input and output states, can be found below. Each row represents a physical state of the circuit.
-            </p><a href="#h3-truth-table" id="h3-truth-table" class="text-decoration-none text-reset">
-            <h3>
-                Truth table
-            </h3></a>
-            <table class="table table-bordered">
-                <thead class="table-secondary">
-                    <tr>
-                        <th>
-                            Input A
-                        </th>
-                        <th>
-                            Input B
-                        </th>
-                        <th>
-                            Sum S
-                        </th>
-                        <th>
-                            Carry C
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            0
-                        </td>
-                        <td>
-                            0
-                        </td>
-                        <td>
-                            0
-                        </td>
-                        <td>
-                            0
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            0
-                        </td>
-                        <td>
-                            1
-                        </td>
-                        <td>
-                            1
-                        </td>
-                        <td>
-                            0
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            1
-                        </td>
-                        <td>
-                            0
-                        </td>
-                        <td>
-                            1
-                        </td>
-                        <td>
-                            0
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            1
-                        </td>
-                        <td>
-                            1
-                        </td>
-                        <td>
-                            0
-                        </td>
-                        <td>
-                            1
-                        </td>
-                    </tr>
-                </tbody>
-            </table><a href="#h3-logic-scheme" id="h3-logic-scheme" class="text-decoration-none text-reset">
-            <h3>
-                Logic scheme
-            </h3></a>
-            <p>
-                The inputs and outputs in the scheme correspond to the truth table headers.
-            </p>
-            <p>
-                <a href="./images/scheme.svg"><img src="./images/scheme.svg" alt="" class="img-fluid mx-auto d-block rounded img-size"></a>
+                The <a href="https://en.wikipedia.org/wiki/Adder_(electronics)" target="_blank" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Adder</a> is a digital
+                circuit that adds two 4-bit numbers.<br>
+                Logically, it is built from four <a href="/articles/2026/half-adder-using-transistors" class="link-primary link-underline-opacity-0 link-underline-opacity-100-hover">Half Adders</a>.
+                It has 8 inputs (4 bits for each number) and 5 outputs (4 sum bits and 1 carry bit). The carry signal represents an overflow into the next digit in a multi-digit addition.
             </p><a href="#h3-implementation" id="h3-implementation" class="text-decoration-none text-reset">
             <h3>
                 Implementation
             </h3></a>
             <p>
-                For the implementation, NPN 2N2222A transistors were used.
+                For the implementation, Binary Full Adder <code>CD74HC283E</code> was used.
             </p>
             <p>
                 <a href="./images/view.webp"><img src="./images/view.webp" alt="" class="img-fluid mx-auto d-block rounded img-size"></a>
@@ -211,6 +117,10 @@
                     </tr>
                 </tbody>
             </table>
+            <p>
+                The video demonstrates the circuit behavior for all input states.
+            </p><iframe class="rounded" src="https://youtube.com/embed/92jnn1aR-Oc" title="YouTube video player" frameborder="0" allow=
+            "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>
         <div class="footer">
             <div class="row" style="height: 80px">

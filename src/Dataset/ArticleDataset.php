@@ -16,8 +16,20 @@ class ArticleDataset
         return [
             2026 => [
                 Article::create(
+                    '4 Bit Adder',
+                    '4 Bit Adder with implementation',
+                    '/articles/2026/4-bit-adder/',
+                    '2026-03-11',
+                    ["Adder", "4-bit Adder", "Binary Addition", "truth table", "digital electronics", "discrete logic circuit", "electronics basics"],
+                    active: true,
+                    reposts: [],
+                    views: 0,
+                    pdfVersion: false,
+                    abstract: '',
+                ),
+                Article::create(
                     'Half Adder using transistors',
-                    '',
+                    'Half Adder using transistors with truth table, and practical implementation',
                     '/articles/2026/half-adder-using-transistors/',
                     '2026-02-25',
                     ["Half Adder", "2N2222A", "Transistor Logic", "XOR Gate", "AND Gate", "Binary Addition", "truth table", "digital electronics", "discrete logic circuit", "electronics basics"],

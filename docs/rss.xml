@@ -5,10 +5,16 @@
         <description>Personal page</description>
         <link>https://mrsuh.com/</link>
             <item>
+                <title>4 Bit Adder</title>
+                <link>https://mrsuh.com/articles/2026/4-bit-adder/</link>
+                <pubDate>Wed, 11 Mar 2026 00:00:00 +0000</pubDate>
+                <description>4 Bit Adder with implementation</description>
+            </item>
+            <item>
                 <title>Half Adder using transistors</title>
                 <link>https://mrsuh.com/articles/2026/half-adder-using-transistors/</link>
                 <pubDate>Wed, 25 Feb 2026 00:00:00 +0000</pubDate>
-                <description></description>
+                <description>Half Adder using transistors with truth table, and practical implementation</description>
             </item>
             <item>
                 <title>XOR Gate using transistors</title>
