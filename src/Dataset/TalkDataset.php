@@ -23,7 +23,7 @@ class TalkDataset
                 'SQLite Index Visualization',
                 'Explores SQLite B-Tree index structure and search operations with visualizations of navigation and storage mechanisms.',
                 '/talks/sqlite-index-visualization/',
-                '/talks/sqlite-index-visualization/sqlite-index-visualization-v4.pdf',
+                '/talks/sqlite-index-visualization/sqlite-index-visualization-v5.pdf',
                 '2025-03-12'
             ),
         ];
