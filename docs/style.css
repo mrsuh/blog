@@ -3,7 +3,12 @@ body {
 }
 
 hr.list {
-    margin: 0
+    margin: 0;
+}
+
+hr.list-bottom {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
 }
 
 h1 {
@@ -29,6 +34,12 @@ h1 {
     }
 }
 
+@media screen and (max-width: 430px) {
+    .page-links a {
+        display: block;
+    }
+}
+
 .quote {
     border-left: 4px solid var(--bs-secondary-color);
     padding-left: 0.5rem;
@@ -43,6 +54,7 @@ iframe {
     font-size: 0.7rem;
     margin-right: 10px;
 }
+
 .article-line {
     line-height: normal;
     margin-bottom: 5px;

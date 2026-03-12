@@ -12,7 +12,7 @@
 
     <img src="{{ url ~ 'images/' ~ posterFileName }}" class="img-fluid rounded"/>
     
-    <div class="row mt-2 mb-2">
+    <div class="row mt-2 mb-4">
         <a href="{{ presentationUrl }}">
             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-filetype-pdf"
                  viewBox="0 0 16 16">
@@ -27,8 +27,8 @@
 {%- endblock %}
 
 {% block footer %}
-    <div class="row" style="height: 80px">
-        <hr class="list"/>
+    <div class="row">
+        <hr class="list-bottom"/>
         {% include 'layout/contacts.html.twig' with {class: 'text-center'} %}
     </div>
 {% endblock %}

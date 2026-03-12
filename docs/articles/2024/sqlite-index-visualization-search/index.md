@@ -377,19 +377,19 @@ rowid   column1  column2
 
 Query details:
 
-| column1 (>= 5000) | column2 (=2) | comments                                     |
-|-------------------|--------------|----------------------------------------------|
-| ...               | ...          | search: 19 comparisons on column1            |
-| 500000            | 2            | search: 2 comparisons on column1 and column2 |
-| 500001            | 1            | filter: 1 comparison on column2              |
-| 500002            | 2            | filter: 1 comparison on column2              |
-| 500003            | 1            | filter: 1 comparison on column2              |
-| 500004            | 2            | filter: 1 comparison on column2              |
-| 500005            | 1            | filter: 1 comparison on column2              |
-| 500006            | 2            | filter: 1 comparison on column2              |
-| 500007            | 1            | filter: 1 comparison on column2              |
-| 500008            | 2            | filter: 1 comparison on column2              |
-| ...               | ...          |                                              |
+| column1 (>= 500000) | column2 (=2) | comments                                     |
+|---------------------|--------------|----------------------------------------------|
+| ...                 | ...          | search: 19 comparisons on column1            |
+| 500000              | 2            | search: 2 comparisons on column1 and column2 |
+| 500001              | 1            | filter: 1 comparison on column2              |
+| 500002              | 2            | filter: 1 comparison on column2              |
+| 500003              | 1            | filter: 1 comparison on column2              |
+| 500004              | 2            | filter: 1 comparison on column2              |
+| 500005              | 1            | filter: 1 comparison on column2              |
+| 500006              | 2            | filter: 1 comparison on column2              |
+| 500007              | 1            | filter: 1 comparison on column2              |
+| 500008              | 2            | filter: 1 comparison on column2              |
+| ...                 | ...          |                                              |
 
 It took only 21 comparisons to find the first row, but there’s no guarantee that SQLite can quickly filter the remaining rows. In the case below, SQLite has to scan the rest of the Index to ensure there are no more rows that match the query.
 
