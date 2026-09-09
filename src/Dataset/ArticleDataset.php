@@ -16,6 +16,18 @@ class ArticleDataset
         return [
             2026 => [
                 Article::create(
+                    'MySQL Indexes and OFFSET Pagination',
+                    'Explores how MySQL indexes handle OFFSET pagination and compares ways to improve query performance',
+                    '/articles/2026/mysql-indexes-and-offset-pagination/',
+                    '2026-09-09',
+                    ["MySQL", "MySQL OFFSET pagination", "MySQL query optimization", "MySQL InnoDB indexes", "covering index", "cursor pagination", "secondary index", "clustered index", "explain analyze"],
+                    active: true,
+                    reposts: [],
+                    views: 0,
+                    pdfVersion: false,
+                    abstract: '',
+                ),
+                Article::create(
                     '4 Bit Adder',
                     '4 Bit Adder with implementation',
                     '/articles/2026/4-bit-adder/',

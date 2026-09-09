@@ -5,6 +5,12 @@
         <description>Personal page</description>
         <link>https://mrsuh.com/</link>
             <item>
+                <title>MySQL Indexes and OFFSET Pagination</title>
+                <link>https://mrsuh.com/articles/2026/mysql-indexes-and-offset-pagination/</link>
+                <pubDate>Wed, 09 Sep 2026 00:00:00 +0000</pubDate>
+                <description>Explores how MySQL indexes handle OFFSET pagination and compares ways to improve query performance</description>
+            </item>
+            <item>
                 <title>4 Bit Adder</title>
                 <link>https://mrsuh.com/articles/2026/4-bit-adder/</link>
                 <pubDate>Wed, 11 Mar 2026 00:00:00 +0000</pubDate>
