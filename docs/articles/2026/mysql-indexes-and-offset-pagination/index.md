@@ -49,7 +49,7 @@ There are exactly the two indexes I created for the table.
 | field2  | 2306      | 5        | 455   | main/test\_table |
 
 
-I found two tools ([innodb_space]([https://github.com/jeremycole/innodb_ruby/blob/main/bin/innodb_space](https://github.com/jeremycole/innodb_ruby/tree/main)) and [innodb-java-reader](https://github.com/alibaba/innodb-java-reader)) to parse idb data. Unfortunately, they don't work with my MySQL version 8.0.
+I found two tools ([innodb_space](https://github.com/jeremycole/innodb_ruby/blob/main/bin/innodb_space) and [innodb-java-reader](https://github.com/alibaba/innodb-java-reader)) to parse idb data. Unfortunately, they don't work with my MySQL version 8.0.
 So I wrote Python scripts to parse the specific indexes I needed.
 
 The following information about the `Secondary Index` `INDEX (field2)`.
