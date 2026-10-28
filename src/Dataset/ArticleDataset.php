@@ -16,6 +16,18 @@ class ArticleDataset
         return [
             2026 => [
                 Article::create(
+                    'Building a Crystal Oscillator for a Z80 Computer',
+                    'Building and testing a 3.6864 MHz crystal oscillator for a Z80 computer, from breadboard to PCB',
+                    '/articles/2026/building-crystal-oscillator-for-z80-computer/',
+                    '2026-10-28',
+                    ["crystal oscillator", "Z80 computer", "3.6864 MHz crystal", "74HCT04", "clock circuit", "logic analyzer", "PCB", "KiCad"],
+                    active: true,
+                    reposts: [],
+                    views: 0,
+                    pdfVersion: false,
+                    abstract: '',
+                ),
+                Article::create(
                     'MySQL Indexes and OFFSET Pagination',
                     'Explores how MySQL indexes handle OFFSET pagination and compares ways to improve query performance',
                     '/articles/2026/mysql-indexes-and-offset-pagination/',
